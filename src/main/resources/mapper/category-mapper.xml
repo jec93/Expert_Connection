@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="category">
+
+    
+   <!--  <select id="allCategory" resultMap="hobby">
+        SELECT
+            first_category_cd AS firstCategoryCd,
+            first_category_nm AS firstCategoryNm,
+            second_category_cd AS secondCategoryCd,
+            second_category_nm AS secondCategoryNm,
+            third_category_cd AS thirdCategoryCd,
+            third_category_nm AS thirdCategoryNm
+        FROM tbl_code
+        WHERE first_category_cd LIKE 'A%'
+    </select> -->
+
+	<!-- 대분류 조회 -->
+    <select id="selectFirstCategories" resultType="map">
+        SELECT DISTINCT first_category_cd AS firstCode, first_category_nm AS firstName
+        FROM tbl_code WHERE first_category_cd like 'A%'
+    </select>
+
+    <!-- 중분류 및 소분류 조회 -->
+    <select id="selectSubCategories" parameterType="string" resultType="map">
+        SELECT second_category_cd AS secondCode, second_category_nm AS secondName,
+               third_category_cd AS thirdCode, third_category_nm AS thirdName
+        FROM tbl_code
+        WHERE first_category_cd = #{firstCode}
+    </select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="member">
+
+  <!-- 로그인 -->
+   <select id="selectOneMember"
+  parameterType="member"
+  resultType="member">
+  select member_no as memberNo,
+  		 member_id as memberId,
+  		 member_pw as memberPw,
+  		 member_nickname as memberNickname,
+  		 member_phone as memberPhone,
+  		 member_addr as memberAddr,
+  		 member_gender as memberGender,
+  		 member_email as memberEmail,
+  		 member_type as memberType,
+  		 enroll_date as enrollDate 
+    from tbl_inexpert_site
+   where member_id = #{memberId}
+     and member_pw = #{memberPw}
+  </select>
+
+ <insert id="insertMember" parameterType="member">
+ <!--  부모 테이블인 tbl_whole_member에 먼저 삽입
+  <selectKey keyProperty="memberNo" resultType="java.lang.String" order="BEFORE">
+    SELECT seq_member.nextval FROM dual
+  </selectKey> -->
+
+  <!-- tbl_whole_member 테이블에 데이터 삽입 -->
+  insert into tbl_whole_member
+  (member_no, member_nickname, member_type)
+  values
+  (#{memberNo}, #{memberNickname}, #{memberType})
+
+  <!-- tbl_inexpert_site 테이블에 데이터 삽입 -->
+  insert into tbl_inexpert_site
+  			(member_no,
+  			member_id,
+  	 		member_pw,
+  	 		member_nickname,
+  	 		member_phone,
+  	 		member_addr,
+  	 		member_gender,
+  	 		member_email,
+  	 		member_type,
+  	 		enroll_date
+  		 )
+  values (
+  			#{memberNo},
+  			#{memberId},
+  			#{memberPw},
+  			#{memberNickname},
+  			#{memberPhone},
+  			#{memberAddr},
+  			#{memberGender},
+  			#{memberEmail},
+  			'1',
+  			sysdate
+  )
+	</insert>
+  
+   <!-- 아이디 중복체크 -->
+  <select id="idDuplChk"
+  parameterType="string"
+  resultType="_int">
+  select count(*)
+  from tbl_member
+  where member_id = #{_parameter}   
+  </select>
+ 
+</mapper>
