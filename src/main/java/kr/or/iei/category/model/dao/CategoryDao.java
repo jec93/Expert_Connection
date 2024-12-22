@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository("categoryDao")
-public class TempDao {
+public class CategoryDao {
 	@Autowired
 	@Qualifier("sqlSessionTemplate")
 	private SqlSessionTemplate sqlSession;
