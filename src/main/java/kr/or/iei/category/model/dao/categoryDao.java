@@ -21,11 +21,11 @@ public class CategoryDao {
 	*/
 
 	public List<Map<String, Object>> getFirstCategories() {
-	    return sqlSession.selectList("category.selectFirstCategories");
+	    return sqlSession.selectList("category.getFirstCategories");
 	}
 
-	public List<Map<String, Object>> getSubCategories(String firstCode) {
-	    return sqlSession.selectList("category.selectSubCategories", firstCode);
+	public List<Map<String, Object>> getSubCategories() {
+	    return sqlSession.selectList("category.getAllSubCategories");
 	}
 	
 	

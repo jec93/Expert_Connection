@@ -1,5 +1,6 @@
 package kr.or.iei.category.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,12 +23,19 @@ public class CategoryService {
 	}
 	*/
 
-	public List<Map<String, Object>> getFirstCategories() {
-	    return categoryDAO.getFirstCategories();
-	}
+	public Map<String, Object> getAllCategories() {
+        // 대분류 가져오기
+        List<Map<String, Object>> firstCategories = categoryDAO.getFirstCategories();
 
-	public List<Map<String, Object>> getSubCategories(String firstCode) {
-	    return categoryDAO.getSubCategories(firstCode);
-	}
+        // 중분류 및 소분류 가져오기
+        List<Map<String, Object>> subCategories = categoryDAO.getSubCategories();
+
+        // 데이터를 Map으로 구성
+        Map<String, Object> allCategories = new HashMap<>();
+        allCategories.put("firstCategories", firstCategories);
+        allCategories.put("subCategories", subCategories);
+
+        return allCategories;
+    }
 
 }
