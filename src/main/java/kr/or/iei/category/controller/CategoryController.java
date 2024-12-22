@@ -1,12 +1,15 @@
 package kr.or.iei.category.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import kr.or.iei.category.model.service.CategoryService;
 
@@ -15,58 +18,39 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/categories")
+@SessionAttributes("categories")
 public class CategoryController {
 
-    @Autowired
-    @Qualifier("categoryService")
-    private CategoryService categoryService;
-
-    private List<Map<String, Object>> firstCategoriesCache;
-    private Map<String, List<Map<String, Object>>> subCategoriesCache = new HashMap<>();
+	@Autowired
+    private ServletContext servletContext;
 
     // 초기화 시 대분류 데이터 캐싱
-    @PostConstruct
-    public void initCache() {
-        firstCategoriesCache = categoryService.getFirstCategories(); // 대분류 데이터를 DB에서 조회하여 캐싱
-    }
-
     @GetMapping("/categoryFrm.exco")
-    public String categoryFrm() {
-    	return"categories/categorySelect";
-    }
-    
-    // 대분류 데이터 반환 (캐시 사용)
-    @ResponseBody
-    @GetMapping("/firstCategory.exco")
-    public ResponseEntity<List<Map<String, Object>>> getFirstCategories() {
-    	System.out.println("대분류 캐시 사용");
-        return ResponseEntity.ok(firstCategoriesCache); // 캐싱된 데이터 반환
-    }
+    public String initializeCategories(Model model) {
+    	// 애플리케이션 범위에서 데이터를 가져옴
+        Map<String, Object> categories = (Map<String, Object>) servletContext.getAttribute("categories");
 
-    // 중분류 및 소분류 데이터 반환 (캐시 사용)
-    @ResponseBody
-    @GetMapping("/sub/{firstCode}.exco")
-    public ResponseEntity<List<Map<String, Object>>> getSubCategories(@PathVariable String firstCode) {
-        // 캐시에서 데이터 확인
-        if (!subCategoriesCache.containsKey(firstCode)) {
-            // 캐시에 없으면 DB에서 가져와 저장
-            List<Map<String, Object>> subCategories = categoryService.getSubCategories(firstCode);
-            subCategoriesCache.put(firstCode, subCategories);
-        }
-        return ResponseEntity.ok(subCategoriesCache.get(firstCode)); // 캐싱된 데이터 반환
+        // 데이터를 모델에 추가하여 JSP에 전달
+        model.addAttribute("categories", categories);
+        return "categories/categorySelect";
     }
     
     @GetMapping("/categoriesResult.exco")
-    public String resultCategory(String cateKey) {
-    	/*
+    public String resultCategory(String cateKey, String thirdName, String secondCode, Model model) {
+    	
     	 
+    	model.addAttribute("cateKey", cateKey);
+	    model.addAttribute("thirdName", thirdName);
+	    model.addAttribute("secondCode", secondCode);
     	 
-    	 
-    	 cateKey(=전문가를 검색할 소분류 카테고리 코드값)을 사용하여
-    	 카테고리 결과창에 해당 소분류 전문가 출력 내용 작성 공간
+    	 /*
+    	cateKey(=전문가를 검색할 소분류 카테고리 코드값)을 사용하여
+    	카테고리 결과창에 해당 소분류 전문가 출력 내용 작성 공간
     	 
     	 
     	 
