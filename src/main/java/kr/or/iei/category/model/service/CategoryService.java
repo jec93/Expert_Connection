@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import kr.or.iei.category.model.dao.CategoryDao;
+import kr.or.iei.category.model.dao.TempDao;
 
 @Service("categoryService")
 public class CategoryService {
 	
 	@Autowired
 	@Qualifier("categoryDao")
-	private CategoryDao categoryDAO;
+	private TempDao categoryDAO;
 	/*
 	public ArrayList<CategoryHobby> allCategories() {
 		// TODO Auto-generated method stub
