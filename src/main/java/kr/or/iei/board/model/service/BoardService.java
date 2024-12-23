@@ -24,6 +24,10 @@ public class BoardService {
 		//한 페이지에서 보여줄 게시글의 갯수
 				int viewboardCnt = 10;
 				
+				System.out.println("서비스 boardType : " + boardType);
+				System.out.println("서비스 reqPage : " + reqPage);
+				System.out.println("서비스 boardTypeNm : " + boardTypeNm);
+				
 				//게시글 시작번호, 게시글 끝 번호
 				/*
 				 요청 페이지 		끝번호		시작번호
@@ -37,12 +41,13 @@ public class BoardService {
 				HashMap<String, Integer> map = new HashMap<String, Integer>();
 				map.put("start", start);
 				map.put("end", end);
+				map.put("boardType", boardType);
 				
 				//게시글 리스트
 				ArrayList<Board> list = (ArrayList<Board>) boardDao.selectboardList(map);
 				
 				//전체 게시글 갯수
-				int totCnt = boardDao.selectboardCount();
+				int totCnt = boardDao.selectboardCount(boardType);
 				
 				//전체 페이지 갯수
 				int totPage = 0;
@@ -79,7 +84,7 @@ public class BoardService {
 					if(pageNo == reqPage) {
 						pageNavi += "<span>" + pageNo + "</span>";
 					} else {
-						pageNavi += "<a href='/board/list.exco?reqPage="+ pageNo + "'>" + pageNo + "</a>";
+						pageNavi += "<a href='/board/list.exco?reqPage="+ pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>"+pageNo + "</a>";
 					}
 					
 					pageNo++;
@@ -91,7 +96,7 @@ public class BoardService {
 				
 				//다음버튼
 				if(pageNo <= totPage) {
-					pageNavi += "<a href='/board/list.exco?reqPage=" + pageNo + "'>다음</a>";
+					pageNavi += "<a href='/board/list.exco?reqPage=" + pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>다음</a>";
 				}
 				
 				BoardPageData pd = new BoardPageData(list, pageNavi);

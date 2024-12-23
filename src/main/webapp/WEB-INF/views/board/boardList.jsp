@@ -8,6 +8,11 @@
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
+<style>
+	.board-content{
+		display:block;
+	}
+</style>
 </head>
 <body>
 	<div class="wrap">
@@ -15,8 +20,6 @@
 
 		<main class="content">
 			<section class="section board-list-wrap">
-				
-				<div class="page-title"> ${boardTypeNm} </div>
 				<div class="list-body">
 					<div class="side-list">
 						<ul class="side-menu-title">
@@ -31,14 +34,33 @@
 							<li><a href="/cs/siteIntro.exco">사이트소개</a></li>
 						</ul>
 					</div>
-					<div class="list-content">
-					
-						<div class="cs-content-header">
+					<div class="board-content">
+						<div class="page-title"> ${boardTypeNm} </div>
+						<table border="1">
+							<tr>
+								<th>번호</th>
+								<th>제목</th>
+								<th>작성자</th>
+								<th>작성일</th>
+								<th>추천수</th>
+								<th>아쉬워요</th>
+								<th>조회수</th>
+							</tr>
+							<c:forEach var="board" items="${boardList }">
 
-						</div>
-						<div class="cs-content">
-							<h1>페이지 이동테스트</h1>
-						</div>
+							<tr>
+								<td>${board.boardNo}</td>
+								<td>${board.boardTitle}</td>
+								<td>${board.boardWriter}</td>
+								<td>${board.boardDate}</td>
+								<td>${board.boardLike}</td>
+								<td>${board.boardDislike}</td>
+								<td>${board.boardCount}</td>
+							</tr>
+
+							</c:forEach>
+						</table>
+					<div id="pageNavi">${pageNavi}</div>
 					</div>
 				</div>
 			</section>
