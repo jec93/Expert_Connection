@@ -1,5 +1,8 @@
 package kr.or.iei.member.model.vo;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class Member {
 	
 	private String memberNo;
@@ -13,13 +16,17 @@ public class Member {
 	private String memberType;
 	private String enrollDate;
 	
+	
+	private ArrayList<Member> memberList;
+	
 	public Member() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
 	public Member(String memberNo, String memberId, String memberPw, String memberNickname, String memberPhone,
-			String memberAddr, String memberGender, String memberEmail, String memberType, String enrollDate) {
+			String memberAddr, String memberGender, String memberEmail, String memberType, String enrollDate, 
+			ArrayList<Member> memberList) {
 		super();
 		this.memberNo = memberNo;
 		this.memberId = memberId;
@@ -31,8 +38,9 @@ public class Member {
 		this.memberEmail = memberEmail;
 		this.memberType = memberType;
 		this.enrollDate = enrollDate;
+		this.memberList = memberList;
 	}
-	
+
 	public String getMemberNo() {
 		return memberNo;
 	}
@@ -93,13 +101,19 @@ public class Member {
 	public void setEnrollDate(String enrollDate) {
 		this.enrollDate = enrollDate;
 	}
+	public ArrayList<Member> getMemberList(){
+		return memberList; 
+	}
+	public void setMemberList(ArrayList<Member> memberList) {
+		this.memberList = memberList;
+	}
 	
 	@Override
 	public String toString() {
 		return "Member [memberNo=" + memberNo + ", memberId=" + memberId + ", memberPw=" + memberPw
 				+ ", memberNickname=" + memberNickname + ", memberPhone=" + memberPhone + ", memberAddr=" + memberAddr
 				+ ", memberGender=" + memberGender + ", memberEmail=" + memberEmail + ", memberType=" + memberType
-				+ ", enrollDate=" + enrollDate + "]";
+				+ ", enrollDate=" + enrollDate + ",memberList=" + memberList + "]";
 	}
 
 	
