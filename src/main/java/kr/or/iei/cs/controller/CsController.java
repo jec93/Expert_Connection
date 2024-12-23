@@ -25,4 +25,28 @@ public class CsController {
 	public String siteIntro() {
 		return "cs/siteIntro";
 	}
+	
+	//이용약관 페이지 이동
+	@GetMapping ("siteTermsOfUse.exco")
+	public String siteTermsOfUse() {
+		return "cs/siteTermsOfUse";
+	}
+	
+	//개인정보처리방침 페이지 이동
+	@GetMapping ("personalInfoPolicy.exco")
+	public String personalInfoPolicy() {
+		return "cs/personalInfoPolicy";
+	}
+	
+	//사용자 사이트 이용 가이드 페이지 이동
+	@GetMapping ("introduceMember.exco")
+	public String introduceMember() {
+		return "cs/introduceMember";
+	}
+	
+	//전문가 사이트 이용 가이드 페이지 이동
+	@GetMapping ("introduceExpert.exco")
+	public String introduceExpert() {
+		return "cs/introduceExpert";
+	}
 }

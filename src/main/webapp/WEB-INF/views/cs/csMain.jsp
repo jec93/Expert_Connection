@@ -16,11 +16,10 @@
 		<main class="content">
 			<section class="section cs-list-wrap">
 				
-				
 				<div class="list-body">
 					<div class="side-list">
 						<ul class="side-menu-title">
-							<li>고객센터</li>
+							<li><a href="/cs/CS.exco">고객센터</a></li>
 						</ul>
 						<ul class="side-menu">
 							<li><a href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
@@ -32,7 +31,7 @@
 						</ul>
 					</div>
 					<div class="list-content">
-					<div class="page-title">고객센터</div>
+						<div class="page-title">고객센터</div>
 						<div class="cs-content-header">
 							<img id="cs-siteIntro-header" src="/resources/logo/expert_connection_logo_h_01.png">
 							<h5>네잎클로버를 발견하는 기쁨처럼, Expert Connection입니다. 무엇을 도와드릴까요?</h5>
