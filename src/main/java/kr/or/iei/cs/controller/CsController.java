@@ -19,4 +19,10 @@ public class CsController {
 	public String introExpertProcess(){
 		return "cs/introExpertProcess";
 	}
+	
+	//사이트 소개 페이지 이동
+	@GetMapping("siteIntro.exco")
+	public String siteIntro() {
+		return "cs/siteIntro";
+	}
 }
