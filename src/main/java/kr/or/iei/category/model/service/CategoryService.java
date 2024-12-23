@@ -29,12 +29,12 @@ public class CategoryService {
 
         // 중분류 및 소분류 가져오기
         List<Map<String, Object>> subCategories = categoryDAO.getSubCategories();
-
+        
         // 데이터를 Map으로 구성
         Map<String, Object> allCategories = new HashMap<>();
         allCategories.put("firstCategories", firstCategories);
         allCategories.put("subCategories", subCategories);
-
+        
         return allCategories;
     }
 

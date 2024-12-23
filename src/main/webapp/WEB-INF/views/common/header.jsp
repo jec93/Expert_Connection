@@ -1,6 +1,11 @@
+<%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% 
+Boolean isNull = (Boolean) application.getAttribute("isNull");
+System.out.println(isNull);
+%>
 <link rel="stylesheet" href="/resources/css/test.css" />
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -21,7 +26,13 @@
 	        <div class="logo"><a href="/"><img id="header_logo" src="/resources/logo/expert_connection_logo_h_05.png" width="170px" height="45px"></a></div>
 	        <nav class="nav">
 	            <ul class="recommend">
-	               <li><a href="/categories/categoryFrm.exco">전문가 추천</a></li>
+	               <li>
+					<% if(isNull){ %>
+	               	<a href="#">추천 점검중</a>
+		            <%}else{ %>
+		            	<a href="/categories/categoryFrm.exco">전문가 추천</a>
+		            <%} %>
+	               </li>
 	               <li><a href="#">전문가 검색</a></li>
 	               <li><a href="#">커뮤니티</a>
 	               		<ul class="sub-menu">

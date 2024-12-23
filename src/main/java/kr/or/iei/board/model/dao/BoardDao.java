@@ -24,8 +24,8 @@ public class BoardDao {
 	}
 
 	//전체 게시글 갯수 조회
-	public int selectboardCount() {
-		return sqlSession.selectOne("board.selectBoardCount");
+	public int selectboardCount(int boardType) {
+		return sqlSession.selectOne("board.selectBoardCount",boardType);
 	}
 
 }

@@ -6,31 +6,44 @@
 	<select id="selectBoardList"
 			parameterType = "hashmap"
 			resultType = "board">
-	select board_no as boardNo,
-		   board_writer as boardWriter,
-		   board_type as boardType,
-		   board_title as boardTitle,
-		   board_Content as boardContent,
-		   board_Date as boardDate,
-		   board_like as boardLike,
-		   board_dislike as boardDislike
-	from (
-	      select rownum rnum, a.* 
-	      from
+	SELECT B.BOARD_NO AS boardNo,
+        NICK.MEMBER_NICKNAME AS boardWriter,
+        B.BOARD_TYPE AS boardType,
+        B.BOARD_TITLE AS boardTitle,
+        B.BOARD_CONTENT AS boardContent,
+        B.BOARD_DATE AS boardDate,
+        B.BOARD_COUNT AS boardCount,
+        B.BOARD_LIKE AS boardLike,
+        B.BOARD_DISLIKE AS boardDislike
+    FROM (
+	      SELECT ROWNUM RNUM, B.* 
+	      FROM
                ( 
-	               select a.*
-	               from tbl_board a
-	               order by board_no desc
-               ) a
-	      ) a
-	where rnum between #{start} and #{end}
+	               SELECT B.*
+	               FROM TBL_BOARD B
+	               WHERE B.BOARD_TYPE = #{boardType}
+	               ORDER BY BOARD_NO DESC
+               ) B
+	      ) B
+    LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+            FROM (
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+            )W)NICK
+    ON B.MEMBER_NO = NICK.MEMBER_NO
+    WHERE RNUM BETWEEN #{start} AND #{end}
 	</select>
 	
 	<!-- 전체 게시글 개수 조회 -->
 	<select id="selectBoardCount"
+			parameterType="_int"
 			resultType="_int">
-	select count(*)
-	from tbl_board		
+	SELECT COUNT(*)
+	FROM TBL_BOARD
+	WHERE BOARD_TYPE = #{boardType}
 	</select>
 </mapper>
 
