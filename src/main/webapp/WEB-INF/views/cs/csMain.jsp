@@ -43,11 +43,11 @@
 									<div class="cs-box-header">
 										<h5>정보 찾기</h5>
 									</div>
-								<a class="cs-conList" href="javascript:void(0)" onclick="openFindId()">
+								<a class="cs-conList" href="javascript:void(0)" onclick="showIdSearchPopup()">
 									ID 찾기
 									<img id="direct-arrow" src="/resources/images/icon_arrow_outward_white.png">
 								</a>
-								<a class="cs-conList" href="javascript:void(0)" onclick="openFindPw()">
+								<a class="cs-conList" href="javascript:void(0)" onclick="showPwSearchPopup()">
 									비밀번호 찾기
 									<img id="direct-arrow" src="/resources/images/icon_arrow_outward_white.png">
 								</a>
@@ -148,5 +148,24 @@
 
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
+	<script>
+	function closePopup() {
+		window.close();
+    }
+	
+	function showIdSearchPopup() {
+		 
+		  var popupURL = "/member/searchIdFrm.exco";
+		  var popupProperties = "width=700,height=600,scrollbars=yes";
+		  
+		  window.open(popupURL, "Popup", popupProperties);
+		}
+	function showPwSearchPopup() {		 
+		  var popupURL = "/member/searchPwFrm.exco";
+		  var popupProperties = "width=700,height=600,scrollbars=yes";
+		  
+		  window.open(popupURL, "Popup", popupProperties);
+		}
+	</script>
 </body>
 </html>

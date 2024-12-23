@@ -1065,3 +1065,20 @@ opacity: 0.6; */
 	height : 50px;
 }
 
+/* 이용약관 */
+.terms-title {
+	margin-bottom : 10px;
+}
+.terms-sub-title {
+	margin-bottom : 10px;	
+}
+.terms-principle {
+	margin-bottom : 10px;
+}
+.usage-list {
+	padding-left : 20px;
+	margin-bottom : 20px;
+}
+.usage-list > li {
+	list-style-type: decimal;
+}
