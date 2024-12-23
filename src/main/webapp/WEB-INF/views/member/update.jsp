@@ -87,8 +87,8 @@ button:hover {
 		<jsp:include page="/WEB-INF/views/common/header.jsp" />
 		<main class="content">
 			<section class="section join-wrap">
-				<div class="page-title">회원가입</div>
-				<form action="/member/join.exco" method="post" autocomplete="off"
+				<div class="page-title">회원정보 수정</div>
+				<form action="/member/update.exco" method="post" autocomplete="off"
 					onsubmit="return joinValidate()">
 					<div class="input-wrap">
 						<div class="input-title">
@@ -96,8 +96,8 @@ button:hover {
 						</div>
 						<div class="input-item">
 							<input type="text" id="memberId" name="memberId"
-								placeholder="영어 + 숫자 6~12글자" maxlength="12" />
-							<button type="button" id="idDuplChkBtn" class="btn-primary">중복체크</button>
+								placeholder=${loginMember.memberId} readonly />
+							<button type="button" id="idDuplChkBtn" class="btn-primary" readonly>중복체크</button>
 						</div>
 						<p id="idMessage" class="input-msg"></p>
 					</div>
@@ -107,9 +107,8 @@ button:hover {
 						</div>
 						<div class="input-item">
 							<input type="password" id="memberPw" name="memberPw"
-								placeholder="영어 + 숫자 + 특수문자 8~20글자" maxlength="20" />
+								placeholder="영어 + 숫자 + 특수문자 8~20글자" maxlength="20" value="${loginMember.memberPw}"/>
 						</div>
-						<p id="pwMessage" class="input-msg"></p>
 					</div>
 					<div class="input-wrap">
 						<div class="input-title">
@@ -122,11 +121,11 @@ button:hover {
 					</div>
 					<div class="input-wrap">
 						<div class="input-title">
-							<label for="memberNickname">닉네임</label>
+							<label for="memberNick">닉네임</label>
 						</div>
 						<div class="input-item">
-							<input type="text" id="memberNickname" name="memberNickname"
-								placeholder="한글,영어,숫자,특수문자 포함 2~10글자" maxlength="10">
+							<input type="text" id="memberNick" name="memberNick"
+								placeholder="한글,영어,숫자,특수문자 포함 2~10글자" maxlength="10"  value="${loginMember.memberNickname}">
 							<button type="button" id="nickDuplChkBtn" class="btn-primary">중복체크</button>
 						</div>
 						<p id="nickMessage" class="input-msg"></p>
@@ -140,7 +139,7 @@ button:hover {
 								style="width: 50%; display: inline;">
 								
 							<input type="text" name="memberAddr" id="memberAddr" maxlength="40"
-								placeholder="기본 주소를 입력하세요" required>
+								placeholder="기본 주소를 입력하세요" required value="${loginMember.memberAddr}">
 								
 							<button type="button" id="zipp_btn" class="btn btn-primary"
 								onclick="execDaumPostcode()">도로명주소 찾기</button>				
@@ -152,7 +151,7 @@ button:hover {
 						</div>
 						<div class="input-item">
 							<input type="text" id="memberPhone" name="memberPhone"
-								placeholder="전화번호(010-0000-0000)" maxlength="13">
+								placeholder="전화번호(010-0000-0000)" maxlength="13" value="${loginMember.memberPhone}">
 						</div>
 						<p id="phoneMessage" class="input-msg"></p>
 					</div>
@@ -164,7 +163,7 @@ button:hover {
 							<label for="memberEmail">이메일</label>
 						</div>
 						<div class="input-item">
-							<input type="email" id="memberEmail" name="memberEmail">
+							<input type="email" id="memberEmail" name="memberEmail" value="${loginMember.memberEmail}">
 						</div>
 						<p id="emailMessage" class="input-msg"></p>
 					</div>
@@ -173,15 +172,15 @@ button:hover {
 					</div>
 					<div class="input-wrap">
 						<label for="memberGender">성별</label>
-						<div class="input-title">
-							  <input type="radio" name="memberGender" value="0">남자
-							  <input type="radio" name="memberGender" value="1">여자
-							  <input type="radio" name="memberGender" value="2">비공개
+						<div class="input-title" >
+							  <input type="radio" name="memberGender" value="0" value="${loginMember.memberGender}">남자
+							  <input type="radio" name="memberGender" value="1" value="${loginMember.memberGender}">여자
+							  <input type="radio" name="memberGender" value="2" value="${loginMember.memberGender}">비공개
 						</div>
 					</div>
 					
 					<div class="join-button-box">
-						<button type="submit" class="btn-primary lg">회원가입</button>
+						<button type="submit" class="btn-primary lg">정보수정</button>
 					</div>
 				</form>
 			</section>
@@ -190,67 +189,22 @@ button:hover {
 	</div>
 	<script>
 	const checkObj = {
-		"memberId" : false,
-		"idDuplChk" : false,
 		"nickDuplChk" : false,
 		"memberPw" : false,
 		"memberPwConfirm" : false,
-		"memberNickname" : false,
-		"memberPhone" : false		
+		"memberName" : false,
+		"memberNick" : false,
+		"memberPhone" : false,	
+	    "memberPwChanged": false,
+	    "memberNameChanged": false,
+	    "memberNickChanged": false,
+	    "memberPhoneChanged": false
 	}
 	
-	const memberId = $('#memberId'); 
-	const idMessage = $('#idMessage');
-	
-
-	memberId.on('input',function(){
-		checkObj.memberIdChanged = true;
-        checkObj.idDuplChk = false;
-        idMessage.removeClass('valid');
-        idMessage.removeClass('invalid');
-        
-        const regExp = /(?=.*[0-9])(?=.*[a-zA-z])[a-zA-Z0-9]{6,12}$/;
-        
-        if(regExp.test($(this).val())){ 
-            idMessage.html("");
-            idMessage.addClass("valid");
-            checkObj.memberId = true;
-        }else{
-            idMessage.html("영어 + 숫자 6~12글자 사이로 입력하세요");
-            idMessage.addClass("invalid");
-            checkObj.memberId = false;
-        }
-    });
-	
-	
-	$('#idDuplChkBtn').on('click', function(){
-        if(!checkObj.memberId){
-            msg("알림", "유효한 아이디를 입력한 후 중복체크를 진행하세요", "error");
-            return false;
-        }
-        $.ajax({
-            url : "/member/idDuplChk.exco",
-            data : {"memberId" : memberId.val()},
-            type : "get", 
-            success : function(res){
-                if(res == 0){
-                    msg("알림", "사용 가능한 아이디입니다", "success");
-                    checkObj.idDuplChk = true;
-                }else {
-                    msg("알림", "중복된 아이디가 존재합니다", "warning");
-                    checkObj.idDuplChk = false;
-                }
-            },
-            error : function(){
-                console.log('ajax 오류 발생');
-            }
-        });
-    });
-	
-	const memberNickname = $('#memberNickname'); 
+	const memberNick = $('#memberNick'); 
 	const nickMessage = $('#nickMessage');
 	
-	memberNickname.on('input',function(){
+	memberNick.on('input',function(){
 		checkObj.memberNickChanged = true;
 		checkObj.nickDuplChk = false;
 		
@@ -262,24 +216,24 @@ button:hover {
 		if(regExp.test($(this).val())){ 
 			nickMessage.html("");
 			nickMessage.addClass("valid");
-			checkObj.memberNickname = true;
+			checkObj.memberNick = true;
 		}else{
 			nickMessage.html("한글,영어,숫자,특수문자 2~10글자 사이로 입력하세요")
 			nickMessage.addClass("invalid");
-			checkObj.memberNickname = false;
+			checkObj.memberNick = false;
 		}
 	});
 	
 	$('#nickDuplChkBtn').on('click', function(){
 		
-		if(!checkObj.memberNickname){
+		if(!checkObj.memberNick){
 			msg("알림", "유효한 닉네임을 입력한 후 중복체크를 진행하세요", "error");
 			return false; 
 		}
 		
 		$.ajax({
-			url : "/member/nickDuplChk.exco",
-			data : {"memberNickname" : memberNickname.val()},
+			url : "/member/nickDuplChk",
+			data : {"memberNick" : memberNick.val()},
 			type : "get", 
 			success : function(res){
 				if(res == 0){
@@ -300,64 +254,68 @@ button:hover {
 	const memberPw = $('#memberPw');
 	const pwMessage = $('#pwMessage');
 	
-	memberPw.on('input',function(){
-		checkObj.memberPwChanged = true;
-        pwMessage.removeClass('valid');
-        pwMessage.removeClass('invalid');
-        
-        const regExp = /^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,20}$/;
+	memberPw.on('input', function() {
+	    checkObj.memberPwChanged = true;
+	    pwMessage.removeClass('valid');
+	    pwMessage.removeClass('invalid');
+	    
+	    const regExp = /^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,20}$/;
 
-        
-        if(regExp.test($(this).val())){
-            checkObj.memberPw = true;
-            pwMessage.html("");
-            pwMessage.addClass("valid");
-         // 비밀번호가 유효할 때만 비밀번호 확인 일치 여부를 검사
-            if (memberPwConfirm.val() !== "") {
-                checkPasswordMatch();
-            }
-        }else{
-            pwMessage.html("비밀번호 형식이 유효하지 않습니다");
-            pwMessage.addClass("invalid");
-            checkObj.memberPw = false;
-         // 비밀번호 형식이 유효하지 않으면 비밀번호 확인 메시지 초기화
-            pwConfirmMessage.html("");
-            pwConfirmMessage.removeClass('valid invalid');
-            checkObj.memberPwConfirm = false;
-        }
-    });
+	    if (regExp.test($(this).val())) {
+	        checkObj.memberPw = true;
+	        pwMessage.html("");
+	        pwMessage.addClass("valid");
+
+	        // 비밀번호가 유효할 경우 비밀번호 확인 입력 필드를 활성화
+	        $('#memberPwConfirm').prop('disabled', false);  // 비밀번호 확인 필드를 활성화
+	        checkPasswordMatch(); // 비밀번호 확인 일치 여부 체크
+	    } else {
+	        pwMessage.html("비밀번호 형식이 유효하지 않습니다");
+	        pwMessage.addClass("invalid");
+	        checkObj.memberPw = false;
+	        
+	        // 비밀번호가 유효하지 않으면 비밀번호 확인 필드를 비활성화
+	        $('#memberPwConfirm').prop('disabled', true);  // 비밀번호 확인 필드를 비활성화
+	        pwConfirmMessage.html("");
+	        pwConfirmMessage.removeClass('valid invalid');
+	        checkObj.memberPwConfirm = false;
+	    }
+	});
 	
 	const memberPwConfirm = $('#memberPwConfirm');
-    memberPwConfirm.on('input', function(){
-        if(memberPwConfirm.val() === memberPw.val()){
-            pwMessage.addClass('valid');
-            pwMessage.html('');
-            checkObj.memberPwConfirm = true;
-        }else{
-            pwMessage.addClass('invalid');
-            pwMessage.html('비밀번호가 일치하지 않습니다');
-            checkObj.memberPwConfirm = false;
-        }
-    });
-    
-    function checkPasswordMatch() {
-        pwConfirmMessage.removeClass('valid invalid');
+	const pwConfirmMessage = $('#pwConfirmMessage');
 
-        if (dinnerPw.val() === dinnerPwConfirm.val()) {
-            pwConfirmMessage.html("비밀번호가 일치합니다");
-            pwConfirmMessage.addClass('valid');
-            checkObj.dinnerPwConfirm = true;
-        } else {
-            pwConfirmMessage.html("비밀번호가 일치하지 않습니다");
-            pwConfirmMessage.addClass('invalid');
-            checkObj.dinnerPwConfirm = false;
-        }
+	memberPwConfirm.on('input', function() {
+	    if (memberPwConfirm.val() === memberPw.val()) {
+	        pwConfirmMessage.addClass('valid');
+	        pwConfirmMessage.html('비밀번호가 일치합니다');
+	        checkObj.memberPwConfirm = true;  // 비밀번호 확인이 일치하면 true
+	    } else {
+	        pwConfirmMessage.addClass('invalid');
+	        pwConfirmMessage.html('비밀번호가 일치하지 않습니다');
+	        checkObj.memberPwConfirm = false;  // 비밀번호 확인이 일치하지 않으면 false
+	    }
+	});
+    
+	function checkPasswordMatch() {
+	    if (memberPwConfirm.val() === memberPw.val()) {
+	        pwConfirmMessage.removeClass('invalid');
+	        pwConfirmMessage.addClass('valid');
+	        pwConfirmMessage.html('비밀번호가 일치합니다');
+	        checkObj.memberPwConfirm = true;
+	    } else {
+	        pwConfirmMessage.removeClass('valid');
+	        pwConfirmMessage.addClass('invalid');
+	        pwConfirmMessage.html('비밀번호가 일치하지 않습니다');
+	        checkObj.memberPwConfirm = false;
+	    }
     }
 	
 	const memberPhone = $('#memberPhone');
 	const phoneMessage = $('#phoneMessage');
 	
 	memberPhone.on('input', function(){
+		checkObj.memberPhoneChanged = true;
 		phoneMessage.removeClass('valid');
 		phoneMessage.removeClass('invalid');
 		
@@ -378,6 +336,7 @@ button:hover {
 	const nameMessage = $('#nameMessage');
 	
 	memberName.on('input', function(){
+		checkObj.memberNameChanged = true;
 		nameMessage.removeClass('valid');
 		nameMessage.removeClass('invalid');
 		
@@ -395,30 +354,47 @@ button:hover {
 	});
 	
 	function joinValidate(){
-		
-		let str = "";
-		
-		for(let key in checkObj){
+	    let str = "";
 
-			if(!checkObj[key]){
-				switch(key){ 
-				case "memberId" : str = "아이디 형식이 유효하지 않습니다"; break;
-				case "idDuplChk" : str = "아이디 중복체크를 진행하세요"; break;
-				case "nickDuplChk" : str = "닉네임 중복체크를 진행하세요"; break;
-				case "memberPw" : str = "비밀번호 형식이 유효하지 않습니다"; break;
-				case "memberPwConfirm" : str = "비밀번호 확인 형식이 유효하지 않습니다"; break;
-				case "memberName" : str = "이름 형식이 유효하지 않습니다"; break;
-				case "memberPhone" : str = "전화번호 형식이 유효하지 않습니다"; break;
-				}
-				 
-				 str += "";
-		         msg("회원가입 실패", str, "error");  // 오류 메시지를 출력하는 함수 호출
-		         return false;  // 유효하지 않으면 false 반환하여 폼 제출 중지
-			}
-		}
-		return true;
+	    // 중복 체크가 필요한 항목 확인
+	    if(!checkObj.idDuplChk && checkObj.memberIdChanged){
+	        str = "아이디 중복체크를 진행하세요";
+	        msg("정보수정 실패", str, "error");
+	        return false;
+	    }
+
+	    if(!checkObj.nickDuplChk && checkObj.memberNickChanged){
+	        str = "닉네임 중복체크를 진행하세요";
+	        msg("정보수정 실패", str, "error");
+	        return false;
+	    }
+	    // 비밀번호를 변경한 경우, 비밀번호 확인이 유효한지 확인
+	    if (checkObj.memberPwChanged && !checkObj.memberPwConfirm) {
+	        str = "비밀번호 확인이 일치하지 않습니다";
+	        msg("정보수정 실패", str, "error");
+	        return false;
+	    }
+
+	    // 형식 검증이 필요한 항목만 확인
+	    for(let key in checkObj){
+	        // 중복 체크와 관련 없는 항목이며, 변경된 항목만 확인
+	        if(checkObj[key + "Changed"] && !checkObj[key]){  
+	            switch(key){
+	                case "memberId": str = "아이디 형식이 유효하지 않습니다"; break;
+	                case "memberPw": str = "비밀번호 형식이 유효하지 않습니다"; break;
+	                case "memberPwConfirm": str = "비밀번호 확인 형식이 유효하지 않습니다"; break;
+	                case "memberName": str = "이름 형식이 유효하지 않습니다"; break;
+	                case "memberPhone": str = "전화번호 형식이 유효하지 않습니다"; break;
+	            }
+	            str += "";
+	            msg("정보수정 실패", str, "error");
+	            return false;
+	        }
+	    }
+	    return true;
+	
 	}
-
+	
     function msg(title, text, icon){
         swal({
             title : title,
