@@ -60,4 +60,9 @@ public class BoardDao {
 		return sqlSession.selectList("board.readCommentListByBoardNo",boardNo);
 	}
 
+	public int insertBoardFileByFile(BoardFile file) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("board.insertBoardFileByFile",file);
+	}
+
 }

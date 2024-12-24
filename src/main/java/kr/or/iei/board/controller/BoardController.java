@@ -162,4 +162,12 @@ public class BoardController {
 		model.addAttribute("board",board);
 		return "board/view";
 	}
+	
+	@GetMapping("/updateFrm")
+	public String updateFrm(String boardNo, Model model) {
+		//기존 게시글 정보 가져오기(viewFrm)의 경우 접근시 조회수가 증가하므로 다르게 접근
+		Board board = boardservice.connectView(boardNo);
+		model.addAttribute("board",board);
+		return "board/updateFrm";
+	}
 }

@@ -47,7 +47,7 @@
                   </c:choose>
                </div>
                <div class="list-content">
-                  <div class="page-title"> ${boardTypeNm} </div>
+                  <div class="page-title"> ${board.boardTypeNm} </div>
                   <table class="tbl">
                      <tr>
                         <th style="width:10%">번호</th>
@@ -88,7 +88,7 @@
    </div>
    
    <script>
-   function writeFrm(boardType, boardTypeNm) {
+   function writeFrm(boardType, boardTypeNm,boardNo) {
    	const url = '/board/writeFrm.exco?boardType='+boardType+'&boardTypeNm='+boardTypeNm;
 		window.location.href = url;
    }

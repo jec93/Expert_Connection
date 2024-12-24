@@ -116,6 +116,18 @@ public class BoardService {
 		//게시글 번호 삽입
 		board.setBoardNo(boardNo);
 		int result = boardDao.insertBoard(board);
+		if(result>0) {
+			for(BoardFile file : fileList) {
+				System.out.println(file);
+				file.setBoardNo(boardNo);
+				
+				result = boardDao.insertBoardFileByFile(file);
+				
+				if(result<1) {
+					break;
+				}
+			}
+		}
 		return result;
 	}
 
@@ -128,6 +140,7 @@ public class BoardService {
 			
 			//commentChk ==null인 것은 댓글을 작성하고 상세보기 이동하는 경우를 제외 모든 요청
 			if(commentChk ==null) {
+				//조회수 증가
 				result= boardDao.updateReadByboardNo(boardNo);				
 			}
 			System.out.println(commentChk);
@@ -141,6 +154,16 @@ public class BoardService {
 			 ArrayList<BoardComment> commentList = (ArrayList<BoardComment>)boardDao.readCommentListByBoardNo(boardNo);
 			 board.setCommentList(commentList);
 			 }
+		}
+		return board;
+	}
+
+	public Board connectView(String boardNo) {
+		// TODO Auto-generated method stub
+		Board board = boardDao.viewByBoardNo(boardNo);
+		if(board != null) {
+			ArrayList<BoardFile> fileList = (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(boardNo);
+			board.setFileList(fileList);
 		}
 		return board;
 	}

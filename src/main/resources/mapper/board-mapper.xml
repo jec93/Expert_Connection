@@ -44,6 +44,7 @@
             )W)NICK
     ON B.MEMBER_NO = NICK.MEMBER_NO
     WHERE RNUM BETWEEN #{start} AND #{end}
+    ORDER BY B.BOARD_DATE DESC
 	</select>
 	
 	<!-- 전체 게시글 개수 조회 -->
@@ -84,24 +85,26 @@
 	parameterType="string"
 	resultType="board">
 	SELECT 
-	    BOARD_NO AS boardNo,
-	    MEMBER_NO AS memberNo,
-	    (SELECT W.MEMBER_NICKNAME
-	        FROM (
-	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
-	        UNION ALL
-	        SELECT MEMBER_NO, MEMBER_NICKNAME  FROM TBL_KAKAO_EXCO
-	        UNION ALL
-	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-	    )W ) AS boardWriter,
-	    BOARD_TYPE AS boardType,
-	    BOARD_TITLE AS boardTitle,
-	    BOARD_CONTENT AS boardContent,
-	    BOARD_DATE AS boardDate,
-	    BOARD_COUNT AS boardCount,
-	    BOARD_LIKE AS boardLike,
-	    BOARD_DISLIKE AS boardDislike
-	FROM TBL_BOARD WHERE BOARD_NO = #{boardNo}
+    BOARD_NO AS boardNo,
+    MEMBER_NO AS memberNo,
+    (SELECT W.MEMBER_NICKNAME
+     FROM (
+         SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+         UNION ALL
+         SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+         UNION ALL
+         SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+     ) W
+     WHERE W.MEMBER_NO = TBL_BOARD.MEMBER_NO) AS boardWriter,
+    BOARD_TYPE AS boardType,
+    BOARD_TITLE AS boardTitle,
+    BOARD_CONTENT AS boardContent,
+    BOARD_DATE AS boardDate,
+    BOARD_COUNT AS boardCount,
+    BOARD_LIKE AS boardLike,
+    BOARD_DISLIKE AS boardDislike
+	FROM TBL_BOARD
+	WHERE BOARD_NO = #{boardNo}
 	</select>
 	
 	<update id="updateReadByboardNo"
@@ -147,5 +150,19 @@
 	WHERE BOARD_NO = #{boardNo}
 	ORDER BY COMMENT_DATE DESC
 	</select>
+	
+	<select id="insertBoardFileByFile"
+	parameterType="boardFile">
+	INSERT INTO TBL_FILE
+	VALUES
+	(TO_CHAR
+		(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_BOARD.NEXTVAL, 4,'0'),
+		#{boardNo},
+		#{fileName},
+		#{filePath}
+		)
+	
+	</select>
+	
 </mapper>
 
