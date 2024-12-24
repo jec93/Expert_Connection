@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
-.wrap {
+.join-wrap {
 	width: 100%;
 	margin: 0 auto;
 	background-color: #fff;
@@ -18,27 +18,33 @@
 	border-radius: 10px;
 }
 
-.input-wrap {
+.join-input-wrap {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 15px;
 }
-
-.input-title {
+.input-msg{
+	margin-left : 390px;
+}
+.join-input-title {
 	margin-bottom: 5px;
+	margin-left : 390px;
 }
 
-.input-item {
-	width: 100%;
+.join-input-item {
+	width: 50%;
+	margin-left : 390px;
+	display : flex;
 }
-
-input[type="text"], input[type="password"], input[type="email"] {
-	width: calc(100% - 20px);
-	padding: 10px;
-	margin: 5px 0;
-	border: 1px solid #b0b0b0;
-	border-radius: 8px;
-	transition: border-color 0.3s, box-shadow 0.3s;
+.join-component{
+	border-top : none;
+	border-right : none;
+	border-left : none;
+	border-color: gray;
+	border-width : 1px;
+	height : 40px;
+	width : 600px;
+	font-size : 16px;
 }
 
 input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus
@@ -46,17 +52,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 	border-color: #808080;
 	box-shadow: 0 0 5px rgba(128, 128, 128, 0.5);
 	outline: none;
-}
-
-button {
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	background-color: #007bff;
-	color: #fff;
-	font-size: 16px;
-	cursor: pointer;
-	transition: background-color 0.3s;
 }
 
 button:hover {
@@ -70,110 +65,125 @@ button:hover {
 	padding-top: 30px;
 }
 
-.btn-primary {
-	background-color: #007bff;
+.join-btn-primary {
+	width : 140px;
+	background-color: #34805C;
 	border: none;
 	border-radius: 5px;
 	padding: 10px 20px;
 	color: #fff;
-	font-size: 16px;
+	font-size: 14px;
 	cursor: pointer;
 	transition: background-color 0.3s;
 }
+.join-btn-primary:hover {
+	background-color : #2f5233;
+}
+
 </style>
 </head>
 
-<div class="wrap">
+<div class="join-wrap">
 		<jsp:include page="/WEB-INF/views/common/header.jsp" />
 		<main class="content">
 			<section class="section join-wrap">
 				<div class="page-title">회원가입</div>
 				<form action="/member/join.exco" method="post" autocomplete="off"
 					onsubmit="return joinValidate()">
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="join-input-wrap">
+						<div class="join-input-title">
 							<label for="memberId">아이디</label>
 						</div>
-						<div class="input-item">
+						<div class="join-input-item">
 							<input type="text" id="memberId" name="memberId"
-								placeholder="영어 + 숫자 6~12글자" maxlength="12" />
-							<button type="button" id="idDuplChkBtn" class="btn-primary">중복체크</button>
+								placeholder="영어 , 숫자 포함 6~12글자" maxlength="12" class="join-component"/>
+							<button type="button" id="idDuplChkBtn" class="join-btn-primary">중복체크</button>
 						</div>
 						<p id="idMessage" class="input-msg"></p>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="join-input-wrap">
+						<div class="join-input-title">
 							<label for="memberPw">비밀번호</label>
 						</div>
-						<div class="input-item">
+						<div class="join-input-item">
 							<input type="password" id="memberPw" name="memberPw"
-								placeholder="영어 + 숫자 + 특수문자 8~20글자" maxlength="20" />
+								placeholder="영어 , 숫자 , 특수문자 포함 8~20글자" maxlength="20" class="join-component"/>
 						</div>
 						<p id="pwMessage" class="input-msg"></p>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="join-input-wrap">
+						<div class="join-input-title">
 							<label for="memberPwConfirm">비밀번호 확인</label>
 						</div>
-						<div class="input-item">
-							<input type="password" id="memberPwConfirm" maxlength="20" />
+						<div class="join-input-item">
+							<input type="password" id="memberPwConfirm" maxlength="20" class="join-component"/>
 						</div>
 						<p id="pwMessage" class="input-msg"></p>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="join-input-wrap">
+						<div class="join-input-title">
 							<label for="memberNickname">닉네임</label>
 						</div>
-						<div class="input-item">
+						<div class="join-input-item">
 							<input type="text" id="memberNickname" name="memberNickname"
-								placeholder="한글,영어,숫자,특수문자 포함 2~10글자" maxlength="10">
-							<button type="button" id="nickDuplChkBtn" class="btn-primary">중복체크</button>
+								placeholder="한글,영어,숫자,특수문자 포함 2~10글자" maxlength="10" class="join-component">
+							<button type="button" id="nickDuplChkBtn" class="join-btn-primary">중복체크</button>
 						</div>
 						<p id="nickMessage" class="input-msg"></p>
 					</div>
-					<div class="input-wrap">
-						<label for="memberAddr" class="input-title">주소</label>
-						<div class="input-item">
+					<div class="join-input-wrap">
+						<label for="memberAddr" class="join-input-title">주소</label>
+						<div class="join-input-item">
 					
 						 	<input type="hidden" id="zipp_code_id" name="zipp_code"
 								maxlength="10" placeholder="우편번호"
-								style="width: 50%; display: inline;">
+								style="width: 50%; display: inline;" class="join-component">
 								
 							<input type="text" name="memberAddr" id="memberAddr" maxlength="40"
-								placeholder="기본 주소를 입력하세요" required>
-								
-							<button type="button" id="zipp_btn" class="btn btn-primary"
-								onclick="execDaumPostcode()">도로명주소 찾기</button>				
+								placeholder="기본 주소를 입력하세요" required class="join-component">		
+													
+							<button type="button" id="zipp_btn" class="join-btn-primary"
+								onclick="execDaumPostcode()" >도로명주소 찾기</button>				
 						</div>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="join-input-wrap">
+						<div class="join-input-title">
 							<label for="memberPhone">전화번호</label>
 						</div>
-						<div class="input-item">
+						<div class="join-input-item">
 							<input type="text" id="memberPhone" name="memberPhone"
-								placeholder="전화번호(010-0000-0000)" maxlength="13">
+								placeholder="전화번호(010-0000-0000)" maxlength="13" class="join-component">
 						</div>
 						<p id="phoneMessage" class="input-msg"></p>
 					</div>
-					<div>
-						<input type="text" name="memberPhoneCerti" placeholder="전화번호 인증코드 입력"><br>
+					<div class="join-input-wrap">
+						<div class="join-input-title">
+							<label for="memberPhoneCerti">전화번호 인증</label>
+						</div>
+						<div class="join-input-item">
+							<input type="text" name="memberPhoneCerti" placeholder="전화번호 인증코드 입력" class="join-component"><br>
+						</div>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="join-input-wrap">
+						<div class="join-input-title">
 							<label for="memberEmail">이메일</label>
 						</div>
-						<div class="input-item">
-							<input type="email" id="memberEmail" name="memberEmail">
+						<div class="join-input-item">
+							<input type="email" id="memberEmail" name="memberEmail" class="join-component" placeholder="user@example.com">
 						</div>
 						<p id="emailMessage" class="input-msg"></p>
 					</div>
-					<div>
-						<input type="text" name="memberEmailCerti" placeholder="이메일 인증코드 입력"><br>
-					</div>
-					<div class="input-wrap">
-						<label for="memberGender">성별</label>
-						<div class="input-title">
+					<div class="join-input-wrap">
+						<div class="join-input-title">
+							<label for="memberEmailCerti">이메일 인증</label>
+						</div>
+						<div class="join-input-item">
+							<input type="text" name="memberEmailCerti" placeholder="이메일 인증코드 입력" class="join-component"><br>
+						</div>
+					</div>	
+					<div class="join-input-wrap">
+						<label for="memberGender" class="join-input-title">성별</label>
+						<div class="join-input-title">
 							  <input type="radio" name="memberGender" value="0">남자
 							  <input type="radio" name="memberGender" value="1">여자
 							  <input type="radio" name="memberGender" value="2">비공개
@@ -181,7 +191,7 @@ button:hover {
 					</div>
 					
 					<div class="join-button-box">
-						<button type="submit" class="btn-primary lg">회원가입</button>
+						<button type="submit" class="join-btn-primary lg">회원가입</button>
 					</div>
 				</form>
 			</section>
@@ -281,6 +291,7 @@ button:hover {
 			url : "/member/nickDuplChk.exco",
 			data : {"memberNickname" : memberNickname.val()},
 			type : "get", 
+			contentType: "application/json; charset=UTF-8",
 			success : function(res){
 				if(res == 0){
 					msg("알림", "사용 가능한 닉네임입니다", "success");
@@ -374,26 +385,6 @@ button:hover {
 		}
 	});
 	
-	const memberName = $('#memberName');
-	const nameMessage = $('#nameMessage');
-	
-	memberName.on('input', function(){
-		nameMessage.removeClass('valid');
-		nameMessage.removeClass('invalid');
-		
-		const regExp = /^[가-힣]{2,10}$/;
-		
-		if(regExp.test($(this).val())){
-			nameMessage.addClass('valid');
-			nameMessage.html("");
-			checkObj.memberName = true;
-		}else{
-			nameMessage.addClass('invalid');
-			nameMessage.html("이름 형식이 유효하지 않습니다");
-			checkObj.memberName= false;
-		}
-	});
-	
 	function joinValidate(){
 		
 		let str = "";
@@ -407,7 +398,6 @@ button:hover {
 				case "nickDuplChk" : str = "닉네임 중복체크를 진행하세요"; break;
 				case "memberPw" : str = "비밀번호 형식이 유효하지 않습니다"; break;
 				case "memberPwConfirm" : str = "비밀번호 확인 형식이 유효하지 않습니다"; break;
-				case "memberName" : str = "이름 형식이 유효하지 않습니다"; break;
 				case "memberPhone" : str = "전화번호 형식이 유효하지 않습니다"; break;
 				}
 				 

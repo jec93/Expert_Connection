@@ -15,18 +15,31 @@ body {
 	padding: 0;
 }
 
-.input-wrap {
+.delete-input-wrap {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 15px;
+	align-items: center;
 }
 
 .input-title {
 	margin-bottom: 5px;
 }
 
-.input-item {
+.delete-input-item {
 	width: 100%;
+	width:400px;
+	margin-left : 30px;
+}
+.delete-component{
+	border-top : none;
+	border-left : none;
+	border-right : none;
+	width : 400px;
+	height : 40px; 
+	padding-top : 10px;
+	font-size : 16px;
+	border-radius : 10px;
 }
 
 .delete-button{
@@ -41,14 +54,6 @@ body {
 	align-items: center;
 	padding-top : 30px;
 }
-.input-item{
-	width:400px;
-}
-.input-wrap{
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
 button {
 	padding: 10px 20px;
 	border: none;
@@ -60,10 +65,6 @@ button {
 	transition: background-color 0.3s;
 }
 
-button:hover {
-	background-color: #0056b3;
-}
-
 .join-button-box {
 	display: flex;
 	justify-content: center;
@@ -71,8 +72,8 @@ button:hover {
 	padding-top: 30px;
 }
 
-.btn-primary {
-	background-color: #007bff;
+.delete-btn-primary {
+	background-color: #34805C;
 	border: none;
 	border-radius: 30px;
 	padding: 10px 20px;
@@ -82,20 +83,12 @@ button:hover {
 	transition: background-color 0.3s;
 }
 
-.btn-primary:hover {
-	background-color: #0056b3;
+.delete-btn-primary:hover {
+	background-color: #2f5233;
 }
 
-.btn-default:hover {
-	background-color: #0056b3;
-}
-input[type="password"]{
-	width: calc(100% - 20px);
-	padding: 10px;
-	margin: 5px 0;
-	border: 1px solid #b0b0b0;
-	border-radius: 8px;
-	transition: border-color 0.3s, box-shadow 0.3s;
+.delete-btn-default:hover {
+	background-color: #2f5233;
 }
 
 input[type="password"]:focus
@@ -110,6 +103,9 @@ input[type="password"]:focus
 	background-color: #ffffff;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
+.input-msg{
+	margin-left : 30px;
+}
 </style>
 </head>
 <body>
@@ -120,30 +116,27 @@ input[type="password"]:focus
      <form action="/member/delete.exco" method="post" id="deleteForm">
     	<input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
     	
-	    	<div class="input-wrap">
+	    	<div class="delete-input-wrap">
 			    <p>회원탈퇴를 하시려면 비밀번호를 입력해주세요.</p>
 		    	<div>
-			        <div class="input-item">
-			         <input type="password" id="memberPw" name="memberPw" placeholder="비밀번호" />
+			        <div class="delete-input-item">
+			         <input type="password" id="memberPw" name="memberPw" placeholder="비밀번호" class="delete-component"/>
 			        </div>
 			        <p id="pwMessage" class="input-msg"></p>
 		        </div>
 	        </div>
-	        	
-	    <div class="input-wrap">   
-         <div class="input-item">
-            <input type="password" id="pwChk" name="pwChk" placeholder="비밀번호 확인" />
+	    <div class="delete-input-wrap">   
+         <div class="delete-input-item">
+            <input type="password" id="pwChk" name="pwChk" placeholder="비밀번호 확인" class="delete-component"/>
           </div>
             <p id="pwMessage" class="input-msg"></p>
         </div>
         <div class="delete-button">
-        	<!--  <button type="submit" id="delete" name="delete" class="btn btn-primary">회원탈퇴</button>-->
-        	<input type="submit" id="delete" name="delete" value="회원 탈퇴" class="btn btn-primary"> 
+        	<input type="submit" id="delete" name="delete" value="회원 탈퇴" class="delete-btn-primary"> 
         </div>
         <div class="cancel-button">
-    		<a href="/" id="cancelButton"  class="btn btn-primary">취소 </a>
+    		<a href="/" id="cancelButton"  class="delete-btn-primary">취소 </a>
 		</div>
-    	
 	</form>
    </section>
    	<jsp:include page="/WEB-INF/views/common/footer.jsp" />
@@ -213,7 +206,7 @@ input[type="password"]:focus
 		                if (data === 1) {
 		                    // 탈퇴 확인 창 띄우기
 		                    if (confirm("탈퇴하시겠습니까?")) {
-		                        $("#deleteForm").submit(); // 폼 제출
+		                        $("#deleteForm").off("submit").submit(); // 폼 제출
 		                    }
 		                } else {
 		                    // 비밀번호가 틀리면
