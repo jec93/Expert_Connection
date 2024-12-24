@@ -9,9 +9,6 @@
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <style>
-   .board-content{
-      display:block;
-   }
 </style>
 </head>
 <body>
@@ -49,23 +46,23 @@
                   </c:otherwise>
                   </c:choose>
                </div>
-               <div class="board-content">
+               <div class="list-content">
                   <div class="page-title"> ${boardTypeNm} </div>
-                  <table border="1">
+                  <table class="tbl">
                      <tr>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>작성일</th>
-                        <th>추천수</th>
-                        <th>아쉬워요</th>
-                        <th>조회수</th>
+                        <th style="width:10%">번호</th>
+                        <th style="width:20%">제목</th>
+                        <th style="width:15%">작성자</th>
+                        <th style="width:15%">작성일</th>
+                        <th style="width:8%">추천수</th>
+                        <th style="width:8%">아쉬워요</th>
+                        <th style="width:8%">조회수</th>
                      </tr>
                      <c:forEach var="board" items="${boardList }">
 
                      <tr>
                         <td>${board.boardNo}</td>
-                        <td>${board.boardTitle}</td>
+                        <td><a href="/board/viewFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
                         <td>${board.boardWriter}</td>
                         <td>${board.boardDate}</td>
                         <td>${board.boardLike}</td>
@@ -75,7 +72,13 @@
 
                      </c:forEach>
                   </table>
-               <div id="pageNavi">${pageNavi}</div>
+               <div class="pagination">${pageNavi}</div>
+               <%-- 반대로 로그인 데이터 없을때로 해둠 --%>
+               <c:if test="${not empty loginMember }">
+	               <div class="btn-primary" style="width:5%" onclick='writeFrm(${boardType},"${boardTypeNm}")'>
+               			글작성
+               		</div>
+               </c:if>
                </div>
             </div>
          </section>
@@ -84,6 +87,11 @@
       <jsp:include page="/WEB-INF/views/common/footer.jsp" />
    </div>
    
-   
+   <script>
+   function writeFrm(boardType, boardTypeNm) {
+   	const url = '/board/writeFrm.exco?boardType='+boardType+'&boardTypeNm='+boardTypeNm;
+		window.location.href = url;
+   }
+   </script>
 </body>
 </html>

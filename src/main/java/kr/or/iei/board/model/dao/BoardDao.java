@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import kr.or.iei.board.model.vo.Board;
+import kr.or.iei.board.model.vo.BoardComment;
+import kr.or.iei.board.model.vo.BoardFile;
 
 @Repository("boardDao")
 public class BoardDao {
@@ -26,6 +28,36 @@ public class BoardDao {
 	//전체 게시글 갯수 조회
 	public int selectboardCount(int boardType) {
 		return sqlSession.selectOne("board.selectBoardCount",boardType);
+	}
+
+	public String createBoardNo() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("board.createBoardNo");
+	}
+
+	public int insertBoard(Board board) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("board.insertBoard",board);
+	}
+
+	public Board viewByBoardNo(String boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("board.viewByBoardNo",boardNo);
+	}
+
+	public int updateReadByboardNo(String boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updateReadByboardNo",boardNo);
+	}
+
+	public List<BoardFile> ReadFileByBoardNo(String boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("board.readFileByBoardNo",boardNo);
+	}
+
+	public List<BoardComment> readCommentListByBoardNo(String boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("board.readCommentListByBoardNo",boardNo);
 	}
 
 }
