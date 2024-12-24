@@ -103,7 +103,7 @@ public class MemberController {
 	
 	@GetMapping("mypageFrm.exco")
 	public String mypageFrm() {
-		return "member/mypage";
+		return "member/mypage_p";
 	}
 	
 	@GetMapping("updateFrm.exco")

@@ -132,7 +132,7 @@
     /* color: #eaeced; */
 }
 
-.nav a:hover, .user-menu a:hover {
+.nav a:hover, .member-menu a:hover {
     color: var(--main3);
     font-weight: bold;
 }
@@ -278,7 +278,7 @@ display: block;
 
 
 /*헤더 user-menu*/
- .user-menu {
+ .member-menu {
      align-items : center;
      display: flex;
      flex-wrap: wrap;
@@ -291,15 +291,15 @@ display: block;
      gap : 20px;
      background-color:var(--gray8);
  }
- .user-menu > li {
+ .member-menu > li {
      margin: 0px 10px;
  }
  
- .user-menu a {
+ .member-menu a {
      transition-duration: 0.5s;
  }
 
- .user-menu a {
+ .member-menu a {
      font-size : 15px;
  }
 .login_box .signup_box .chat_box .alarm_box .mypage_box .logout_box {
@@ -341,6 +341,7 @@ display: block;
  	font-family: ns-b;
   	font-size: 22px;
   	color: var(--gray1);
+  	margin : 20px auto;
 }
 
 
@@ -1066,6 +1067,9 @@ opacity: 0.6; */
 }
 
 /* 이용약관 */
+#termsOfUse > span {
+	font-size : 14px;
+}
 .terms-title {
 	margin-bottom : 10px;
 }
@@ -1076,9 +1080,25 @@ opacity: 0.6; */
 	margin-bottom : 10px;
 }
 .usage-list {
+	font-size : 14px;
 	padding-left : 20px;
 	margin-bottom : 20px;
 }
 .usage-list > li {
 	list-style-type: decimal;
+}
+.usage-sub-list {
+	font-size : 14px;
+	padding-left : 20px;
+}
+.usage-sub-list > li {
+	list-style-type: decimal;
+}
+/* mypage_p.jsp 마이페이지 */
+.mypage_link {
+	display : inline-block;
+	margin-right : 80px;
+}
+.mypage-userInfo {
+	display : flex;
 }
