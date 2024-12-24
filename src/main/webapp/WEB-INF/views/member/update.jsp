@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
-.wrap {
+.update-wrap {
 	width: 100%;
 	margin: 0 auto;
 	background-color: #fff;
@@ -18,27 +18,36 @@
 	border-radius: 10px;
 }
 
-.input-wrap {
+.update-input-wrap {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 15px;
 }
-
-.input-title {
+.input-msg{
+	margin-left : 390px;
+}
+.update-input-title {
 	margin-bottom: 5px;
+	margin-left : 390px;
 }
 
-.input-item {
-	width: 100%;
+.update-input-item {
+	width: 50%;
+	margin-left : 390px;
+	display : flex;
 }
-
-input[type="text"], input[type="password"], input[type="email"] {
-	width: calc(100% - 20px);
-	padding: 10px;
-	margin: 5px 0;
-	border: 1px solid #b0b0b0;
-	border-radius: 8px;
-	transition: border-color 0.3s, box-shadow 0.3s;
+.update-gender{
+	margin-left : 390px;
+}
+.update-component{
+	border-top : none;
+	border-right : none;
+	border-left : none;
+	border-color: gray;
+	border-width : 1px;
+	height : 40px;
+	width : 600px;
+	font-size : 16px;
 }
 
 input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus
@@ -47,140 +56,136 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 	box-shadow: 0 0 5px rgba(128, 128, 128, 0.5);
 	outline: none;
 }
-
-button {
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	background-color: #007bff;
-	color: #fff;
-	font-size: 16px;
-	cursor: pointer;
-	transition: background-color 0.3s;
-}
-
-button:hover {
-	background-color: #0056b3;
-}
-
-.join-button-box {
+.update-button-box {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	padding-top: 30px;
 }
 
-.btn-primary {
-	background-color: #007bff;
+.update-btn-primary {
+	width : 140px;
+	background-color:#34805C;
 	border: none;
 	border-radius: 5px;
 	padding: 10px 20px;
 	color: #fff;
-	font-size: 16px;
+	font-size: 14px;
 	cursor: pointer;
 	transition: background-color 0.3s;
+}
+.update-btn-primary:hover{
+	background-color : #2f5233;
 }
 </style>
 </head>
 
-<div class="wrap">
+<div class="update-wrap">
 		<jsp:include page="/WEB-INF/views/common/header.jsp" />
 		<main class="content">
-			<section class="section join-wrap">
+			<section class="section update-wrap">
 				<div class="page-title">회원정보 수정</div>
 				<form action="/member/update.exco" method="post" autocomplete="off"
 					onsubmit="return joinValidate()">
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="update-input-wrap">
+						<div class="update-input-title">
 							<label for="memberId">아이디</label>
 						</div>
-						<div class="input-item">
+						<div class="update-input-item">
 							<input type="text" id="memberId" name="memberId"
-								placeholder=${loginMember.memberId} readonly />
-							<button type="button" id="idDuplChkBtn" class="btn-primary" readonly>중복체크</button>
+								placeholder=${loginMember.memberId} readonly class="update-component"/>
 						</div>
 						<p id="idMessage" class="input-msg"></p>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="update-input-wrap">
+						<div class="update-input-title">
 							<label for="memberPw">비밀번호</label>
 						</div>
-						<div class="input-item">
+						<div class="update-input-item">
 							<input type="password" id="memberPw" name="memberPw"
-								placeholder="영어 + 숫자 + 특수문자 8~20글자" maxlength="20" value="${loginMember.memberPw}"/>
+								placeholder="영어 , 숫자 , 특수문자 포함 8~20글자" maxlength="20" value="${loginMember.memberPw}" class="update-component"/>
 						</div>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="update-input-wrap">
+						<div class="update-input-title">
 							<label for="memberPwConfirm">비밀번호 확인</label>
 						</div>
-						<div class="input-item">
-							<input type="password" id="memberPwConfirm" maxlength="20" />
+						<div class="update-input-item">
+							<input type="password" id="memberPwConfirm" maxlength="20" class="update-component" class="update-component" />
 						</div>
 						<p id="pwMessage" class="input-msg"></p>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
-							<label for="memberNick">닉네임</label>
+					<div class="update-input-wrap">
+						<div class="update-input-title">
+							<label for="memberNickname">닉네임</label>
 						</div>
-						<div class="input-item">
-							<input type="text" id="memberNick" name="memberNick"
-								placeholder="한글,영어,숫자,특수문자 포함 2~10글자" maxlength="10"  value="${loginMember.memberNickname}">
-							<button type="button" id="nickDuplChkBtn" class="btn-primary">중복체크</button>
+						<div class="update-input-item">
+							<input type="text" id="memberNickname" name="memberNickname"
+								placeholder="한글,영어,숫자,특수문자 포함 2~10글자" maxlength="10"  value="${loginMember.memberNickname}" class="update-component">
+							<button type="button" id="nickDuplChkBtn" class="update-btn-primary">중복체크</button>
 						</div>
 						<p id="nickMessage" class="input-msg"></p>
 					</div>
-					<div class="input-wrap">
-						<label for="memberAddr" class="input-title">주소</label>
-						<div class="input-item">
+					<div class="update-input-wrap">
+						<label for="memberAddr" class="update-input-title">주소</label>
+						<div class="update-input-item">
 					
 						 	<input type="hidden" id="zipp_code_id" name="zipp_code"
 								maxlength="10" placeholder="우편번호"
 								style="width: 50%; display: inline;">
 								
 							<input type="text" name="memberAddr" id="memberAddr" maxlength="40"
-								placeholder="기본 주소를 입력하세요" required value="${loginMember.memberAddr}">
+								placeholder="기본 주소를 입력하세요" required value="${loginMember.memberAddr}" class="update-component">
 								
-							<button type="button" id="zipp_btn" class="btn btn-primary"
+							<button type="button" id="zipp_btn" class="update-btn-primary"
 								onclick="execDaumPostcode()">도로명주소 찾기</button>				
 						</div>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="update-input-wrap">
+						<div class="update-input-title">
 							<label for="memberPhone">전화번호</label>
 						</div>
-						<div class="input-item">
+						<div class="update-input-item">
 							<input type="text" id="memberPhone" name="memberPhone"
-								placeholder="전화번호(010-0000-0000)" maxlength="13" value="${loginMember.memberPhone}">
+								placeholder="전화번호(010-0000-0000)" maxlength="13" value="${loginMember.memberPhone}" class="update-component">
 						</div>
 						<p id="phoneMessage" class="input-msg"></p>
 					</div>
-					<div>
-						<input type="text" name="memberPhoneCerti" placeholder="전화번호 인증코드 입력"><br>
+					<div class="update-input-wrap">
+						<div class="update-input-title">
+							<label for="memberPhoneCerti">전화번호 인증</label>
+						</div>
+						<div class="update-input-item">
+							<input type="text" name="memberPhoneCerti" placeholder="전화번호 인증코드 입력" class="update-component"><br>
+						</div>
 					</div>
-					<div class="input-wrap">
-						<div class="input-title">
+					<div class="update-input-wrap">
+						<div class="update-input-title">
 							<label for="memberEmail">이메일</label>
 						</div>
-						<div class="input-item">
-							<input type="email" id="memberEmail" name="memberEmail" value="${loginMember.memberEmail}">
+						<div class="update-input-item">
+							<input type="email" id="memberEmail" name="memberEmail" value="${loginMember.memberEmail}" class="update-component">
 						</div>
 						<p id="emailMessage" class="input-msg"></p>
 					</div>
-					<div>
-						<input type="text" name="memberEmailCerti" placeholder="이메일 인증코드 입력"><br>
-					</div>
-					<div class="input-wrap">
-						<label for="memberGender">성별</label>
-						<div class="input-title" >
+					<div class="update-input-wrap">
+						<div class="update-input-title">
+							<label for="memberEmailCerti">이메일 인증</label>
+						</div>
+						<div class="update-input-item">
+							<input type="text" name="memberEmailCerti" placeholder="이메일 인증코드 입력" class="update-component"><br>
+						</div>
+					</div>	
+					<div class="update-input-wrap">
+						<label for="memberGender" class="update-gender">성별</label>
+						<div class="update-input-title" >
 							  <input type="radio" name="memberGender" value="0" value="${loginMember.memberGender}">남자
 							  <input type="radio" name="memberGender" value="1" value="${loginMember.memberGender}">여자
 							  <input type="radio" name="memberGender" value="2" value="${loginMember.memberGender}">비공개
 						</div>
 					</div>
-					
-					<div class="join-button-box">
-						<button type="submit" class="btn-primary lg">정보수정</button>
+					<div class="update-button-box">
+						<button type="submit" class="update-btn-primary lg">정보수정</button>
 					</div>
 				</form>
 			</section>
@@ -192,19 +197,17 @@ button:hover {
 		"nickDuplChk" : false,
 		"memberPw" : false,
 		"memberPwConfirm" : false,
-		"memberName" : false,
-		"memberNick" : false,
+		"memberNickname" : false,
 		"memberPhone" : false,	
 	    "memberPwChanged": false,
-	    "memberNameChanged": false,
 	    "memberNickChanged": false,
 	    "memberPhoneChanged": false
 	}
 	
-	const memberNick = $('#memberNick'); 
+	const memberNickname = $('#memberNickname'); 
 	const nickMessage = $('#nickMessage');
 	
-	memberNick.on('input',function(){
+	memberNickname.on('input',function(){
 		checkObj.memberNickChanged = true;
 		checkObj.nickDuplChk = false;
 		
@@ -216,24 +219,24 @@ button:hover {
 		if(regExp.test($(this).val())){ 
 			nickMessage.html("");
 			nickMessage.addClass("valid");
-			checkObj.memberNick = true;
+			checkObj.memberNickname = true;
 		}else{
 			nickMessage.html("한글,영어,숫자,특수문자 2~10글자 사이로 입력하세요")
 			nickMessage.addClass("invalid");
-			checkObj.memberNick = false;
+			checkObj.memberNickname = false;
 		}
 	});
 	
 	$('#nickDuplChkBtn').on('click', function(){
 		
-		if(!checkObj.memberNick){
+		if(!checkObj.memberNickname){
 			msg("알림", "유효한 닉네임을 입력한 후 중복체크를 진행하세요", "error");
 			return false; 
 		}
 		
 		$.ajax({
-			url : "/member/nickDuplChk",
-			data : {"memberNick" : memberNick.val()},
+			url : "/member/nickDuplChk.exco",
+			data : {"memberNickname" : memberNickname.val()},
 			type : "get", 
 			success : function(res){
 				if(res == 0){
@@ -329,27 +332,6 @@ button:hover {
 			phoneMessage.addClass('invalid');
 			phoneMessage.html("전화번호 형식이 유효하지 않습니다");
 			checkObj.memberPhone = false;
-		}
-	});
-	
-	const memberName = $('#memberName');
-	const nameMessage = $('#nameMessage');
-	
-	memberName.on('input', function(){
-		checkObj.memberNameChanged = true;
-		nameMessage.removeClass('valid');
-		nameMessage.removeClass('invalid');
-		
-		const regExp = /^[가-힣]{2,10}$/;
-		
-		if(regExp.test($(this).val())){
-			nameMessage.addClass('valid');
-			nameMessage.html("");
-			checkObj.memberName = true;
-		}else{
-			nameMessage.addClass('invalid');
-			nameMessage.html("이름 형식이 유효하지 않습니다");
-			checkObj.memberName= false;
 		}
 	});
 	
