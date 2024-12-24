@@ -4,129 +4,103 @@
 <mapper namespace="member">
 
   <!-- 로그인 -->
-   <select id="selectOneMember"
-  parameterType="member"
-  resultType="member">
+  <select id="selectOneMember" parameterType="member" resultType="member">
+  	     SELECT 
+         exco.member_no AS memberNo,
+         exco.member_id AS memberId,
+         exco.member_pw AS memberPw,
+         exco.member_nickname AS memberNickname,
+         exco.member_phone AS memberPhone,
+         exco.member_addr AS memberAddr,
+         exco.member_gender AS memberGender,
+         exco.member_email AS memberEmail,
+         exco.enroll_date AS enrollDate,
+         whole.member_type AS memberType
+		 FROM tbl_exco exco
+		 JOIN tbl_whole_member whole
+		   ON exco.member_no = whole.member_no
+		WHERE exco.member_id = #{memberId}
+		  AND exco.member_pw = #{memberPw}
+  </select>
 
-  select member_no as memberNo,
-  		 member_id as memberId,
-  		 member_pw as memberPw,
-  		 member_nickname as memberNickname,
-  		 member_phone as memberPhone,
-  		 member_addr as memberAddr,
-  		 member_gender as memberGender,
-  		 member_email as memberEmail,
-  		 member_type as memberType,
-  		 enroll_date as enrollDate
-    from tbl_inexpert_site
-   where member_id = #{memberId}
-     and member_pw = #{memberPw}
-  </select>
- 
-    <select id="selectOneExpert"
-  parameterType="expert"
-  resultType="expert">
-       select member_no as memberNo,
-  		 expert_id as expertId,
-  		 expert_pw as expertPw,
-  		 expert_nickname as expertNickname,
-  		 expert_phone as expertPhone,
-  		 expert_addr as expertAddr,
-  		 expert_gender as expertGender,
-  		 expert_email as expertEmail,
-  		 member_type as memberType,
-  		 enroll_date as enrollDate 
-    from tbl_expert
-   where expert_id = #{expertId}
-     and expert_pw = #{expertPw}
-  </select>
-  
- <insert id="insertMember" parameterType="member">
-  <!-- tbl_inexpert_site 테이블에 데이터 삽입 -->
-  insert into tbl_inexpert_site
-  			(member_no,
-  			member_id,
-  	 		member_pw,
-  	 		member_nickname,
-  	 		member_phone,
-  	 		member_addr,
-  	 		member_gender,
-  	 		member_email,
-  	 		member_type,
-  	 		enroll_date
-  		 )
-  values (
-  			#{memberNo},
-  			#{memberId},
-  			#{memberPw},
-  			#{memberNickname},
-  			#{memberPhone},
-  			#{memberAddr},
-  			#{memberGender},
-  			#{memberEmail},
-  			'1',
-  			sysdate
-  )
+  <!-- 회원가입 -->  
+  <insert id="insertMember" parameterType="member">
+  		  insert into tbl_exco
+  		  (member_no,
+  		  member_id,
+  	 	  member_pw,
+  	 	  member_nickname,
+  	 	  member_phone,
+  	 	  member_addr,
+  	 	  member_gender,
+  	 	  member_email,
+  	 	  enroll_date
+  	      )
+ 		  values (
+  		  #{memberNo},
+  		  #{memberId},
+  		  #{memberPw},
+  		  #{memberNickname},
+  		  #{memberPhone},
+  		  #{memberAddr},
+  		  #{memberGender},
+  		  #{memberEmail},
+    	  sysdate
+ 			 )
 	</insert>
 	
- <insert id="insertWholeMember" parameterType="member">
-  <!-- tbl_whole_member 테이블에 데이터 삽입 -->
-  insert into tbl_whole_member
-  (member_no, member_nickname, member_type)
-  values
-  (#{memberNo}, #{memberNickname}, 1)
- </insert>
+  <!-- 회원가입 -->
+  <insert id="insertWholeMember" parameterType="member">
+		  insert into tbl_whole_member
+		  (member_no, member_type)
+		  values
+		  (#{memberNo}, 1)
+  </insert>
   
-   <!-- 아이디 중복체크 -->
-  <select id="idDuplChk"
-  parameterType="string"
-  resultType="_int">
-  select count(*)
-  from tbl_inexpert_site
-  where member_id = #{_parameter}   
+  <!-- 아이디 중복체크 -->
+  <select id="idDuplChk" parameterType="string" resultType="_int">
+		   select count(*)
+		   from tbl_exco
+		   where member_id = #{_parameter}   
   </select>
   
   <!-- 닉네임 중복체크 -->
-  <select id="nickDuplChk"
-  parameterType="string"
-  resultType="_int">
-  select count(*)
-  from tbl_inexpert_site
-  where member_Nickname = #{_parameter}   
+  <select id="nickDuplChk" parameterType="string" resultType="_int">
+	 	   select count(*)
+		   from tbl_exco
+		   where member_Nickname = #{_parameter}   
   </select>
   
   <!-- memberNo 생성 -->
-  <select id="selectMemberNo"
-  resultType="string">
-	SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(seq_member.NEXTVAL, 4, '0') 
-    FROM DUAL
+  <select id="selectMemberNo" resultType="string">
+		   SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(seq_member.NEXTVAL, 4, '0') 
+	       FROM DUAL
   </select>
   
   <!-- 회원 탈퇴 -->
    <delete id="deleteMember" parameterType="string">
-    DELETE FROM tbl_inexpert_site 
-    WHERE member_no = #{memberNo}
+		    DELETE FROM tbl_exco
+		    WHERE member_no = #{memberNo}
   </delete>
 
   <!-- 비밀번호 확인 -->   
   <select id="checkPassword" parameterType="member" resultType="int">
-        SELECT COUNT(*) 
-        FROM tbl_inexpert_site 
-        WHERE member_no = #{memberNo} 
-        AND member_pw = #{memberPw}
+		   SELECT COUNT(*) 
+		   FROM tbl_exco
+		   WHERE member_no = #{memberNo} 
+		   AND member_pw = #{memberPw}
   </select>
   
   <!-- 회원정보 수정 -->
-  <update id="updateMember"
-  parameterType="member">
-  update tbl_inexpert_site
-     set member_pw = #{memberPw},
-     	 member_nickname = #{memberNickname},
-     	 member_phone = #{memberPhone},
-     	 member_addr = #{memberAddr},
-     	 member_email = #{memberEmail},
-     	 member_gender = #{memberGender}
-   where member_id = #{memberId}
+  <update id="updateMember" parameterType="member">
+		   update tbl_exco
+		   set member_pw = #{memberPw},
+		       member_nickname = #{memberNickname},
+		       member_phone = #{memberPhone},
+		       member_addr = #{memberAddr},
+		       member_email = #{memberEmail},
+		       member_gender = #{memberGender}
+		   where member_id = #{memberId}
   </update>
  
 </mapper>

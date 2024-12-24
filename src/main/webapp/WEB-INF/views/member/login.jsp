@@ -31,7 +31,7 @@
 .input-password:hover{
 	cursor : pointer;
 }
-.input-item{
+.login-input-item{
 	width : 300px;
 	height : 30px;
 	border-radius : 5px;
@@ -55,7 +55,7 @@
 .search:hover{
 	text-decoration : underline;
 }
-.input-wrap.checkbox-container {
+.login-input-wrap.checkbox-container {
 	
 	align-items: center; /* 수직 가운데 정렬 */
 	flex-direction: row; /* 가로 배치 */
@@ -64,10 +64,8 @@
 	margin-right : 200px;
 	margin-bottom : 10px;
 	margin-top : -10px;
-	
-	
 }
-.input-title{
+.login-input-title{
 	height : 10px;
 }
 input[type="checkbox"] {
@@ -143,10 +141,10 @@ input[type="text"] {
 		<section class="section login-wrap">
 				<form action="login.exco" method="post" autocomplete="off"
 					onsubmit="return loginValidate()">
-					<div class="input-title">
+					<div class="login-input-title">
 							<label for="loginId">아이디</label>
 					</div>
-					 <div class="input-wrap checkbox-container">
+					 <div class="login-input-wrap checkbox-container">
 						<c:if test="${empty cookie.saveId.value}">
 							<input type="checkbox" name="saveId" id="saveId" value="chk">
 						</c:if>
@@ -156,11 +154,11 @@ input[type="text"] {
 						</c:if>
 						<label for="saveId" >아이디 저장</label>
 					</div><br>  
- 						<input class="input-item" type="text" name="memberId" value="${cookie.saveId.value}" placeholder="아이디"> <br>
-					<div class="input-title">
+ 						<input class="login-input-item" type="text" name="memberId" value="${cookie.saveId.value}" placeholder="아이디"> <br>
+					<div class="login-input-title">
 							<label for="loginPw">비밀번호</label>
 					</div> <br> 
-						<input class="input-item" type="password" name="memberPw" placeholder="비밀번호"> <br>
+						<input class="login-input-item" type="password" name="memberPw" placeholder="비밀번호"> <br>
 					<button class="input-password" type="submit">로그인</button> <br>
 					
 					<div class="member-link-box">

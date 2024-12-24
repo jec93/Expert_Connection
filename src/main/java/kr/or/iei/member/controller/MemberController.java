@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.iei.member.model.service.MemberService;
-import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 @Controller
@@ -30,39 +29,32 @@ public class MemberController {
 	
 	//로그인
 	@PostMapping("login.exco")
-	public String memberLogin(@ModelAttribute Member member,Expert expert, HttpSession session, Model model) {
-        // 로그인 처리 (Member와 Expert 둘 다 확인)
-        Object loginMember = memberService.memberLogin(member);
+	public String memberLogin(Member member, HttpSession session) {
+		Member loginMember = memberService.memberLogin(member);
 
-        if (loginMember != null) {
-            if (loginMember instanceof Member) {
-                // 일반회원 로그인
-                session.setAttribute("loginMember", loginMember);
-            } else if (loginMember instanceof Expert) {
-                // 전문가 로그인
-                session.setAttribute("loginExpert", loginMember);
-            }
-            return "redirect:/";  // 로그인 성공 후 리다이렉트
-        } else {
-            model.addAttribute("msg", "아이디 또는 비밀번호가 틀렸습니다.");
-            return "member/loginFail";  // 로그인 실패
-        }
-    }
+		if(loginMember != null) {
+			session.setAttribute("loginMember", loginMember);
+			return "redirect:/";
+		}else {
+			return "member/loginFail";
+		}
+
+	}
 	
 	
-	
+	//로그아웃
 	@GetMapping("logout.exco")
 	public String logout(HttpSession session) {
 		session.invalidate();
 		
 		return "redirect:/";
 	}
-	
+	//로그인 페이지로 이동
 	@GetMapping("loginFrm.exco")
 	public String loginFrm() {
 		return "member/login";
 	}
-	
+	//회원가입 페이지로 이동
 	@GetMapping("joinFrm.exco")
 	public String joinFrm() {
 		return "member/join";
@@ -100,12 +92,12 @@ public class MemberController {
 		
 		return String.valueOf(cnt);
 	}
-	
+	//마이페이지로 이동
 	@GetMapping("mypageFrm.exco")
 	public String mypageFrm() {
 		return "member/mypage";
 	}
-	
+	//회원정보수정 페이지로 이동
 	@GetMapping("updateFrm.exco")
 	public String updateFrm() {
 		return "member/update";
@@ -133,13 +125,13 @@ public class MemberController {
 			return "member/updateFail";
 		}
 	}
-	
+	//회원탈퇴 페이지로 이동
 	@GetMapping("deleteFrm.exco")
 	public String deleteFrm() {
 		return "member/delete";
 	}
 	
-	// 회원 탈퇴
+	//회원 탈퇴
     @PostMapping("delete.exco")
     public String deleteMember(@RequestParam("memberNo") String memberNo, 
                                @RequestParam("memberPw") String memberPw, 
@@ -152,8 +144,8 @@ public class MemberController {
             int result = memberService.deleteMember(memberNo);
 
             if (result > 0) {
-                session.invalidate(); // 세션 무효화
-                return "redirect:/"; // 홈페이지로 리디렉션
+                session.invalidate();
+                return "redirect:/"; 
             } else {
                 model.addAttribute("message", "회원 탈퇴에 실패했습니다.");
                 return "member/deleteFail";
@@ -180,17 +172,17 @@ public class MemberController {
     }
 
 
-	
+	//아이디 찾기
 	@GetMapping("searchIdFrm.exco")
 	public String searchIdFrm() {
 		return "member/searchId";
 	}
-	
+	//비밀번호 찾기
 	@GetMapping("searchPwFrm.exco")
 	public String searchPwFrm() {
 		return "member/searchPw";
 	}
-	
+	//프로필사진 업데이트
 	@GetMapping("profileUpdateFrm.exco")
 	public String profileUpdateFrm() {
 		return "member/profileUpdate";

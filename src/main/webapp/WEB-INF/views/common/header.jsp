@@ -44,9 +44,9 @@ System.out.println(isNull);
                   </li>
                </ul>
            </nav>
-           <ul class="user-menu">
+           <ul class="member-menu">
                <c:choose>
-               <c:when test="${empty sessionScope.loginUser}">
+               <c:when test="${empty sessionScope.loginMember}">
                        <li class="login_box">
                           <a href="/member/loginFrm.exco"><img id="icon_login" src="/resources/images/icon_login.png">로그인</a>
                       </li>
@@ -56,16 +56,16 @@ System.out.println(isNull);
                </c:when>
                <c:otherwise>
                         <li class="chat_box">
-                          <a href="/member/loginFrm.exco"><img id="icon_chat" src="/resources/images/icon_chat.png">채팅</a>
+                          <a href=""><img id="icon_chat" src="/resources/images/icon_chat.png">채팅</a>
                       </li>
                        <li class="alarm_box">
-                          <a href="/member/joinFrm.exco"><img id="icon_alarm" src="/resources/images/icon_alarm.png">알람</a>
+                          <a href=""><img id="icon_alarm" src="/resources/images/icon_alarm.png">알람</a>
                        </li>
                        <li class="mypage_box">
-                          <a href="/member/loginFrm.exco"><img id="icon_mypage" src="/resources/images/icon_mypage.png">마이페이지</a>
+                          <a href="/member/mypageFrm.exco"><img id="icon_mypage" src="/resources/images/icon_mypage.png">마이페이지</a>
                       </li>
                        <li class="logout_box">
-                          <a href="/member/joinFrm.exco"><img id="icon_logout" src="/resources/images/icon_logout.png">로그아웃</a>
+                          <a href="/member/logout.exco"><img id="icon_logout" src="/resources/images/icon_logout.png">로그아웃</a>
                        </li>
                </c:otherwise>
                </c:choose>

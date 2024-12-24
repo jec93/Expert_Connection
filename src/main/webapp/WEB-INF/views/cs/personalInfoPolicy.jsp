@@ -30,6 +30,10 @@
 						</ul>
 					</div>
 					<div class="list-content">
+						<div class="cs-content-header">
+							<img id="cs-siteIntro-header" src="/resources/logo/expert_connection_logo_h_03.png">
+							<h5>일상 속 포근한 행복처럼, 우연히 발견한 행운같이</h5>
+						</div>
 						<div class="service_cont">
 						         <h2>개인정보처리방침</h2><br><br>
 						         <p>"엑스퍼트 커넥션(Expert Connection)"은 이용자의 개인정보를 안전하게 보호하고, 관련된 고충을 신속히 처리할 수 있도록 최선을 다합니다. 

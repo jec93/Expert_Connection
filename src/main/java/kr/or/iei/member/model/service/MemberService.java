@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.iei.member.model.dao.MemberDao;
-import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 @Service("service")
@@ -18,29 +17,12 @@ public class MemberService {
 	@Qualifier("dao")
 	private MemberDao memberDao;
 	
-	 public Object memberLogin(Member member) {
-	        // 1. 일반 회원 로그인 처리
-	        Member loginMember = memberDao.memberLogin(member);
-
-	        // 2. 일반 회원 로그인 실패 시 전문가 로그인 시도
-	        if (loginMember == null) {
-	            // Member 로그인 실패 시 Expert 로그인 처리
-	            Expert expert = new Expert();
-	            expert.setExpertId(member.getMemberId());
-	            expert.setExpertPw(member.getMemberPw());
-	            Expert loginExpert = memberDao.expertLogin(expert);
-
-	            // 로그인 성공한 Expert 객체 반환
-	            if (loginExpert != null) {
-	                return loginExpert;  // 전문가 로그인 성공
-	            }
-	            return null;  // 전문가 로그인 실패
-	        }
-
-	        return loginMember;  // 일반 회원 로그인 성공
-	    }
+	//로그인
+	public Member memberLogin(Member member) {
+		return memberDao.memberLogin(member);
+	}
     
-	
+	//회원가입
 	@Transactional
 	public int join(Member member, ArrayList<Member> memberList) {
 		
@@ -50,39 +32,44 @@ public class MemberService {
 		int result = memberDao.joinWholeMember(member);
 		
 		 if (result > 0) {
-		        result = memberDao.join(member); // tbl_inexpert_site에 데이터 삽입
+		        result = memberDao.join(member);
 		        if (result <= 0) {
-		            throw new RuntimeException("Failed to insert into tbl_inexpert_site");
+		            throw new RuntimeException();
 		        }
 
 		        for (Member member1 : memberList) {
 		            member1.setMemberNo(memberNo);
-		            result = memberDao.join(member1);  // 추가적인 데이터 삽입
+		            result = memberDao.join(member1);
 
 		            if (result <= 0) {
-		                throw new RuntimeException("Failed to insert additional members");
+		                throw new RuntimeException();
 		            }
 		        }
 		 }
 		return result;
 	}
 	
+	//아이디 중복체크
 	public int idDuplChk(String memberId) {
 		return memberDao.idDuplChk(memberId);
 	}
-
+	
+	//닉네임 중복체크
 	public int nickDuplChk(String memberNickname) {
 		return memberDao.nickDuplChk(memberNickname);
 	}
 
+	//회원 탈퇴
 	public int deleteMember(String memberNo) {
 		return memberDao.deleteMember(memberNo);
 	}
 	
+	//비밀번호 확인(회원탈퇴시)
 	public int checkPassword(Member loginMember) {
         return memberDao.checkPassword(loginMember);
     }
-
+	
+	//회원정보 수정
 	public int updateMember(Member member) {
 		return memberDao.updateMember(member);
 	}
