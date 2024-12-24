@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import kr.or.iei.category.model.service.CategoryService;
+import kr.or.iei.member.model.vo.Member;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,5 +57,21 @@ public class CategoryController {
     	 
     	 */
     	return "categories/categoryResult";
+    }
+    //임시 로그인 학원컴터기준 admin 정보
+    @GetMapping("/autoLogin.exco")
+    public String autoLogin(HttpSession session) {
+    	Member loginMember = new Member();
+    	loginMember.setMemberNo("1");
+    	loginMember.setMemberId("admin");
+    	loginMember.setMemberPw("1234");
+    	loginMember.setMemberNickname("관리자");
+    	loginMember.setMemberPhone("010-1234-1234");
+    	loginMember.setMemberAddr("대한민국");
+    	loginMember.setMemberGender("0");
+    	loginMember.setMemberEmail("admin@kh.com");
+    	loginMember.setEnrollDate("24/12/23");
+    	session.setAttribute("loginMember", loginMember);
+    	return"redirect:/";
     }
 }

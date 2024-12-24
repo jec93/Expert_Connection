@@ -11,7 +11,16 @@
         B.BOARD_TYPE AS boardType,
         B.BOARD_TITLE AS boardTitle,
         B.BOARD_CONTENT AS boardContent,
-        B.BOARD_DATE AS boardDate,
+        CASE
+           WHEN EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
+               FLOOR(EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '일 전'
+           WHEN EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
+               FLOOR(EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '시간 전'
+           WHEN EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
+               FLOOR(EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '분 전'
+           ELSE
+               FLOOR(EXTRACT(SECOND FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '초 전'
+       	END AS boardDate,
         B.BOARD_COUNT AS boardCount,
         B.BOARD_LIKE AS boardLike,
         B.BOARD_DISLIKE AS boardDislike
@@ -44,6 +53,99 @@
 	SELECT COUNT(*)
 	FROM TBL_BOARD
 	WHERE BOARD_TYPE = #{boardType}
+	</select>
+	
+	<select id="createBoardNo"
+		resultType="string">
+		SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_MEMBER.NEXTVAL, 4, '0') FROM DUAL
+	</select>
+	
+	<select id="insertBoard"
+		parameterType="board">
+	INSERT INTO TBL_BOARD
+	(
+		BOARD_NO,
+        MEMBER_NO,
+        BOARD_TYPE,
+		BOARD_TITLE,
+		BOARD_CONTENT
+	)
+	VALUES
+	(
+		#{boardNo},
+        #{memberNo},
+        #{boardType},
+		#{boardTitle},
+		#{boardContent}
+	)
+	</select>
+	
+	<select id="viewByBoardNo"
+	parameterType="string"
+	resultType="board">
+	SELECT 
+	    BOARD_NO AS boardNo,
+	    MEMBER_NO AS memberNo,
+	    (SELECT W.MEMBER_NICKNAME
+	        FROM (
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME  FROM TBL_KAKAO_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	    )W ) AS boardWriter,
+	    BOARD_TYPE AS boardType,
+	    BOARD_TITLE AS boardTitle,
+	    BOARD_CONTENT AS boardContent,
+	    BOARD_DATE AS boardDate,
+	    BOARD_COUNT AS boardCount,
+	    BOARD_LIKE AS boardLike,
+	    BOARD_DISLIKE AS boardDislike
+	FROM TBL_BOARD WHERE BOARD_NO = #{boardNo}
+	</select>
+	
+	<update id="updateReadByboardNo"
+	parameterType="string">
+	UPDATE
+		TBL_BOARD
+	SET
+		BOARD_COUNT = BOARD_COUNT + 1
+	WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<select id="readFileByBoardNo"
+	parameterType="string"
+	resultType="boardFile">
+	SELECT
+	    FILE_NO AS fileNo,
+	    BOARD_NO AS boardNo,
+	    FILE_NAME AS fileName,
+	    FILE_PATH AS filePath
+	FROM TBL_FILE WHERE BOARD_NO=#{string}
+	</select>
+	
+	<select id="readCommentListByBoardNo"
+	parameterType="string"
+	resultType="boardComment">
+	SELECT
+	    COMMENT_NO AS commentNo,
+	    BOARD_NO AS boardNo,
+	    (SELECT W.MEMBER_NICKNAME
+	        FROM (
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME  FROM TBL_KAKAO_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	    ) W) AS commentWriter,
+	    COMMENT_CONTENT AS commentContent,
+	    COMMENT_DATE AS commentDate,
+	    COMMENT_LIKE AS commentLike,
+	    COMMENT_DISLIKE AS commentDislike
+	FROM
+	    TBL_COMMENT
+	WHERE BOARD_NO = #{boardNo}
+	ORDER BY COMMENT_DATE DESC
 	</select>
 </mapper>
 

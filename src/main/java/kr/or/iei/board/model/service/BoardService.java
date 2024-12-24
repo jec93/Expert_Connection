@@ -6,9 +6,12 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.iei.board.model.dao.BoardDao;
 import kr.or.iei.board.model.vo.Board;
+import kr.or.iei.board.model.vo.BoardComment;
+import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.board.model.vo.BoardPageData;
 
 @Service("boardService")
@@ -102,6 +105,44 @@ public class BoardService {
 				BoardPageData pd = new BoardPageData(list, pageNavi);
 						
 				return pd;
+	}
+
+	@Transactional // 별도메소드를 호출해도 트랜젝션 안됨.
+	public int insertBoard(Board board, ArrayList<BoardFile> fileList) {
+		// TODO Auto-generated method stub
+		//게시글 번호 생성
+		String boardNo = boardDao.createBoardNo();
+		
+		//게시글 번호 삽입
+		board.setBoardNo(boardNo);
+		int result = boardDao.insertBoard(board);
+		return result;
+	}
+
+	public Board viewFrm(String boardNo, String commentChk) {
+		// TODO Auto-generated method stub
+		Board board = boardDao.viewByBoardNo(boardNo);
+		
+		if(board != null) {
+			int result = 0;
+			
+			//commentChk ==null인 것은 댓글을 작성하고 상세보기 이동하는 경우를 제외 모든 요청
+			if(commentChk ==null) {
+				result= boardDao.updateReadByboardNo(boardNo);				
+			}
+			System.out.println(commentChk);
+			System.out.println(result);
+			
+			//commentChk != null인것은 댓글을 작성하고 상세보기 이동하는 경우에도, 파일 정보를 select 할 수 있도록
+			 if(result>0 || commentChk != null) { ArrayList<BoardFile> fileList =
+			 (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(boardNo);
+			 board.setFileList(fileList);
+			  
+			 ArrayList<BoardComment> commentList = (ArrayList<BoardComment>)boardDao.readCommentListByBoardNo(boardNo);
+			 board.setCommentList(commentList);
+			 }
+		}
+		return board;
 	}
 
 }
