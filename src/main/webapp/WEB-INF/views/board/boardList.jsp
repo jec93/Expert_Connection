@@ -62,7 +62,7 @@
 
                      <tr>
                         <td>${board.boardNo}</td>
-                        <td><a href="/board/viewFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
+                        <td><a href="/board/viewBoardFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
                         <td>${board.boardWriter}</td>
                         <td>${board.boardDate}</td>
                         <td>${board.boardLike}</td>

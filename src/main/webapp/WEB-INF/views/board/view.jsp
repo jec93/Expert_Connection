@@ -49,8 +49,8 @@
                   <c:if test="${not empty loginMember and loginMember.memberNickname eq board.boardWriter}">
 					<tr>
 						<td colspan="6">
-							<a href='/board/updateFrm?boardNo=${board.boardNo}' class="btn-primary">수정</a>
-							<button class="btn-secondary" onclick="deleteNotice('${board.boardNo})">삭제</button>
+							<a href='/board/updateFrm.exco?boardNo=${board.boardNo}' class="btn-primary">수정</a>
+							<a href='/board/delete.exco?boardNo=${board.boardNo}&boardType=${board.boardType}' class="btn-secondary">${board.boardType }삭제</a>
 						</td>
 					</tr>
 				</c:if>
@@ -105,5 +105,14 @@
 		</main>
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
+	
+	<script>
+		function fileDown(fileName, filePath){
+			fileName = encodeURIComponent(fileName);
+			filePath = encodeURIComponent(filePath);
+			
+			location.href = "/board/fileDown.exco?fileName=" + fileName + "&filePath=" + filePath;
+		}
+	</script>
 </body>
 </html>

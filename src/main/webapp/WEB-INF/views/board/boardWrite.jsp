@@ -59,7 +59,7 @@
 	<script src="/resources/summernote/lang/summernote-ko-KR.js"></script>
 	<link rel="stylesheet" href="/resources/summernote/summernote-lite.css">
 	<script>
-		$('#board').summernote({
+		$('#boardContent').summernote({
 			height: 500,
 			width: 1000,
 			lang: "ko-KR",

@@ -161,8 +161,28 @@
 		#{fileName},
 		#{filePath}
 		)
-	
 	</select>
 	
+	<delete id="deleteBoardByBoardNo"
+	parameterType="string">
+	DELETE
+		TBL_BOARD
+	WHERE
+		BOARD_NO = #{boardNo}
+	</delete>
+	
+	<update id="updateBoardByNewBoard"
+	parameterType="board">
+	UPDATE TBL_BOARD
+		SET BOARD_TITLE = #{boardTitle},
+			BOARD_CONTENT = #{boardContent}
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<delete id="deleteBoardFileByBoardNo"
+	parameterType="string">
+	DELETE
+		FROM TBL_FILE
+		WHERE BOARD_NO = #{boardNo}
+	</delete>
 </mapper>
-
