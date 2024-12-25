@@ -27,10 +27,6 @@ public class BoardService {
 		//한 페이지에서 보여줄 게시글의 갯수
 				int viewboardCnt = 10;
 				
-				System.out.println("서비스 boardType : " + boardType);
-				System.out.println("서비스 reqPage : " + reqPage);
-				System.out.println("서비스 boardTypeNm : " + boardTypeNm);
-				
 				//게시글 시작번호, 게시글 끝 번호
 				/*
 				 요청 페이지 		끝번호		시작번호
@@ -116,6 +112,17 @@ public class BoardService {
 		//게시글 번호 삽입
 		board.setBoardNo(boardNo);
 		int result = boardDao.insertBoard(board);
+		if(result>0) {
+			for(BoardFile file : fileList) {
+				file.setBoardNo(boardNo);
+				
+				result = boardDao.insertBoardFileByFile(file);
+				
+				if(result<1) {
+					break;
+				}
+			}
+		}
 		return result;
 	}
 
@@ -128,10 +135,9 @@ public class BoardService {
 			
 			//commentChk ==null인 것은 댓글을 작성하고 상세보기 이동하는 경우를 제외 모든 요청
 			if(commentChk ==null) {
+				//조회수 증가
 				result= boardDao.updateReadByboardNo(boardNo);				
 			}
-			System.out.println(commentChk);
-			System.out.println(result);
 			
 			//commentChk != null인것은 댓글을 작성하고 상세보기 이동하는 경우에도, 파일 정보를 select 할 수 있도록
 			 if(result>0 || commentChk != null) { ArrayList<BoardFile> fileList =
@@ -143,6 +149,62 @@ public class BoardService {
 			 }
 		}
 		return board;
+	}
+
+	public Board connectView(String boardNo) {
+		// TODO Auto-generated method stub
+		//게시글 존재 확인
+		Board board = boardDao.viewByBoardNo(boardNo);
+		if(board != null) {
+			ArrayList<BoardFile> fileList = (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(boardNo);
+			board.setFileList(fileList);
+		}
+		return board;
+	}
+
+	public ArrayList<BoardFile> deleteBoardByBoardNo(String boardNo) {
+		// TODO Auto-generated method stub
+		//파일 존재 확인
+		ArrayList<BoardFile> fileList = (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(boardNo);
+		
+		int result = boardDao.deleteBoardByBoardNo(boardNo);
+		
+		if(result>0) {
+			return fileList;
+		}
+		return null;
+	}
+
+	public ArrayList<BoardFile> updateBoardByNewBoard(Board board, ArrayList<BoardFile> fileList) {
+		// TODO Auto-generated method stub
+		/*
+		 1독립적인 친구) 게시글 정보 수정(tbl_notice)
+		 2)서버에서 기존 파일 정보를 삭제하기 위한 조회
+		 3)기존 파일 정보 삭제
+		 4)업로드한 파일 정보 등록(tbl_notice_file)
+		 */
+		
+		//1) 게시글 정보 수정
+		int result = boardDao.updateBoardByNewBoard(board);
+		
+		ArrayList<BoardFile> delFileList = null;
+		if(result > 0) {
+			//2) 서버에서 기존 파일 정보를 삭제하기 위한 파일 리스트 조회
+			delFileList = (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(board.getBoardNo());
+			
+			//3) 기존 파일 정보 DB에서 삭제 처리
+			result = boardDao.deleteBoardFileByBoardNo(board.getBoardNo());
+			
+			System.out.println(fileList+"파일리스트");
+			
+			if(result>0 && fileList.size() > 0) {
+				//4) 업로드한 파일 정보 DB에 등록 처리
+				for(BoardFile insFile : fileList) {
+					boardDao.insertBoardFileByFile(insFile);
+				}
+			}
+		}
+		return delFileList;
 	}
 
 }

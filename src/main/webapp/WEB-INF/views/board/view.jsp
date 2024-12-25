@@ -6,6 +6,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Expert Connection</title>
+<link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
+<link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
+<style>
+	.boardContent{
+		height: 200px;
+	}
+</style>
 </head>
 <body>
 	<div class="wrap">
@@ -39,6 +46,14 @@
                         <div class="boardContent">${board.boardContent }</div>
                      </td>
                   </tr>
+                  <c:if test="${not empty loginMember and loginMember.memberNickname eq board.boardWriter}">
+					<tr>
+						<td colspan="6">
+							<a href='/board/updateFrm.exco?boardNo=${board.boardNo}' class="btn-primary">수정</a>
+							<a href='/board/delete.exco?boardNo=${board.boardNo}&boardType=${board.boardType}' class="btn-secondary">${board.boardType }삭제</a>
+						</td>
+					</tr>
+				</c:if>
 				</table>
 				<c:if test="${not empty loginMember }">
 					<div class="inputCommentBox">
@@ -71,7 +86,7 @@
 									<%-- 로그인한 회원 아이디 == 현재 댓글을 작성한 아이디 --%>
 									<c:if test="${not empty loginMember and loginMember.memberNickname eq comment.commentWriter}">
 											<a href='javascript:void(0)' onclick="delComment('${comment.commentNo}');">삭제</a>
-										<c:if test="${not empty loginMember and loginMember.memberId eq comment.commentWriter}">
+										<c:if test="${not empty loginMember and loginMember.memberNickname eq comment.commentWriter}">
 											<a href='javascript:void(0)' onclick="mdfComment(this,'${comment.commentNo}');">수정</a>
 										</c:if>
 									</c:if>
@@ -90,5 +105,14 @@
 		</main>
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
+	
+	<script>
+		function fileDown(fileName, filePath){
+			fileName = encodeURIComponent(fileName);
+			filePath = encodeURIComponent(filePath);
+			
+			location.href = "/board/fileDown.exco?fileName=" + fileName + "&filePath=" + filePath;
+		}
+	</script>
 </body>
 </html>

@@ -60,4 +60,24 @@ public class BoardDao {
 		return sqlSession.selectList("board.readCommentListByBoardNo",boardNo);
 	}
 
+	public int insertBoardFileByFile(BoardFile file) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("board.insertBoardFileByFile",file);
+	}
+
+	public int deleteBoardByBoardNo(String boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("board.deleteBoardByBoardNo",boardNo);
+	}
+
+	public int updateBoardByNewBoard(Board board) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updateBoardByNewBoard",board);
+	}
+
+	public int deleteBoardFileByBoardNo(String boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("board.deleteBoardFileByBoardNo", boardNo);
+	}
+
 }
