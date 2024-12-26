@@ -1,12 +1,21 @@
 package kr.or.iei.board.model.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.iei.board.model.dao.BoardDao;
 import kr.or.iei.board.model.vo.Board;
@@ -114,26 +123,57 @@ public class BoardService {
 	}
 
 	@Transactional // 별도메소드를 호출해도 트랜젝션 안됨.
-	public int insertBoard(Board board, ArrayList<BoardFile> fileList) {
-		// TODO Auto-generated method stub
-		//게시글 번호 생성
-		String boardNo = boardDao.createBoardNo();
-		
-		//게시글 번호 삽입
-		board.setBoardNo(boardNo);
-		int result = boardDao.insertBoard(board);
-		if(result>0) {
-			for(BoardFile file : fileList) {
-				file.setBoardNo(boardNo);
-				
-				result = boardDao.insertBoardFileByFile(file);
-				
-				if(result<1) {
-					break;
-				}
-			}
-		}
-		return result;
+	public int insertBoard(Board board, MultipartFile[] files, HttpServletRequest request) {
+        // 게시글 번호 생성
+        String boardNo = boardDao.createBoardNo();
+
+        // 게시글 번호 설정
+        board.setBoardNo(boardNo);
+
+        // 게시글 데이터 삽입
+        int result = boardDao.insertBoard(board);
+
+        if (result > 0 && files != null) {
+            // 파일 저장 및 삽입 처리
+            List<BoardFile> fileList = new ArrayList<>();
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/board/");
+                    String originalFileName = file.getOriginalFilename();
+                    String fileName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+                    String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+                    String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                    int randomNum = new Random().nextInt(10000) + 1;
+                    String filePath = fileName + "_" + today + "_" + randomNum + extension;
+
+                    // 파일 저장
+                    try {
+                        File saveFile = new File(savePath + filePath);
+                        file.transferTo(saveFile);
+
+                        // 파일 정보 생성
+                        BoardFile boardFile = new BoardFile();
+                        boardFile.setBoardNo(boardNo);
+                        boardFile.setFileName(originalFileName);
+                        boardFile.setFilePath(filePath);
+
+                        fileList.add(boardFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("파일 저장 실패: " + originalFileName, e);
+                    }
+                }
+            }
+
+            // 파일 정보 DB 삽입
+            for (BoardFile file : fileList) {
+                result = boardDao.insertBoardFileByFile(file);
+                if (result < 1) {
+                    throw new RuntimeException("파일 삽입 실패");
+                }
+            }
+        }
+        return result;
 	}
 
 	public Board viewFrm(String boardNo, String commentChk) {
@@ -184,37 +224,51 @@ public class BoardService {
 		}
 		return null;
 	}
+/*
+	1독립적인 친구) 게시글 정보 수정
+	2)서버에서 기존 파일 정보를 삭제하기 위한 조회
+	3)기존 파일 정보 삭제
+	4)업로드한 파일 정보 등록
+*/
+	public void updateBoard(Board board, String[] fileNames, MultipartFile[] addFiles, String[] delFileNos, HttpServletRequest request) {
 
-	public ArrayList<BoardFile> updateBoardByNewBoard(Board board, ArrayList<BoardFile> fileList) {
-		// TODO Auto-generated method stub
-		/*
-		 1독립적인 친구) 게시글 정보 수정(tbl_notice)
-		 2)서버에서 기존 파일 정보를 삭제하기 위한 조회
-		 3)기존 파일 정보 삭제
-		 4)업로드한 파일 정보 등록(tbl_notice_file)
-		 */
-		
-		//1) 게시글 정보 수정
-		int result = boardDao.updateBoardByNewBoard(board);
-		
-		ArrayList<BoardFile> delFileList = null;
-		if(result > 0) {
-			//2) 서버에서 기존 파일 정보를 삭제하기 위한 파일 리스트 조회
-			delFileList = (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(board.getBoardNo());
-			
-			//3) 기존 파일 정보 DB에서 삭제 처리
-			result = boardDao.deleteBoardFileByBoardNo(board.getBoardNo());
-			
-			System.out.println(fileList+"파일리스트");
-			
-			if(result>0 && fileList.size() > 0) {
-				//4) 업로드한 파일 정보 DB에 등록 처리
-				for(BoardFile insFile : fileList) {
-					boardDao.insertBoardFileByFile(insFile);
-				}
-			}
-		}
-		return delFileList;
+        // 게시글 정보 업데이트
+        boardDao.updateBoardByNewBoard(board);
+
+        // 기존 파일 처리 (필요하면 삭제 또는 유지)
+        if (delFileNos != null) {
+            for (String fileNo : delFileNos) {
+                boardDao.deleteFileById(fileNo);
+            }
+        }
+
+        // 새 파일 저장
+        if (addFiles != null) {
+            for (MultipartFile addFile : addFiles) {
+                if (!addFile.isEmpty()) {
+                    String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/board/");
+                    String originalFileName = addFile.getOriginalFilename();
+                    String fileName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+                    String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+                    String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                    int randomNum = new Random().nextInt(10000) + 1;
+                    String filePath = fileName + "_" + today + "_" + randomNum + extension;
+
+                    try {
+                        File saveFile = new File(savePath + filePath);
+                        addFile.transferTo(saveFile);
+
+                        BoardFile boardFile = new BoardFile();
+                        boardFile.setBoardNo(board.getBoardNo());
+                        boardFile.setFileName(originalFileName);
+                        boardFile.setFilePath(filePath);
+
+                        boardDao.insertBoardFileByFile(boardFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 	}
-
 }

@@ -175,7 +175,8 @@
 	parameterType="board">
 	UPDATE TBL_BOARD
 		SET BOARD_TITLE = #{boardTitle},
-			BOARD_CONTENT = #{boardContent}
+			BOARD_CONTENT = #{boardContent},
+			BOARD_TYPE = #{boardType}
 		WHERE BOARD_NO = #{boardNo}
 	</update>
 	
@@ -184,5 +185,12 @@
 	DELETE
 		FROM TBL_FILE
 		WHERE BOARD_NO = #{boardNo}
+	</delete>
+	
+	<delete id="deleteBoardFileByFileId"
+	parameterType="string">
+	DELETE
+		FROM TBL_FILE
+        WHERE file_no = #{fileNo}
 	</delete>
 </mapper>

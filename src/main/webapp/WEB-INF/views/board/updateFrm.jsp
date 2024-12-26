@@ -14,9 +14,8 @@
 		cursor: pointer;
 	}
 	.delBtn{
+		width : 50px;
 		display:inline-block;
-		height : 30px;
-		vertical-align: middle;
 	}
 </style>
 </head>
@@ -28,6 +27,7 @@
 				<div class ="page-title">${board.boardTypeNm}수정</div>
 				<form action="/board/update.exco" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="boardNo" value="${board.boardNo }">
+					<input type="hidden" name="boardType" value="${board.boardType }">
 					<table class="tbl">
 						<tr>
 							<th style="width:15%;">제목</th>
@@ -44,7 +44,9 @@
 									<c:forEach var="file" items="${board.fileList }">
 										<div class="files">
 											<span class="delFileName">${file.fileName != null ? file.fileName : '파일이 없습니다'}</span>
-											<span class="material-icons delBtn" onclick="delFile(this, '${file.fileNo}')">remove_circle</span>
+											<img alt="delete-file" src="/resources/images/button_delete_03.png" class="delBtn" onclick="delFile(this, '${file.fileNo}')">
+											<%-- <span class="material-icons delBtn" onclick="delFile(this, '${file.fileNo}')"></span> --%>
+											<input type="hidden" name="files" value="${file.fileName}">
 										</div>
 									</c:forEach>
 								</div>
@@ -53,7 +55,7 @@
 						<tr>
 							<th>추가파일</th>
 							<td>
-								<input type="file" name="addFile" multiple="multiple">
+								<input type="file" name="addFiles" multiple="multiple">
 							</td>
 						</tr>
 						<tr>
@@ -79,7 +81,7 @@
 	<script src="/resources/summernote/lang/summernote-ko-KR.js"></script>
 	<link rel="stylesheet" href="/resources/summernote/summernote-lite.css">
 	<script>
-	function delFile(obj, fileId){
+	function delFile(obj, fileNo){
 		swal({
 			title : "삭제",
 			text : "첨부파일을 삭제하시겠습니까?",
@@ -98,20 +100,20 @@
 					closeModal : true
 				}
 			}
-		}).then(function(isConfirm){
-			if(isConfirm){
-				//삭제 클릭 시, 실시간으로 삭제 처리하지 않고 '수정' 버튼 클릭 시 삭제 될 수 있도록 form 태그 내부에 hidden으로 추가
-				let inputEl = $('<input>');
-				inputEl.attr('type','hidden');
-				inputEl.attr('name','delFileId');
-				inputEl.attr('value',fileId);
-				
-				$(obj).parent().remove(); //화면에서 사라지도록
-				$('form').prepend(inputEl); //첫번 째 자식으로 추가
-				
-				 console.log("폼 제출 시 delFileId 값 확인:", $('input[name="delFileId"]').map(function() { return $(this).val(); }).get());
-			}
-		});
+		}).then(function(isConfirm) {
+	        if (isConfirm) {
+	            // 파일 삭제 확인
+	            let parentDiv = $(obj).parent(); // 현재 클릭된 버튼의 부모 div (파일 전체 컨테이너)
+	            parentDiv.remove(); // 화면에서 파일 제거
+	            
+	            // 삭제된 파일 정보를 hidden input으로 추가
+	            let inputEl = $('<input>');
+	            inputEl.attr('type', 'hidden');
+	            inputEl.attr('name', 'delFileNo'); // 삭제될 파일 No을 보낼 필드
+	            inputEl.attr('value', fileNo);
+	            $('form').prepend(inputEl); // 폼의 첫 번째 자식으로 추가
+	        }
+	    });
 	}
 	
 	//html태그를 서머노트화 하여 수정가능

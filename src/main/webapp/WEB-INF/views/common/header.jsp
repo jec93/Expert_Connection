@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <% 
 Boolean isNull = (Boolean) application.getAttribute("isNull");
-System.out.println("카테고리null값 check"+isNull);
 %>
 
 <link rel="stylesheet" href="/resources/css/test.css" />
@@ -14,7 +13,7 @@ System.out.println("카테고리null값 check"+isNull);
 
 <style>
 @media screen and (max-width: 1300px) {
-  .user-menu {
+  .member-menu {
     display: none;
   }
 } 

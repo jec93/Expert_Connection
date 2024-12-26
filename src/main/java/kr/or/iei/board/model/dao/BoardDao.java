@@ -80,4 +80,9 @@ public class BoardDao {
 		return sqlSession.delete("board.deleteBoardFileByBoardNo", boardNo);
 	}
 
+	public void deleteFileById(String fileNo) {
+		// TODO Auto-generated method stub
+		sqlSession.delete("board.deleteBoardFileByFileId",fileNo);
+	}
+
 }
