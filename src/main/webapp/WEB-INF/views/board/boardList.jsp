@@ -51,18 +51,39 @@
                   <table class="tbl">
                      <tr>
                         <th style="width:10%">번호</th>
-                        <th style="width:20%">제목</th>
-                        <th style="width:15%">작성자</th>
+                        <th style="width:25%">제목</th>
+                        <th style="width:10%">작성자</th>
                         <th style="width:15%">작성일</th>
                         <th style="width:8%">추천수</th>
-                        <th style="width:8%">아쉬워요</th>
+                        <th style="width:10%">아쉬워요</th>
                         <th style="width:8%">조회수</th>
                      </tr>
-                     <c:forEach var="board" items="${boardList }">
+                     <c:forEach var="board" items="${boardList}">
 
                      <tr>
                         <td>${board.boardNo}</td>
-                        <td><a href="/board/viewBoardFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
+                        <c:choose>
+						<c:when test="${boardType eq 6}">
+							<c:if test="${empty sessionScope.loginMember}">
+								<td>작성자만 확인 가능합니다</td>
+							</c:if>
+							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberId ne 'admin' and sessionScope.loginMember.memberNickname ne board.boardWriter}">
+								<td>작성자만 확인 가능합니다</td>
+							</c:if>
+							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberNickname eq board.boardWriter}">
+								<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
+							</c:if>
+							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberId eq 'admin'}">
+								<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
+							</c:if>
+						</c:when>
+						<c:when test="${boardType ne 6}">
+							<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
+						</c:when>
+						<c:otherwise>
+                       		<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
+						</c:otherwise>                      
+                        </c:choose>
                         <td>${board.boardWriter}</td>
                         <td>${board.boardDate}</td>
                         <td>${board.boardLike}</td>
@@ -72,11 +93,11 @@
 
                      </c:forEach>
                   </table>
-               <div class="pagination">${pageNavi}</div>
+               <div id="pageNavi">${pageNavi}</div>
                <%-- 반대로 로그인 데이터 없을때로 해둠 --%>
                <c:if test="${not empty loginMember }">
-	               <div class="btn-primary" style="width:5%" onclick='writeFrm(${boardType},"${boardTypeNm}")'>
-               			글작성
+	               <div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'>
+               			작성
                		</div>
                </c:if>
                </div>

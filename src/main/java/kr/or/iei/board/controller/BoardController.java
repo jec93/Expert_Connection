@@ -309,4 +309,34 @@ public class BoardController {
 		}
 		return "redirect:/board/list.exco?reqPage=1&boardType="+boardType+"&boardTypeNm="+boardType;
 	}
+	
+	//관리자페이지 - 1:1문의 목록 불러오기
+	@GetMapping("adminListPage.exco")
+	public String getListAdminPage(Integer reqPage, Integer boardType, String boardTypeNm, Model model) {
+		
+	    // null 체크 및 예외 처리
+	    if (reqPage == null || boardType == null || boardTypeNm == null || boardTypeNm.isEmpty()) {
+	        throw new IllegalArgumentException("요청 페이지(reqPage), 게시판 분류(boardType), 게시판 이름(boardTypeNm)는 필수입니다.");
+	    }
+
+	    int typeName;
+	    try {
+	        // boardTypeNm을 숫자로 변환
+	        typeName = Integer.parseInt(boardTypeNm);
+	    } catch (NumberFormatException e) {
+	        // 변환 실패 시 예외 던지기
+	        throw new IllegalArgumentException("게시판 이름(boardTypeNm)은 숫자여야 합니다.");
+	    }
+
+	    // BoardPageData 호출
+	    BoardPageData pd = boardservice.selectBoardList(boardType, reqPage, boardTypeNm);
+
+	    // Model에 데이터 추가
+	    model.addAttribute("boardList", pd.getList());
+	    model.addAttribute("boardTypeNm", BoardType.type[typeName]); // 숫자로 변환된 값을 사용
+	    model.addAttribute("pageNavi", pd.getPageNavi());
+	    model.addAttribute("boardType", boardType);
+
+	    return "member/mypage_p";
+	}
 }

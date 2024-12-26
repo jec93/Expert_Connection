@@ -95,7 +95,7 @@ public class MemberController {
 	//마이페이지로 이동
 	@GetMapping("mypageFrm.exco")
 	public String mypageFrm() {
-		return "member/mypage";
+		return "member/mypage_p";
 	}
 	//회원정보수정 페이지로 이동
 	@GetMapping("updateFrm.exco")

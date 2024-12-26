@@ -64,7 +64,12 @@ System.out.println("카테고리null값 check"+isNull);
                           <a href=""><img id="icon_alarm" src="/resources/images/icon_alarm.png">알람</a>
                        </li>
                        <li class="mypage_box">
-                          <a href="/member/mypageFrm.exco"><img id="icon_mypage" src="/resources/images/icon_mypage.png">마이페이지</a>
+                    	<c:if test="${sessionScope.loginMember.memberId ne 'admin'}">
+                       	<a href="/member/mypageFrm.exco"><img id="icon_mypage" src="/resources/images/icon_mypage.png">마이페이지</a>
+                       	</c:if>
+                       	<c:if test="${sessionScope.loginMember.memberId eq 'admin'}">
+                       	<a href="/board/adminListPage.exco?reqPage=1&boardType=6&boardTypeNm=6"><img id="icon_mypage" src="/resources/images/icon_mypage.png">관리자페이지</a>
+                       	</c:if>
                       </li>
                        <li class="logout_box">
                           <a href="/member/logout.exco"><img id="icon_logout" src="/resources/images/icon_logout.png">로그아웃</a>

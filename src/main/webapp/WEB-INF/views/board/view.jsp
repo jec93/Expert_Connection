@@ -50,7 +50,7 @@
 					<tr>
 						<td colspan="6">
 							<a href='/board/updateFrm.exco?boardNo=${board.boardNo}' class="btn-primary">수정</a>
-							<a href='/board/delete.exco?boardNo=${board.boardNo}&boardType=${board.boardType}' class="btn-secondary">${board.boardType }삭제</a>
+							<a href='/board/delete.exco?boardNo=${board.boardNo}&boardType=${board.boardType}' class="btn-secondary">삭제</a>
 						</td>
 					</tr>
 				</c:if>
@@ -60,7 +60,7 @@
 						<form name="insertComment" action="/board/insertComment">
 							<input type="hidden" name="commentRef" value="${board.boardNo}"> <%-- 현재 게시글 번호 --%>
 							<input type="hidden" name="commentWriter" value="${loginMember.memberNo}"> <%-- 현재 댓글 작성자(로그인한 회원) --%>
-							<ul>
+							<ul class="comment-write">
 								<li>
 									<div class="input-item">
 										<textarea name="commentContent"></textarea>
@@ -85,9 +85,9 @@
 									<span>${comment.commentDate}</span>
 									<%-- 로그인한 회원 아이디 == 현재 댓글을 작성한 아이디 --%>
 									<c:if test="${not empty loginMember and loginMember.memberNickname eq comment.commentWriter}">
-											<a href='javascript:void(0)' onclick="delComment('${comment.commentNo}');">삭제</a>
+										<a href='javascript:void(0)' onclick="delComment('${comment.commentNo}');">삭제</a>
 										<c:if test="${not empty loginMember and loginMember.memberNickname eq comment.commentWriter}">
-											<a href='javascript:void(0)' onclick="mdfComment(this,'${comment.commentNo}');">수정</a>
+										<a href='javascript:void(0)' onclick="mdfComment(this,'${comment.commentNo}');">수정</a>
 										</c:if>
 									</c:if>
 								</p>

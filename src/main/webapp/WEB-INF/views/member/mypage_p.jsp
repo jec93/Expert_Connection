@@ -8,119 +8,6 @@
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
-<style>
-.circle-button {
-	width: 90px;
-	height: 90px;
-	border-radius: 50%;
-	color: #fff;
-	font-size: 12px;
-	font-weight: bold;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	text-decoration: none;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
-	margin: 10px;
-	border : 1px solid black;
-	margin-left : 350px;
-	margin-top : 70px;
-}
-.memberNickname{
-	margin-left : 480px;
-	margin-top : -100px;
-	
-}
-.memberEmail{
-	margin-left : 480px;
-}
-.update{
-	margin-left : 650px;
-	margin-top : -50px;
-}
-.update-button{
-	background-color : white;
-	width : 80px;
-}
-.update-button:hover{
-	background-color : gray;
-}
-.first-group{
-	margin-left : 350px;
-	margin-top : 120px;
-}
-.first-title{
-	font-weight : bold;
-	font-size : 18px;
-	margin-bottom : 10px;
-}
-.usage-detail{
-	display : inline-block;
-}
-.save-expert{
-	display : inline-block;
-	margin-left : 80px;
-}
-.review{
-	display : inline-block;
-	margin-left : 80px;
-}
-.second-group{
-	margin-left : 350px;
-	margin-top : 70px;
-}
-.second-title{
-	font-weight : bold;
-	font-size : 18px;
-	margin-bottom : 10px;
-}
-.mypage-board{
-	display : inline-block;
-}
-.mypage-comment{
-	display : inline-block;
-	margin-left : 80px;
-}
-.third-group{
-	margin-left : 350px;
-	margin-top : 70px;
-}
-.third-title{
-	font-weight : bold;
-	font-size : 18px;
-	margin-bottom : 10px;
-}
-.chat-history{
-	display : inline-block;
-}
-.fourth-group{
-	margin-left : 350px;
-	margin-top : 70px;
-}
-.fourth-title{
-	font-weight : bold;
-	font-size : 18px;
-	margin-bottom : 10px;
-}
-.notice{
-	display : inline-block;
-}
-.FAQ{
-	display : inline-block;
-	margin-left : 80px;
-}
-.inquiry{
-	display : inline-block;
-	margin-left : 80px;
-}
-.site-introduce{
-	display : inline-block;
-	margin-left : 80px;
-}
-</style>
 </head>
 <body>
 	<div class="wrap">
@@ -135,52 +22,54 @@
 			<div class="mypage">
 				<input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
 	
-				<div class="button-group-container">
-					<div class="button-group">
-						<a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button"><span>프로필 사진</span></a>
+				<div class="mypage-memberProfile">
+					<div class="memberInfo-brife">
+						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile"><span>프로필 사진</span></a>
+						<div class="mypage-memberInfo">
+							<div id="mypage-myNickname">
+								<h3>${loginMember.memberNickname}님</h3>
+									<img id="mystate" src="/resources/logo/expert_connection_logo_03.png">
+									<a href="/member/updateFrm.exco" id="memberInfo-update">정보수정</a>
+									<a href="/member/deleteFrm.exco" id="memberInfo-update">회원탈퇴</a>
+							</div>
+							<span class="memberEmail">${loginMember.memberEmail}</span>
+						</div>
 					</div>
-					<div>
-						<h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
-						<span class="memberEmail">${loginMember.memberEmail}</span>
-					</div>
-					<div class="update">
-					<button class="update-button"><a href="/member/updateFrm.exco">정보수정</a></button>
-					<button class="update-button"><a href="/member/deleteFrm.exco">회원탈퇴</a></button>
-					</div>
 				</div>
 				
-				<div class="first-group">
-					<div class="first-title">서비스 이용내역</div>
-						<div class="first-children">
-							<a href="#" class="mypage_link">사용내역💰</a>
-							<a href="#" class="mypage_link">찜한 전문가</a>
-							<a href="#" class="mypage_link">리뷰</a>
-						</div>
+				<div class="mypage-first-group">
+					<h3 class="mypage-group-title">서비스 이용내역</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="#">사용내역💰</a></li>
+							<li><a id="mypage_link" href="#">찜한 전문가</a></li>
+							<li><a id="mypage_link" href="#">리뷰</a></li>
+						</ul>
 				</div>
 				
-				<div class="second-group">
-					<div class="second-title">채팅</div>
-						<div class="second-children">
-							<a href="#" class="mypage_link">채팅 내역</a>
-						</div>
+				<div class="mypage-group">
+					<h3 class="mypage-group-title">채팅</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="#">채팅 내역</a></li>
+							<li><a id="mypage_link" href="#">자동응답 설정</a></li>
+						</ul>
 				</div>
 				
-				<div class="third-group">
-					<div class="third-title">커뮤니티</div>
-						<div class="third-children">
-							<a href="#" class="mypage_link">커뮤니티 작성글</a>
-							<a href="#" class="mypage_link">댓글</a>
-						</div>
+				<div class="mypage-group">
+					<h3 class="mypage-group-title">커뮤니티</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="#">작성한 게시글 확인</a></li>
+							<li><a id="mypage_link" href="#">작성한 댓글 확인</a></li>
+						</ul>
 				</div>
 				
-				<div class="fourth-group">
-					<div class="fourth-title">가이드</div>
-						<div class="fourth-children">
-							<a href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4" class="mypage_link">공지사항</a>
-							<a href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5" class="mypage_link">FAQ</a>
-							<a href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a>
-							<a href="/cs/introduceMember.exco"  class="mypage_link">사이트 이용 가이드</a>
-						</div>
+				<div class="mypage-last-group">
+					<h3 class="mypage-group-title">가이드</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a></li>
+							<li><a id="mypage_link" href="/cs/introduceMember.exco">사이트 이용 가이드</a></li>
+						</ul>
 				</div>
 			</div>
 			</c:when>
@@ -190,108 +79,131 @@
 			<div class="mypage">
 				<input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
 	
-				<div class="button-group-container">
-					<div class="button-group">
-						<a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button"><span>프로필 사진</span></a>
+				<div class="mypage-memberProfile">
+					<div class="memberInfo-brife">
+						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile"><span>프로필 사진</span></a>
+						<div class="mypage-memberInfo">
+							<div id="mypage-myNickname">
+								<h3>${loginMember.memberNickname} 전문가님</h3>
+								<%-- <c:if test="${loginMember.expertGrade eq 1}">
+								<img id="mystate" src="/resources/logo/expert_type_01.png">
+								</c:if>
+								<c:if test="${loginMember.expertGrade eq 2}">
+								<img id="mystate" src="/resources/logo/expert_type_02.png">
+								</c:if>
+								<c:if test="${loginMember.expertGrade eq 3}"> --%>
+								<img id="mystate" src="/resources/images/expert_type_03.png">
+								<%-- </c:if> --%>
+								<div class="mypage-update">
+									<a href="/member/updateFrm.exco" id="memberInfo-update">정보수정</a>
+									<a href="/member/deleteFrm.exco" id="memberInfo-update">회원탈퇴</a>
+								</div>
+							</div>
+							<span class="memberEmail">${loginMember.memberEmail}</span>
+							<a href="#" id="own-expertPage">전문가 상세페이지로 이동</a>
+						</div>
 					</div>
-					<div>
-						<h3 class="memberNickname">${loginMember.memberNickname} 전문가님</h3>
-						
-						<span class="memberEmail">${loginMember.memberEmail}</span>
-					</div>
-					<div class="update">
-					<button class="update-button"><a href="/member/updateFrm.exco">정보수정</a></button>
-					<button class="update-button"><a href="/member/deleteFrm.exco">회원탈퇴</a></button>
-					</div>
 				</div>
 				
-				<div class="first-group">
-					<div class="first-title">서비스 이용내역</div>
-						<div class="first-children">
-							<a href="#" class="mypage_link">사용내역💰</a>
-							<a href="#" class="mypage_link">찜한 전문가</a>
-							<a href="#" class="mypage_link">리뷰</a>
-						</div>
+				<div class="mypage-first-group">
+					<h3 class="mypage-group-title">서비스 이용내역</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="#">사용내역💰</a></li>
+						</ul>
 				</div>
 				
-				<div class="second-group">
-					<div class="second-title">채팅</div>
-						<div class="second-children">
-							<a href="#" class="mypage_link">채팅 내역</a>
-							
-						</div>
+				<div class="mypage-group">
+					<h3 class="mypage-group-title">채팅</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="#">채팅 내역</a></li>
+							<li><a id="mypage_link" href="#">자동응답 설정</a></li>
+						</ul>
 				</div>
 				
-				<div class="third-group">
-					<div class="third-title">커뮤니티</div>
-						<div class="third-children">
-							<a href="#" class="mypage_link">커뮤니티 작성글</a>
-							<a href="#" class="mypage_link">댓글</a>
-						</div>
+				<div class="mypage-group">
+					<h3 class="mypage-group-title">커뮤니티</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="#">작성한 게시글 확인</a></li>
+							<li><a id="mypage_link" href="#">작성한 댓글 확인</a></li>
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=1&boardTypeNm=1">전문가 게시판</a></li>
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=2&boardTypeNm=2">전문가 노하우</a></li>
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=3&boardTypeNm=3">그룹레슨</a></li>
+						</ul>
 				</div>
 				
-				<div class="fourth-group">
-					<div class="fourth-title">가이드</div>
-						<div class="fourth-children">
-							<a href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4" class="mypage_link">공지사항</a>
-							<a href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5" class="mypage_link">FAQ</a>
-							<a href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a>
-							<a href="/cs/introduceExpert.exco"  class="mypage_link">사이트 이용 가이드</a>
-						</div>
+				<div class="mypage-last-group">
+					<h3 class="mypage-group-title">가이드</h3>
+						<ul class="mypage_link_box">
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
+							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a></li>
+							<li><a id="mypage_link" href="/cs/introduceExpert.exco">사이트 이용 가이드</a></li>
+						</ul>
 				</div>
 			</div>
 			</c:when>
 			
+			<%-- 관리자 마이페이지 --%>
 			<c:when test="${not empty loginMember && (loginMember.memberType == 0)}">
 			<div class="mypage">
 				<input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
 
-				<div class="button-group-container">
-					<div class="button-group">
-						<a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button"><span>프로필 사진</span></a>
+				<div class="mypage-adminProfile">
+					<div class="memberInfo-brife">
+						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile"><span>프로필 사진</span></a>
+						<div class="mypage-memberInfo">
+							<div id="mypage-myNickname">
+								<h3>${loginMember.memberNickname}님</h3>
+								<img id="mystate" src="/resources/logo/expert_connection_logo_02.png">
+							</div>
+							<span class="memberEmail">${loginMember.memberEmail}</span>
+						</div>
 					</div>
+					<div class="adminPage-group">
+						<div class="adminPage_management">
+							<h4 class="mypage-group-title">회원관리</h4>
+							<div class="adminPage_link_box">
+							<ul class="adminPage_link_box">
+								<li><a id="adminPage_link" href="#">신고내역 관리</a></li>
+								<li><a id="adminPage_link" href="#">전문가 승인 검토</a></li>
+							</ul>
+							</div>
+						</div>
+						<div class="adminPage_management">
+							<h4 class="mypage-group-title">사이트 관리</h4>
+							<ul class="adminPage_link_box">
+								<li><a id="adminPage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항 관리</a></li>
+								<li><a id="adminPage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ 관리</a></li>
+								<li><a id="adminPage_link" href="#">카테고리 관리</a></li>
+								<li><a id="adminPage_link" href="#">커뮤니티 관리</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="mypage-manage-box">
+						<h4 class="mypage-group-title">1:1문의 관리</h4>
 					<div>
-						<div class="mypage-userInfo">
-							<h3 class="">${loginMember.memberNickname}님</h3>
-							<img id="expertType" src="/resources/logo/expert_connection_logo_02.png">
-						</div>
-						<span class="memberEmail">${loginMember.memberEmail}</span>
+						<table class="tbl">
+	                     <tr>
+	                        <th style="width:10%">번호</th>
+	                        <th style="width:30%">제목</th>
+	                        <th style="width:15%">작성자</th>
+	                        <th style="width:15%">작성일</th>
+	                        <th style="width:10%">조회수</th>
+	                     </tr>
+	                     <c:forEach var="board" items="${boardList}">
+	
+	                     <tr>
+	                        <td>${board.boardNo}</td>
+	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
+	                        <td>${board.boardWriter}</td>
+	                        <td>${board.boardDate}</td>
+	                        <td>${board.boardCount}</td>
+	                     </tr>
+                     </c:forEach>
+                  </table>
+               <div id="pageNavi">${pageNavi}</div>
 					</div>
-					
-				</div>
-				
-				<div class="first-group">
-					<div class="first-title">서비스 이용내역</div>
-						<div class="first-children">
-							<a href="#" class="mypage_link">사용내역💰</a>
-							<a href="#" class="mypage_link">찜한 전문가</a>
-							<a href="#" class="mypage_link">리뷰</a>
-						</div>
-				</div>
-				
-				<div class="second-group">
-					<div class="second-title">채팅</div>
-						<div class="second-children">
-							<a href="#" class="mypage_link">커뮤니티 작성글</a>
-							<a href="#" class="mypage_link">댓글</a>
-						</div>
-				</div>
-				
-				<div class="third-group">
-					<div class="third-title">커뮤니티</div>
-						<div class="third-children">
-							<a href="#" class="mypage_link">채팅 내역</a>
-						</div>
-				</div>
-				
-				<div class="fourth-group">
-					<div class="fourth-title">가이드</div>
-						<div class="fourth-children">
-							<a href="#" class="mypage_link">공지사항</a>
-							<a href="#" class="mypage_link">FAQ</a>
-							<a href="#" class="mypage_link">1:1 문의</a>
-							<a href="#" class="mypage_link">사이트 소개</a>
-						</div>
 				</div>
 			</div>
 			</c:when>
@@ -301,7 +213,6 @@
 			</c:otherwise>
 			
 			</c:choose>
-			
 			</section>
 		</main>
 				
