@@ -70,21 +70,27 @@ public class BoardService {
 				int pageNo = ((reqPage-1) / pageNaviSize) * pageNaviSize + 1;
 				
 				//페이지 네비게이션 HTML
-				String pageNavi = "";
+				String pageNavi = "<ul class = 'pagination circle-style'>";
 				
 				//이전버튼
 				//시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
 				if(pageNo != 1) {
-					pageNavi +="<a href='/board/list.exco?reqPage=" + (pageNo - 1) + "'>이전</a>";
+					pageNavi += "<li>";
+					pageNavi += "<a class='page-item' href='/board/list.exco?reqPage=" + (pageNo - 1) + "'>이전</a>";
+					pageNavi += "<span class='material-icons'>chevron_left</span></a>";
+					pageNavi += "</li>";
 				}
 				
 				//페이지 네비게이션
 				for(int i=0; i<pageNaviSize; i++) {
+					pageNavi += "<li>";
+					
 					if(pageNo == reqPage) {
-						pageNavi += "<span>" + pageNo + "</span>";
+						pageNavi += "<a class='page-item active-page' href='/board/list.exco?reqPage="+pageNo+"&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>";
 					} else {
-						pageNavi += "<a href='/board/list.exco?reqPage="+ pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>"+pageNo + "</a>";
+						pageNavi += "<a class='page-item' href='/board/list.exco?reqPage="+ pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>"+pageNo + "</a>";
 					}
+					pageNavi += pageNo + "</a></li>";
 					
 					pageNo++;
 					
@@ -95,8 +101,12 @@ public class BoardService {
 				
 				//다음버튼
 				if(pageNo <= totPage) {
-					pageNavi += "<a href='/board/list.exco?reqPage=" + pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>다음</a>";
+					pageNavi += "<li>";
+					pageNavi += "<a class = 'page-item' href='/board/list.exco?reqPage=" + pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>";
+					pageNavi += "<span class='material-icons'>chevron_right</span></a>";
+					pageNavi += "</li>";
 				}
+				pageNavi += "</ul>";
 				
 				BoardPageData pd = new BoardPageData(list, pageNavi);
 						

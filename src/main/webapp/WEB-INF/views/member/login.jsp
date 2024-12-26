@@ -13,8 +13,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding-top : 300px;
-	padding-left : 150px;
+	padding-left : 200px;
 }
 
 .login-wrap {
@@ -71,12 +70,12 @@
 input[type="checkbox"] {
 	margin: 0; /* 체크박스 여백 초기화 */
 }
-.img1{
+.login-img1{
   display: flex;
   justify-content: center;
   align-items: center; 
 }
-.img{
+.login-img{
 	width : 400px;
 	height : 130px;
 	display: flex;
@@ -136,7 +135,7 @@ input[type="text"] {
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
-<div class="img1"><img class="img" src="/resources/logo/expert_connection_logo_h_01.png" alt="logo image"></div>
+<div class="login-img1"><a href="/"><img class="login-img" src="/resources/logo/expert_connection_logo_h_01.png" alt="logo image"></a></div>
 	<main class="content login-container">
 		<section class="section login-wrap">
 				<form action="login.exco" method="post" autocomplete="off"
