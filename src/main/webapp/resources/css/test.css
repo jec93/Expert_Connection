@@ -1084,16 +1084,23 @@ opacity: 0.6; */
 	padding-left : 20px;
 	margin-bottom : 20px;
 }
-.usage-list > li {
+.usage-list > li , .usage-sublist  > li {
 	list-style-type: decimal;
 }
-.usage-sub-list {
+.usage-sublist, .deomstration-list {
 	font-size : 14px;
 	padding-left : 20px;
+	/* list-style-position : inside; */
 }
-.usage-sub-list > li {
-	list-style-type: decimal;
+.demostration-sublist > li , .demostration-example > li{
+	font-size : 14px;
+	margin-left : 20px;
+	list-style-type : disc;
 }
+/* .usage-sublist > li {
+	list-style-position : inside;
+}
+ */
 /* mypage_p.jsp 마이페이지 */
 .mypage_link {
 	display : inline-block;
