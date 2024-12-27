@@ -85,4 +85,19 @@ public class BoardDao {
 		sqlSession.delete("board.deleteBoardFileByFileId",fileNo);
 	}
 
+	public int insertCommentByComment(BoardComment comment) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("board.insertCommentByComment",comment);
+	}
+
+	public int deleteCommentByCommentNo(String commentNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("board.deleteCommentByCommentNo", commentNo);
+	}
+
+	public int updateCommentByComment(BoardComment comment) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updateCommentByComment",comment);
+	}
+
 }
