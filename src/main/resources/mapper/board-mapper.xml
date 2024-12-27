@@ -230,4 +230,94 @@
 		SET COMMENT_CONTENT = #{commentContent}
 		WHERE COMMENT_NO = #{commentNo}
 	</update>
+	
+	<!-- 관리자페이지 게시판 구분 없이 모든 게시글 조회 -->
+	<select id="selectAllBoardList"
+			parameterType = "hashmap"
+			resultType = "board">
+	SELECT BOARD_NO AS BOARDNO,
+        BOARD_TITLE AS BOARDTITLE,
+        B.MEMBER_NO AS MEMBERNO,
+        B.BOARD_TYPE AS BOARDTYPE,
+        NICK.MEMBER_NICKNAME AS BOARDWRITER,
+        B.BOARD_DATE AS BOARDDATE,
+        B.BOARD_COUNT AS BOARDCOUNT,
+        REPO.REPORT AS REPORT
+	 FROM (
+	        SELECT ROWNUM RNUM, B.*
+	        FROM
+	            (
+	                SELECT B.*
+	                FROM TBL_BOARD B
+	                ORDER BY BOARD_NO DESC
+	            )B
+	        ) B
+	 LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+	      FROM  (
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	            )W)NICK
+	      ON B.MEMBER_NO = NICK.MEMBER_NO
+	 LEFT JOIN (SELECT R.REPORT
+	            FROM (
+	                SELECT * FROM TBL_BOARD_REACT
+	                )R)REPO
+	      ON BOARD_NO = BOARD_NO
+	 WHERE RNUM BETWEEN #{start} AND #{end}
+	    ORDER BY REPO.REPORT DESC
+	</select>
+	
+	<!-- 관리자페이지 게시판 구분 없이 모든 게시글 갯수 조회 -->
+	<select id="selectAllBoardCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_BOARD
+	</select>
+	
+	<!-- 관리자페이지 모든 댓글 조회 -->
+	<select id="selectAllCommentList"
+			parameterType = "hashmap"
+			resultType = "boardComment">
+	SELECT COMMENT_NO AS COMMENTNO,
+        C.MEMBER_NO AS MEMBERNO,
+        NICK.MEMBER_NICKNAME AS COMMENTWRITER,
+        COMMENT_CONTENT AS COMMENTCONTENT,
+        COMMENT_DATE AS COMMENTDATE,
+        REPO.REPORT AS REPORT
+	FROM (
+	        SELECT ROWNUM RNUM, C.*
+	        FROM
+	            (
+	                SELECT C.*
+	                FROM TBL_COMMENT C
+	                ORDER BY COMMENT_NO DESC
+	            )C
+	        ) C
+	 LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+	      FROM  (
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	            )W)NICK
+	      ON C.BOARD_NO = NICK.MEMBER_NO
+	 LEFT JOIN (SELECT R.REPORT
+	            FROM (
+	                SELECT * FROM TBL_COMMENT_REACT
+	                )R)REPO
+	      ON COMMENT_NO = COMMENT_NO
+	 WHERE RNUM BETWEEN 1 AND 10
+	    ORDER BY REPO.REPORT DESC
+	</select>
+	
+	<!-- 관리자페이지 모든 댓글 갯수 조회 -->
+	<select id="selectAllCommentCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_COMMENT
+	</select>
 </mapper>

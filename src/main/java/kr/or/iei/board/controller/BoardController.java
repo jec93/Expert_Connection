@@ -34,6 +34,7 @@ import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.board.model.vo.BoardPageData;
 import kr.or.iei.board.model.vo.BoardType;
+import kr.or.iei.board.model.vo.CommentPageData;
 
 @Controller("boardController")
 @RequestMapping("/board/")
@@ -334,4 +335,35 @@ public class BoardController {
     		response.getWriter().print("0");
     	}
     }
-}
+    
+  //관리자페이지 - 커뮤니티 관리(게시판 구별 없이 게시글 전부 불러오기)
+  	@GetMapping("adminManageList.exco")
+  	public String getManageListAdminPage(Integer reqPage, Integer boardType, Model model) {		
+  		
+  	    // BoardPageData 호출
+  	    BoardPageData pd = boardservice.selectAllBoardList(reqPage);
+
+  	    // Model에 데이터 추가
+  	    model.addAttribute("boardList", pd.getList());
+  	   // model.addAttribute("boardTypeNm", boardTypeNm); // 숫자로 변환된 값을 사용
+  	    model.addAttribute("pageNavi", pd.getPageNavi());
+  		model.addAttribute("boardType", boardType);
+  		
+  		//System.out.println(pd.getList());
+  		
+  	    return "admin/communityManage";
+  	}
+  	
+  	//관리자페이지 - 커뮤니티관리(모든 댓글 불러오기)
+  	@GetMapping("adminManageComment.exco")
+  	public String getManageCommentList(Integer reqPage, Model model) {
+  		
+  		CommentPageData pd = boardservice.selectAllCommentList(reqPage);
+  		
+  		model.addAttribute("commentList", pd.getList());
+  		model.addAttribute("pageNavi", pd.getPageNavi());
+  		
+  		return "admin/communityManage";
+  	}
+  	
+  }

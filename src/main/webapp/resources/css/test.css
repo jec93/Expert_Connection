@@ -5,7 +5,7 @@
 --main3: #34805C;
 --main4: #7CBBAD;
 --main5: #beeac0;
---main6: #beeae5;
+/* --main6: #beeae5; */
 /*box-bg*/
 --box-bg: #ffffff;
 /*gray*/
@@ -1228,4 +1228,19 @@ section.section {
 #adminPage_link:hover {
 	background-color : var(--main4);
 	color : var(--gray8);
+}
+
+
+/* 사이트 관리 페이지 */
+.manage-title {
+	color : var(--main2);
+	font-weight : bold;
+	text-align: center;
+ 	font-family: ns-b;
+  	font-size: 18px;
+  	margin : 20px auto;
+}
+.community_manage_select_box {
+	justify-content : start;
+	margin : 5px auto; 
 }

@@ -174,8 +174,9 @@
 							<ul class="adminPage_link_box">
 								<li><a id="adminPage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항 관리</a></li>
 								<li><a id="adminPage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ 관리</a></li>
+								<li><a id="adminPage_link" href="/board/adminManageList.exco?reqPage=1&boardType=${board.boardType}&searchName=">커뮤니티 관리</a></li>
 								<li><a id="adminPage_link" href="#">카테고리 관리</a></li>
-								<li><a id="adminPage_link" href="#">커뮤니티 관리</a></li>
+								<li><a id="adminPage_link" href="/admin/reportManageFrm.exco">신고항목 관리</a></li>								
 							</ul>
 						</div>
 					</div>
@@ -185,14 +186,13 @@
 					<div>
 						<table class="tbl">
 	                     <tr>
-	                        <th style="width:10%">번호</th>
+	                        <th style="width:8%">번호</th>
 	                        <th style="width:30%">제목</th>
 	                        <th style="width:15%">작성자</th>
 	                        <th style="width:15%">작성일</th>
 	                        <th style="width:10%">조회수</th>
 	                     </tr>
 	                     <c:forEach var="board" items="${boardList}">
-	
 	                     <tr>
 	                        <td>${board.boardNo}</td>
 	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>

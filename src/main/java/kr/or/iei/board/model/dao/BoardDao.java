@@ -100,4 +100,23 @@ public class BoardDao {
 		return sqlSession.update("board.updateCommentByComment",comment);
 	}
 
+	//관리자페이지 - 게시판 분류 없이 모든 게시글 조회
+	public List<Board> selectAllboardList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("board.selectAllBoardList", map);
+	}
+	
+	//관리자페이지 - 게시판 분류 없이 모든 게시글 갯수 조회
+	public int selectAllBoardCount() {
+		return sqlSession.selectOne("board.selectAllBoardCount");
+	}
+
+	//관리자페이지 - 모든 댓글 조회
+	public List<BoardComment> selectAllCommentList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("board.selectAllCommentList", map);
+	}
+	
+	//관리자페이지 - 모든 댓글 갯수 조회
+	public int selectAllCommentCount() {
+		return sqlSession.selectOne("board.selectAllCommentCount");
+	}
 }
