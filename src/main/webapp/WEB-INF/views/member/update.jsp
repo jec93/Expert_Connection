@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -75,6 +76,20 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 	transition: background-color 0.3s;
 }
 .update-btn-primary:hover{
+	background-color : #2f5233;
+}
+.update-btn-primary-chk {
+	width : 140px;
+	background-color:#34805C;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+.update-btn-primary-chk:hover{
 	background-color : #2f5233;
 }
 </style>
@@ -165,6 +180,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 						</div>
 						<div class="update-input-item">
 							<input type="email" id="memberEmail" name="memberEmail" value="${loginMember.memberEmail}" class="update-component">
+							<button type="button" id="mailChkBtn" class="update-btn-primary">본인인증</button>
 						</div>
 						<p id="emailMessage" class="input-msg"></p>
 					</div>
@@ -173,16 +189,41 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 							<label for="memberEmailCerti">이메일 인증</label>
 						</div>
 						<div class="update-input-item">
-							<input type="text" name="memberEmailCerti" placeholder="이메일 인증코드 입력" class="update-component"><br>
+							<input type="text" name="memberEmailCerti" id="memberEmailCerti" placeholder="이메일 인증코드 입력" class="update-component" maxlength="6"><br>
+							<div>
+								<button type="button" id="mailChkWarn" class="update-btn-primary-chk">인증번호 확인</button>
+							</div>
 						</div>
+						<div id="mailChkMessage" class="input-msg"></div>
 					</div>	
 					<div class="update-input-wrap">
 						<label for="memberGender" class="update-gender">성별</label>
 						<div class="update-input-title" >
-							  <input type="radio" name="memberGender" value="0" value="${loginMember.memberGender}">남자
-							  <input type="radio" name="memberGender" value="1" value="${loginMember.memberGender}">여자
-							  <input type="radio" name="memberGender" value="2" value="${loginMember.memberGender}">비공개
-						</div>
+						<c:choose>
+					    <c:when test="${loginMember.memberGender == 0}">
+					      <input type="radio" name="memberGender" value="0" checked>남자
+					    </c:when>
+					    <c:otherwise>
+					      <input type="radio" name="memberGender" value="0">남자
+					    </c:otherwise>
+					  </c:choose>
+					  <c:choose>
+					    <c:when test="${loginMember.memberGender == 1}">
+					      <input type="radio" name="memberGender" value="1" checked>여자
+					    </c:when>
+					    <c:otherwise>
+					      <input type="radio" name="memberGender" value="1">여자
+					    </c:otherwise>
+					  </c:choose>
+					  <c:choose>
+					    <c:when test="${loginMember.memberGender == 2}">
+					      <input type="radio" name="memberGender" value="2" checked>비공개
+					    </c:when>
+					    <c:otherwise>
+					      <input type="radio" name="memberGender" value="2">비공개
+					    </c:otherwise>
+					  </c:choose>
+					    </div>
 					</div>
 					<div class="update-button-box">
 						<button type="submit" class="update-btn-primary lg">정보수정</button>
@@ -193,6 +234,42 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 	<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
 	<script>
+	$(document).ready(function() {
+	    let sentCode = '';  // 서버에서 받은 인증번호
+
+	    // 본인 인증 버튼 클릭 시
+	    $('#mailChkBtn').click(function() {
+	        const email = $('#memberEmail').val(); // 이메일 주소값 얻어오기
+
+	        // 이메일 입력값이 없으면 경고
+	        if (!email) {
+	            $('#emailMessage').text('이메일을 입력해주세요.').css('color', 'red');
+	            return;
+	        }
+
+	        // 이메일 유효성 검사
+	        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+	        if (!emailPattern.test(email)) {
+	            $('#emailMessage').text('유효한 이메일 주소를 입력해주세요.').css('color', 'red');
+	            return;
+	        }
+
+	        // 이메일을 통한 인증번호 요청
+	        $.ajax({
+	            type: 'GET',
+	            url: '/member/mailCheck.exco',
+	            data: { email: email },
+	            success: function(response) {
+	                sentCode = response;  // 서버에서 받은 인증번호 저장
+	                alert('인증번호가 전송되었습니다.');
+	                $('#memberEmailCerti').attr('disabled', false);  // 인증코드 입력란 활성화
+	                $('#mailChkWarn').attr('disabled', false);  // 인증번호 확인 버튼 활성화
+	            },
+	            error: function() {
+	                alert('인증번호 전송 실패');
+	            }
+	        });
+	    });
 	const checkObj = {
 		"nickDuplChk" : false,
 		"memberPw" : false,

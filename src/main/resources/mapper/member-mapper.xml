@@ -103,4 +103,26 @@
 		   where member_id = #{memberId}
   </update>
  
+  <!-- 아이디 찾기 -->
+  <select id="searchMemberId" parameterType="map" resultType="string">
+  		   select member_id
+  		   from tbl_exco
+  		   where member_phone = #{memberPhone}
+  		   and   member_email = #{memberEmail}
+  </select>
+  
+  <!-- 비밀번호 찾기 -->
+  <select id="searchMemberPw" parameterType="map" resultType="string">
+  		   select member_pw
+  		   from tbl_exco
+  		   where member_id = #{memberId}
+  		   and   member_email = #{memberEmail}
+  </select>
+  
+  <!-- 비밀번호 업데이트 -->
+  <update id="updateMemberPw" parameterType="map">
+          update tbl_exco
+          SET member_pw = #{hashedPassword}
+          WHERE member_id = #{memberId}
+  </update>
 </mapper>

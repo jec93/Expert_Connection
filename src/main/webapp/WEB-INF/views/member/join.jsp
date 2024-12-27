@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -79,7 +80,20 @@ button:hover {
 .join-btn-primary:hover {
 	background-color : #2f5233;
 }
-
+.join-btn-primary-chk{
+	width : 135px;
+	background-color: #34805C;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+.join-btn-primary-chk:hover {
+	background-color : #2f5233;
+}
 </style>
 </head>
 
@@ -140,8 +154,11 @@ button:hover {
 								style="width: 50%; display: inline;" class="join-component">
 								
 							<input type="text" name="memberAddr" id="memberAddr" maxlength="40"
-								placeholder="기본 주소를 입력하세요" required class="join-component">		
-													
+								placeholder="기본 주소를 입력하세요" required class="join-component">
+							<c:if test="${memberAddr != null}">
+								<input type="text" name="memberAddr" id="memberAddr" maxlength="40"
+								placeholder="상세 주소를 입력하세요" required class="join-component">
+							</c:if>						
 							<button type="button" id="zipp_btn" class="join-btn-primary"
 								onclick="execDaumPostcode()" >도로명주소 찾기</button>				
 						</div>
@@ -170,6 +187,7 @@ button:hover {
 						</div>
 						<div class="join-input-item">
 							<input type="email" id="memberEmail" name="memberEmail" class="join-component" placeholder="user@example.com">
+							<button type="button" id="mailChkBtn" class="join-btn-primary">본인인증</button>
 						</div>
 						<p id="emailMessage" class="input-msg"></p>
 					</div>
@@ -178,8 +196,12 @@ button:hover {
 							<label for="memberEmailCerti">이메일 인증</label>
 						</div>
 						<div class="join-input-item">
-							<input type="text" name="memberEmailCerti" placeholder="이메일 인증코드 입력" class="join-component"><br>
+							<input type="text" name="memberEmailCerti" id="memberEmailCerti" placeholder="이메일 인증코드 입력" class="join-component" maxlength="6"><br>
+							<div>
+								<button type="button" id="mailChkWarn" class="join-btn-primary-chk">인증번호 확인</button>
+							</div>
 						</div>
+						<div id="mailChkMessage" class="input-msg"></div>
 					</div>	
 					<div class="join-input-wrap">
 						<label for="memberGender" class="join-input-title">성별</label>
@@ -191,7 +213,7 @@ button:hover {
 					</div>
 					
 					<div class="join-button-box">
-						<button type="submit" class="join-btn-primary lg">회원가입</button>
+						<button type="submit" id="submitBtn" class="join-btn-primary lg">회원가입</button>
 					</div>
 				</form>
 			</section>
@@ -199,6 +221,59 @@ button:hover {
 	<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
 	<script>
+	$(document).ready(function() {
+	    let sentCode = '';  // 서버에서 받은 인증번호
+
+	    // 본인 인증 버튼 클릭 시
+	    $('#mailChkBtn').click(function() {
+	        const email = $('#memberEmail').val(); // 이메일 주소값 얻어오기
+
+	        // 이메일 입력값이 없으면 경고
+	        if (!email) {
+	            $('#emailMessage').text('이메일을 입력해주세요.').css('color', 'red');
+	            return;
+	        }
+
+	        // 이메일 유효성 검사
+	        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+	        if (!emailPattern.test(email)) {
+	            $('#emailMessage').text('유효한 이메일 주소를 입력해주세요.').css('color', 'red');
+	            return;
+	        }
+
+	        // 이메일을 통한 인증번호 요청
+	        $.ajax({
+	            type: 'GET',
+	            url: '/member/mailCheck.exco',
+	            data: { email: email },
+	            success: function(response) {
+	                sentCode = response;  // 서버에서 받은 인증번호 저장
+	                alert('인증번호가 전송되었습니다.');
+	                $('#memberEmailCerti').attr('disabled', false);  // 인증코드 입력란 활성화
+	                $('#mailChkWarn').attr('disabled', false);  // 인증번호 확인 버튼 활성화
+	            },
+	            error: function() {
+	                alert('인증번호 전송 실패');
+	            }
+	        });
+	    });
+
+	    // 인증번호 확인 버튼 클릭 시
+	    $('#mailChkWarn').click(function() {
+	        const enteredCode = $('#memberEmailCerti').val(); // 사용자가 입력한 인증번호
+	        const $resultMsg = $('#mailChkMessage'); // 인증결과 메시지를 표시할 곳
+
+	        if (enteredCode === sentCode) {
+	            $resultMsg.html('인증번호가 일치합니다.').css('color', 'green');
+	            $('#submitBtn').prop('disabled', false);  // 인증번호 일치하면 회원가입 버튼 활성화
+	        } else {
+	            $resultMsg.html('입력한 인증번호가 불일치 합니다. 다시 확인해주세요.').css('color', 'red');
+	            $('#submitBtn').prop('disabled', true);  // 인증번호 불일치 시 회원가입 버튼 비활성화
+	            alert('입력한 인증번호가 불일치 합니다. 다시 확인해주세요.');
+	        }
+	    });
+	});
+	
 	const checkObj = {
 		"memberId" : false,
 		"idDuplChk" : false,
@@ -226,7 +301,7 @@ button:hover {
             idMessage.addClass("valid");
             checkObj.memberId = true;
         }else{
-            idMessage.html("영어 + 숫자 6~12글자 사이로 입력하세요");
+            idMessage.html("영어 + 숫자 6~12글자 사이로 입력하세요").css('color', 'red');
             idMessage.addClass("invalid");
             checkObj.memberId = false;
         }
@@ -274,7 +349,7 @@ button:hover {
 			nickMessage.addClass("valid");
 			checkObj.memberNickname = true;
 		}else{
-			nickMessage.html("한글,영어,숫자,특수문자 2~10글자 사이로 입력하세요")
+			nickMessage.html("한글,영어,숫자,특수문자 2~10글자 사이로 입력하세요").css('color', 'red')
 			nickMessage.addClass("invalid");
 			checkObj.memberNickname = false;
 		}
@@ -328,7 +403,7 @@ button:hover {
                 checkPasswordMatch();
             }
         }else{
-            pwMessage.html("비밀번호 형식이 유효하지 않습니다");
+            pwMessage.html("비밀번호 형식이 유효하지 않습니다").css('color', 'red');
             pwMessage.addClass("invalid");
             checkObj.memberPw = false;
          // 비밀번호 형식이 유효하지 않으면 비밀번호 확인 메시지 초기화
@@ -380,7 +455,7 @@ button:hover {
 			checkObj.memberPhone = true;
 		}else{
 			phoneMessage.addClass('invalid');
-			phoneMessage.html("전화번호 형식이 유효하지 않습니다");
+			phoneMessage.html("전화번호 형식이 유효하지 않습니다").css('color', 'red');
 			checkObj.memberPhone = false;
 		}
 	});

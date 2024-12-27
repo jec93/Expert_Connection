@@ -1,6 +1,7 @@
 package kr.or.iei.member.model.service;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -73,5 +74,34 @@ public class MemberService {
 	public int updateMember(Member member) {
 		return memberDao.updateMember(member);
 	}
+	
+	//아이디 찾기
+	public String searchMemberId(String memberPhone, String memberEmail) {
+		return memberDao.searchMemberId(memberPhone, memberEmail);
+	}
+	
+	// 비밀번호 찾기
+    public String searchMemberPassword(String memberId, String email) {
+        return memberDao.searchMemberPw(memberId, email);
+    }
+
+    // 임시 비밀번호 생성
+    public String generateTemporaryPassword() {
+        int length = 10;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+        StringBuilder temporaryPassword = new StringBuilder();
+
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            temporaryPassword.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return temporaryPassword.toString();
+    }
+
+    // 비밀번호 업데이트
+    public void updateMemberPassword(String memberId, String temporaryPassword) {
+        String hashedPassword = temporaryPassword;
+        memberDao.updateMemberPassword(memberId, hashedPassword);
+    }
 
 }
