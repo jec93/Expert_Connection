@@ -143,24 +143,24 @@ button:hover {
     }
     // 아이디 찾기 함수
     function searchId() {
-        var memberphone = document.getElementById("popupMemberphone").value;
+        var memberPhone = document.getElementById("popupMemberPhone").value;
         var memberEmail = document.getElementById("popupMemberEmail").value;
 
-        if (!memberphone || !memberEmail) {
+        if (!memberPhone || !memberEmail) {
             alert("전화번호와 이메일을 입력해 주세요.");
             return;
         }
 
         $.ajax({
-            url: '/member/searchId.exco', // 서블릿 URL
+            url: '/member/searchId.exco', 
             type: 'POST',
             data: {
-                memberphone: memberphone,
+                memberPhone: memberPhone,
                 memberEmail: memberEmail
             },
             success: function(response) {
                 if (response) {
-                    alert("아이디: " + memberId);
+                    alert("아이디: " + response);
                     closePopup(); // 팝업 닫기
                 } else {
                     alert("일치하는 회원이 없습니다.");

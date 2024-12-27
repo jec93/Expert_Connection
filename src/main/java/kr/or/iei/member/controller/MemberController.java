@@ -1,7 +1,11 @@
 package kr.or.iei.member.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import kr.or.iei.member.model.service.EmailService;
 import kr.or.iei.member.model.service.MemberService;
 import kr.or.iei.member.model.vo.Member;
 
@@ -26,6 +32,9 @@ public class MemberController {
 	@Autowired
 	@Qualifier("service")
 	private MemberService memberService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	//로그인
 	@PostMapping("login.exco")
@@ -40,6 +49,7 @@ public class MemberController {
 		}
 
 	}
+	//카카오 로그인	
 	
 	
 	//로그아웃
@@ -58,6 +68,12 @@ public class MemberController {
 	@GetMapping("joinFrm.exco")
 	public String joinFrm() {
 		return "member/join";
+	}
+	//이메일 인증
+	@GetMapping("mailCheck.exco")
+	@ResponseBody
+	public String mailCheck(String email) {
+		return emailService.joinEmail(email);
 	}
 	
 	//회원가입
@@ -95,7 +111,7 @@ public class MemberController {
 	//마이페이지로 이동
 	@GetMapping("mypageFrm.exco")
 	public String mypageFrm() {
-		return "member/mypage_p";
+		return "member/mypage";
 	}
 	//회원정보수정 페이지로 이동
 	@GetMapping("updateFrm.exco")
@@ -172,22 +188,86 @@ public class MemberController {
     }
 
 
-	//아이디 찾기
+	//아이디 찾기 페이지 이동
 	@GetMapping("searchIdFrm.exco")
 	public String searchIdFrm() {
 		return "member/searchId";
 	}
-	//비밀번호 찾기
+	
+	//아이디 찾기
+	@PostMapping("searchId.exco")
+    @ResponseBody
+    public String searchMemberId(@RequestParam("memberPhone") String memberPhone,
+                                 @RequestParam("memberEmail") String memberEmail) {
+        String memberId = memberService.searchMemberId(memberPhone, memberEmail);
+        if (memberId != null) {
+            return memberId;
+        } else {
+            return "일치하는 아이디를 찾을 수 없습니다";
+        }
+    }
+	
+	//비밀번호 찾기 페이지 이동
 	@GetMapping("searchPwFrm.exco")
 	public String searchPwFrm() {
 		return "member/searchPw";
 	}
-	//프로필사진 업데이트
-	@GetMapping("profileUpdateFrm.exco")
-	public String profileUpdateFrm() {
-		return "member/profileUpdate";
+	
+	//비밀번호 찾기
+	 @PostMapping("searchPw.exco")
+	 @ResponseBody
+	 public String searchMemberPw(@RequestParam("memberId") String memberId,
+	                                 @RequestParam("memberEmail") String memberEmail) {
+	     String memberPassword = memberService.searchMemberPassword(memberId, memberEmail);
+	     
+	        if (memberPassword != null) {
+	            // 임시 비밀번호 생성
+	            String temporaryPassword = memberService.generateTemporaryPassword();
+
+	            // 임시 비밀번호를 업데이트
+	            memberService.updateMemberPassword(memberId, temporaryPassword);
+
+	            // 이메일로 임시 비밀번호 전송
+	            emailService.sendTemporaryPassword(memberEmail, temporaryPassword);
+
+	            return "<script>alert('임시 비밀번호를 이메일로 전송했습니다.'); location.href='/member/login.exco';</script>";
+	        } else {
+	            return "<script>alert('일치하는 정보를 찾을 수 없습니다.'); location.href='/member/searchPwFrm.exco';</script>";
+	        }
+	    }
+	 
+	//프로필사진
+	@GetMapping("profileImage.exco")
+	public String showProfilePage(HttpServletRequest request, Model model) {
+	    Member loginMember = (Member) request.getSession().getAttribute("loginMember");
+	    
+	    // 프로필 사진 경로 설정
+	    if (loginMember != null) {
+	        String profileImagePath = "/resources/images/profile/" + loginMember.getProfileImage();
+	        model.addAttribute("profileImagePath", profileImagePath);
+	    }
+	    
+	    return "member/profile";
 	}
 	
+	//프로필사진 업데이트
+	@PostMapping("profileUpdateFrm.exco")
+	public String uploadProfileImage(@RequestParam("file") MultipartFile file) {
+	    String uploadDir = "/resources/profile";
+	    File dir = new File(uploadDir);
+	    if (!dir.exists()) {
+	        dir.mkdirs();
+	    }
+
+	    try {
+	        File saveFile = new File(dir, file.getOriginalFilename());
+	        file.transferTo(saveFile);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
+	    return "redirect:/profile";
+	}
 
 }
 	

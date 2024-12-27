@@ -34,7 +34,6 @@
 	width : 300px;
 	height : 30px;
 	border-radius : 5px;
-
 }
 .member-link-box{
 	margin-left : 15px;
@@ -74,6 +73,7 @@ input[type="checkbox"] {
   display: flex;
   justify-content: center;
   align-items: center; 
+  padding-top: 200px;
 }
 .login-img{
 	width : 400px;
@@ -81,7 +81,20 @@ input[type="checkbox"] {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding-top : 200px;
+}
+.login-img2{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -150px; 
+  margin-right: 15px;
+}
+.kakao-login-img{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-right : 180px;
+	margin-bottom : 300px;
 }
 
 input[type="password"]:focus
@@ -165,6 +178,7 @@ input[type="text"] {
 						<a href="javascript:void(0)" onclick="showPwSearchPopup()" class="search">비밀번호 찾기</a> | 
 						<a href="/member/joinFrm.exco" class="search">회원가입</a>
 					</div>
+					<div class="login-img2"><a href="/"><img class="kakao-login-img" src="/resources/images/kakao_login.png" alt="kakao-login image"></a></div>
 				</form>
 		</section>
 	</main>

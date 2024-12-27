@@ -15,6 +15,7 @@ public class Member {
 	private String memberEmail;
 	private String memberType;
 	private String enrollDate;
+	private String profileImage;
 	
 	
 	private ArrayList<Member> memberList;
@@ -100,6 +101,12 @@ public class Member {
 	}
 	public void setEnrollDate(String enrollDate) {
 		this.enrollDate = enrollDate;
+	}
+	public String getProfileImage() {
+		return profileImage;
+	}
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 	public ArrayList<Member> getMemberList(){
 		return memberList; 
