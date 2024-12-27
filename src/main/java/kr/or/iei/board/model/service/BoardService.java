@@ -271,4 +271,25 @@ public class BoardService {
             }
         }
 	}
+
+	public int insertCommentByComment(BoardComment comment) {
+		// TODO Auto-generated method stub
+		return boardDao.insertCommentByComment(comment);
+	}
+
+	public int deleteCommentByCommentNo(String commentNo) {
+		// TODO Auto-generated method stub
+		return boardDao.deleteCommentByCommentNo(commentNo);
+	}
+
+	public int updateCommentByComment(BoardComment comment) {
+		// TODO Auto-generated method stub
+		return boardDao.updateCommentByComment(comment);
+	}
+
+	public String[] chkLikeByComment(String boardNo, String commentNo, String memberNo, int like) {
+		// TODO Auto-generated method stub
+		String[] likeChkData = new String[2];
+		return null;
+	}
 }

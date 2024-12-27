@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.iei.board.model.service.BoardService;
 import kr.or.iei.board.model.vo.Board;
+import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.board.model.vo.BoardPageData;
 import kr.or.iei.board.model.vo.BoardType;
@@ -106,7 +108,7 @@ public class BoardController {
 		return "common/msg";
 	}
 
-	@GetMapping("/viewBoardFrm.exco")
+	@GetMapping("viewBoardFrm.exco")
 	public String viewFrm(String boardNo, String commentChk, Model model) { // 댓글 작성 후 돌아오는 화면에서 조회수를 늘리지 않기 위한
 																			// commentChk변수
 		Board board = boardservice.viewFrm(boardNo, commentChk);
@@ -117,7 +119,7 @@ public class BoardController {
 		return "board/view";
 	}
 
-	@GetMapping("/updateFrm.exco")
+	@GetMapping("updateFrm.exco")
 	public String updateFrm(String boardNo, Model model) {
 		// 기존 게시글 정보 가져오기(viewFrm)의 경우 접근시 조회수가 증가하므로 다르게 접근
 		Board board = boardservice.connectView(boardNo);
@@ -126,7 +128,7 @@ public class BoardController {
 		return "board/updateFrm";
 	}
 
-	@PostMapping("/update.exco")
+	@PostMapping("update.exco")
 	public String updateBoard(@RequestParam("boardNo") String boardNo, @RequestParam("boardTitle") String boardTitle,@RequestParam("boardType") Integer boardType,
 			@RequestParam("boardContent") String boardContent,
 			@RequestParam(value = "files", required = false) MultipartFile[] files, // 기존 파일을 MultipartFile[]로 받음
@@ -251,4 +253,85 @@ public class BoardController {
 
 	    return "member/mypage_p";
 	}
+	
+    @GetMapping("insertComment.exco")
+    public String isertComment(String boardNo, String memberNo, String commentContent, Model model) {
+    	if (commentContent == null || commentContent.trim().isEmpty()) {
+			// 이전 페이지(뷰) URL 가져오기
+    		model.addAttribute("title", "오류");
+    		model.addAttribute("msg", "내용입력해주세요");
+    		model.addAttribute("icon", "error");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo);
+			return "common/msg";
+		}
+    	
+    	BoardComment comment = new BoardComment();
+    	comment.setBoardNo(boardNo);
+    	comment.setMemberNo(memberNo);
+    	comment.setCommentContent(commentContent);
+    	int result = boardservice.insertCommentByComment(comment);
+    	
+    	if(result>0) {
+    		model.addAttribute("title", "성공");
+    		model.addAttribute("msg", "댓글 등록 완료");
+    		model.addAttribute("icon", "success");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}else {
+    		model.addAttribute("title", "오류");
+    		model.addAttribute("msg", "댓글 등록 실패");
+    		model.addAttribute("icon", "error");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");    		
+    	}
+		return "common/msg";
+    }
+    
+    @GetMapping("deleteComment.exco")
+    public String deleteComment(String commentNo, String boardNo, Model model) {
+    	int result = boardservice.deleteCommentByCommentNo(commentNo);
+    	if(result>0) {
+    		model.addAttribute("title", "성공");
+    		model.addAttribute("msg", "댓글 삭제 완료");
+    		model.addAttribute("icon", "success");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}else {
+    		model.addAttribute("title", "오류");
+    		model.addAttribute("msg", "댓글 삭제 실패");
+    		model.addAttribute("icon", "error");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");    		
+    	}
+		return "common/msg";
+    }
+    
+    @PostMapping("updateComment.exco")
+    public String updateCommentByComment(String commentNo, String boardNo, String commentContent, Model model) {
+    	BoardComment comment = new BoardComment();
+    	comment.setCommentNo(commentNo);
+    	comment.setCommentContent(commentContent);
+    	
+    	int result = boardservice.updateCommentByComment(comment);
+    	if(result >0 ) {
+    		model.addAttribute("title","알림");
+    		model.addAttribute("msg","댓글 수정이 완료되었습니다.");
+    		model.addAttribute("icon","success");
+    		model.addAttribute("loc","viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}else {
+    		model.addAttribute("title","에러");
+    		model.addAttribute("msg","댓글 수정중 오류 발생");
+    		model.addAttribute("icon","error");
+    		model.addAttribute("loc","viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}
+    	return "common/msg";
+    }
+    
+    @GetMapping(value="chkLikeByComment.exco", produces = "text/html; charset=utf-8")
+    @ResponseBody
+    public void chkLikeByComment(String boardNo, String commentNo, String memberNo, int like, HttpServletResponse response) throws IOException {
+    	String[] result = boardservice.chkLikeByComment(boardNo, commentNo, memberNo, like);
+    	
+    	if(Integer.parseInt(result[0])>0) {
+    		response.getWriter().print(result[1].toString());
+    	}else {
+    		response.getWriter().print("0");
+    	}
+    }
 }

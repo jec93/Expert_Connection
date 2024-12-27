@@ -13,14 +13,14 @@
         B.BOARD_CONTENT AS boardContent,
         CASE
            WHEN EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
-               FLOOR(EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '일 전'
+               FLOOR(EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 일 전'
            WHEN EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
-               FLOOR(EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '시간 전'
+               FLOOR(EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 시간 전'
            WHEN EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
-               FLOOR(EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '분 전'
+               FLOOR(EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 분 전'
            ELSE
-               FLOOR(EXTRACT(SECOND FROM (SYSTIMESTAMP - B.BOARD_DATE))) || '초 전'
-       	END AS boardDate,
+               FLOOR(EXTRACT(SECOND FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 초 전'
+        END AS boardDate,
         B.BOARD_COUNT AS boardCount,
         B.BOARD_LIKE AS boardLike,
         B.BOARD_DISLIKE AS boardDislike
@@ -31,7 +31,7 @@
 	               SELECT B.*
 	               FROM TBL_BOARD B
 	               WHERE B.BOARD_TYPE = #{boardType}
-	               ORDER BY BOARD_NO DESC
+	               ORDER BY B.BOARD_DATE DESC
                ) B
 	      ) B
     LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
@@ -133,6 +133,7 @@
 	SELECT
 	    COMMENT_NO AS commentNo,
 	    BOARD_NO AS boardNo,
+        MEMBER_NO AS memberNo,
 	    (SELECT W.MEMBER_NICKNAME
 	        FROM (
 	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
@@ -140,14 +141,15 @@
 	        SELECT MEMBER_NO, MEMBER_NICKNAME  FROM TBL_KAKAO_EXCO
 	        UNION ALL
 	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-	    ) W) AS commentWriter,
+	    	) W
+	    WHERE W.MEMBER_NO = TBL_COMMENT.MEMBER_NO) AS commentWriter,
 	    COMMENT_CONTENT AS commentContent,
 	    COMMENT_DATE AS commentDate,
 	    COMMENT_LIKE AS commentLike,
 	    COMMENT_DISLIKE AS commentDislike
 	FROM
 	    TBL_COMMENT
-	WHERE BOARD_NO = #{boardNo}
+	WHERE BOARD_NO = #{board_no}
 	ORDER BY COMMENT_DATE DESC
 	</select>
 	
@@ -193,4 +195,39 @@
 		FROM TBL_FILE
         WHERE file_no = #{fileNo}
 	</delete>
+	
+	<insert id="insertCommentByComment"
+	parameterType="boardComment">
+		INSERT INTO
+			TBL_COMMENT
+			(
+				COMMENT_NO,
+				BOARD_NO,
+				MEMBER_NO,
+				COMMENT_CONTENT
+			)
+			VALUES
+			(
+				TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_COMMENT.NEXTVAL, 4, '0'),
+				#{boardNo},
+				#{memberNo},
+				#{commentContent}
+			)
+	</insert>
+	
+	<delete id="deleteCommentByCommentNo"
+	parameterType="string">
+	DELETE
+		FROM
+			TBL_COMMENT
+		WHERE
+			COMMENT_NO = #{commentNo}
+	</delete>
+	
+	<update id="updateCommentByComment"
+	parameterType="boardComment">
+	UPDATE TBL_COMMENT
+		SET COMMENT_CONTENT = #{commentContent}
+		WHERE COMMENT_NO = #{commentNo}
+	</update>
 </mapper>
