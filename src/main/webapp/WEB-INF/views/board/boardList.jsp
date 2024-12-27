@@ -47,7 +47,7 @@
                   </c:choose>
                </div>
                <div class="list-content">
-                  <div class="page-title"> ${board.boardTypeNm} </div>
+                  <div class="page-title"> ${boardTypeNm} </div>
                   <table class="tbl">
                      <tr>
                         <th style="width:10%">번호</th>
