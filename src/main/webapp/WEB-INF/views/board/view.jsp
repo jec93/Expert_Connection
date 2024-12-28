@@ -1,6 +1,10 @@
+<%@page import="kr.or.iei.member.model.vo.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+Object loginChk = session.getAttribute("loginMember");
+boolean isLogin = loginChk != null; %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -126,7 +130,7 @@
 										<span id="commentUserNickname">${comment.commentWriter}</span>
 										<span id="commentDate">${comment.commentDate}</span>
 										<span class="cmt-react">
-											<a href='javascript:(0)' id="commentlike" onclick="commentlike(this,'${comment.commentNo}',1);">
+											<a href='javascript:(0)' id="commentlike" onclick="commentLike(this,'${comment.commentNo}',1);">
 												<img src="/resources/images/thumb_up_line.png" id="thumb">
 											</a>
 										</span>
@@ -258,24 +262,26 @@
 			$(obj).prev().text('수정');
 			$(obj).prev().attr('onclick', 'mdfComment(this,"'+commentNo+'")');
 		}
+		var chkLogin = <%= isLogin %>;
 		
 		//댓글 좋아요, 좋아요 취소
 		function commentLike (obj, commentNo, like) {
-			if(chkLogin()){
+			if(chkLogin){
 			   $.ajax({
-			      url : "/board/updCmtLike",
+			      url : "/board/updCmtLike.exco",
 			      type : "GET",
 			      data : {
 			         "boardNo" : "${board.boardNo}",
 			         "commentNo" : commentNo,
-			         "memberNo" : "${loginUser.memberNo}",
+			         "memberNo" : "${loginMember.memberNo}",
 			         "like" : like
 			         }, 
 			         success : function(res) {
+			        	 console.log(res);
 			          if(res != "0"){
 			             swal({
 			                title : "알림",
-			                text : '${comment.commentNo}' + res,
+			                text : res,
 			                icon : "success"
 			             }).then(function(){
 			                location.href = "/board/viewBoardFrm.exco?boardNo=${board.boardNo}";
@@ -284,7 +290,7 @@
 			          else{
 			             swal({
 			                title : "알림",
-			                text : '${comment.commentNo}' + " 댓글 호감도 반영 중 오류가 발생하였습니다.",
+			                text : "댓글 호감도 반영 중 오류가 발생하였습니다.",
 			                icon : "error"
 			             }).then(function(){
 			                location.href = "/board/viewBoardFrm.exco?boardNo=${board.boardNo}";

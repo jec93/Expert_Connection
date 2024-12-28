@@ -320,4 +320,81 @@
 	SELECT COUNT(*)
 	FROM TBL_COMMENT
 	</select>
+	
+	<select id="chkLikeByComment"
+	parameterType="map"
+	resultType="commentReact">
+	SELECT
+    	COMMENT_NO AS commentNo,
+    	MEMBER_NO AS memberNo,
+    	COMMENT_CHK AS commentChk,
+    	REPORT AS report
+	FROM TBL_COMMENT_REACT
+	WHERE COMMENT_NO = #{comment} AND MEMBER_NO = #{member}
+	</select>
+	
+	<update id="updReactByReact"
+	parameterType="commentReact">
+	UPDATE
+	    TBL_COMMENT_REACT
+	    SET COMMENT_CHK = #{commentChk}
+	    WHERE COMMENT_NO = #{commentNo}
+	    AND MEMBER_NO = #{memberNo}
+	</update>
+	
+	<update id="updateComLikeCnt"
+	parameterType="moveStin">
+	UPDATE TBL_COMMENT_REACT
+	SET COMMENT_CHK = #{intData}
+	WHERE COMMENT_NO = #{stData}
+	</update>
+	
+	<update id="updateComLikeByReact"
+	parameterType="commentReact">
+	UPDATE TBL_COMMENT_REACT
+		SET
+			COMMENT_CHK = #{commentChk}
+		WHERE
+			COMMENT_NO = #{commentNo}
+		AND MEMBER_NO = #{memberNo}
+	</update>
+	
+	<insert id="insertComLikeInfo"
+	parameterType="commentReact">
+	INSERT INTO
+		TBL_COMMENT_REACT
+		(
+			COMMENT_NO,
+			MEMBER_NO,
+			COMMENT_CHK
+		)
+		VALUES
+		(
+			#{commentNo},
+			#{memberNo},
+			#{commentChk}
+		)		
+	</insert>
+	
+	<update id="updateCommentLikeByReact"
+	parameterType="map">
+    UPDATE TBL_COMMENT
+    <set>
+        <if test="like == 1">
+            COMMENT_LIKE = COMMENT_LIKE + 
+            <choose>
+                <when test="newAction">1</when>
+                <otherwise>-1</otherwise>
+            </choose>
+        </if>
+        <if test="like == -1">
+            COMMENT_DISLIKE = COMMENT_DISLIKE + 
+            <choose>
+                <when test="newAction">1</when>
+                <otherwise>-1</otherwise>
+            </choose>
+        </if>
+    </set>
+    WHERE COMMENT_NO = #{commentNo}
+	</update>
 </mapper>

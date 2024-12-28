@@ -324,12 +324,14 @@ public class BoardController {
     	return "common/msg";
     }
     
-    @GetMapping(value="chkLikeByComment.exco", produces = "text/html; charset=utf-8")
+    @GetMapping(value="updCmtLike.exco", produces = "text/html; charset=utf-8")
     @ResponseBody
     public void chkLikeByComment(String boardNo, String commentNo, String memberNo, int like, HttpServletResponse response) throws IOException {
     	String[] result = boardservice.chkLikeByComment(boardNo, commentNo, memberNo, like);
     	
     	if(Integer.parseInt(result[0])>0) {
+    		response.setContentType("text/html; charset=UTF-8");
+    		System.out.println(result[1].toString());
     		response.getWriter().print(result[1].toString());
     	}else {
     		response.getWriter().print("0");
