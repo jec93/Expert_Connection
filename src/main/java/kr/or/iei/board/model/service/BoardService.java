@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.iei.board.model.dao.BoardDao;
@@ -291,7 +292,7 @@ public class BoardService {
 	}
 
 	public String[] chkLikeByComment(String boardNo, String commentNo, String memberNo, int like) {
-	    String[] likeChkData = new String[2];
+	    String[] likeChkData = new String[3];
 	    HashMap<String, String> infoNumMap = new HashMap<>();
 	    infoNumMap.put("comment", commentNo);
 	    infoNumMap.put("member", memberNo);
@@ -304,37 +305,8 @@ public class BoardService {
 	    HashMap<String, Object> commentParamMap = new HashMap<>();
 	    commentParamMap.put("commentNo", commentNo);
 
-	    if (commentReact != null) {
-	        if (commentReact.getCommentChk() == like) {
-	            // 같은 값이면 취소
-	            commentReact.setCommentChk(0);
-	            result = boardDao.updReactByReact(commentReact);
-	            if (result > 0) {
-	                commentParamMap.put("like", like);
-	                commentParamMap.put("newAction", false);
-	                boardDao.updateCommentLikeByReact(commentParamMap);
-	                msg = like == -1 ? "댓글 싫어요가 취소되었습니다." : "댓글 좋아요가 취소되었습니다.";
-	            }
-	        } else {
-	            // 다른 값으로 변경
-	            int oldLike = commentReact.getCommentChk();
-	            commentReact.setCommentChk(like);
-	            result = boardDao.updateComLikeByReact(commentReact);
-	            if (result > 0) {
-	                // 이전 상태 감소
-	                commentParamMap.put("like", oldLike);
-	                commentParamMap.put("newAction", false);
-	                boardDao.updateCommentLikeByReact(commentParamMap);
-
-	                // 새로운 상태 증가
-	                commentParamMap.put("like", like);
-	                commentParamMap.put("newAction", true);
-	                boardDao.updateCommentLikeByReact(commentParamMap);
-	                msg = like == -1 ? "댓글 싫어요가 완료되었습니다." : "댓글 좋아요가 완료되었습니다.";
-	            }
-	        }
-	    } else {
-	        // 처음 좋아요/싫어요를 누른 경우
+	    if (commentReact == null) {
+	    	// 처음 좋아요/싫어요를 누른 경우
 	        CommentReact ractInfo = new CommentReact(commentNo, memberNo, like, 0);
 	        result = boardDao.insertComLikeInfo(ractInfo);
 	        if (result > 0) {
@@ -343,11 +315,55 @@ public class BoardService {
 	            boardDao.updateCommentLikeByReact(commentParamMap);
 	            msg = like == -1 ? "댓글 싫어요가 완료되었습니다." : "댓글 좋아요가 완료되었습니다.";
 	        }
+	    } else {
+	    	if(commentReact.getCommentChk() == 0) {
+	    		//이부분은 좋아요/아쉬워요 취소후 다시 누를때 새로운 컬럼을 생성해버려서 추가함
+	    		commentReact.setCommentChk(like);
+    			result = boardDao.updReactByReact(commentReact);
+    			if (result > 0) {
+    				commentParamMap.put("like", like);
+    				commentParamMap.put("newAction", true);
+    				boardDao.updateCommentLikeByReact(commentParamMap);
+    				msg = like == -1 ? "댓글 싫어요가 완료되었습니다." : "댓글 좋아요가 완료되었습니다.";
+    			}
+	    	}else {	    		
+	    		if (commentReact.getCommentChk() == like) {
+	    			// 같은 값이면 취소
+	    			commentReact.setCommentChk(0);
+	    			result = boardDao.updReactByReact(commentReact);
+	    			if (result > 0) {
+	    				commentParamMap.put("like", like);
+	    				commentParamMap.put("newAction", false);
+	    				System.out.println("Upd Params : " + commentParamMap);
+	    				boardDao.updateCommentLikeByReact(commentParamMap);
+	    				msg = like == -1 ? "댓글 싫어요가 취소되었습니다." : "댓글 좋아요가 취소되었습니다.";
+	    				like = 0; //최종 유저 선호도 값 없음 반영하기 위해
+	    			}
+	    		} else {
+	    			// 다른 값으로 변경
+	    			int oldLike = commentReact.getCommentChk();
+	    			commentReact.setCommentChk(like);
+	    			result = boardDao.updReactByReact(commentReact);
+	    			if (result > 0) {
+	    				// 이전 상태 감소
+	    				commentParamMap.put("like", oldLike);
+	    				commentParamMap.put("newAction", false);
+	    				boardDao.updateCommentLikeByReact(commentParamMap);
+	    				
+	    				// 새로운 상태 증가
+	    				commentParamMap.put("like", like);
+	    				commentParamMap.put("newAction", true);
+	    				boardDao.updateCommentLikeByReact(commentParamMap);
+	    				msg = like == -1 ? "댓글 싫어요가 완료되었습니다." : "댓글 좋아요가 완료되었습니다.";
+	    			}
+	    		}
+	    	}
 	    }
 
 	    if (result > 0) {
 	        likeChkData[0] = String.valueOf(result);
 	        likeChkData[1] = msg;
+	        likeChkData[2] = String.valueOf(like);
 	    }
 	    return likeChkData;
 	}
@@ -537,5 +553,15 @@ public class BoardService {
 		CommentPageData pd = new CommentPageData(list, pageNavi);
 				
 		return pd;
+	}
+
+	public String getCommentReaction(String boardNo, String commentNo, String memberNo) {
+		// TODO Auto-generated method stub
+		HashMap<String, String> infoNumMap = new HashMap<>();
+	    infoNumMap.put("comment", commentNo);
+	    infoNumMap.put("member", memberNo);
+		CommentReact commentReact = boardDao.chkLikeByComment(infoNumMap);
+		
+		return String.valueOf(commentReact.getCommentChk());
 	}
 }

@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.ServletOutputStream;
@@ -324,18 +326,38 @@ public class BoardController {
     	return "common/msg";
     }
     
-    @GetMapping(value="updCmtLike.exco", produces = "text/html; charset=utf-8")
+    @GetMapping(value="updCmtLike.exco", produces = "application/json; charset=utf-8")
     @ResponseBody
-    public void chkLikeByComment(String boardNo, String commentNo, String memberNo, int like, HttpServletResponse response) throws IOException {
-    	String[] result = boardservice.chkLikeByComment(boardNo, commentNo, memberNo, like);
-    	
-    	if(Integer.parseInt(result[0])>0) {
-    		response.setContentType("text/html; charset=UTF-8");
-    		System.out.println(result[1].toString());
-    		response.getWriter().print(result[1].toString());
-    	}else {
-    		response.getWriter().print("0");
-    	}
+    public Map<String, String> chkLikeByComment(String boardNo, String commentNo, String memberNo, int like) {
+        String[] result = boardservice.chkLikeByComment(boardNo, commentNo, memberNo, like);
+        Map<String, String> response = new HashMap<String, String>();
+        
+        if (Integer.parseInt(result[0]) > 0) {
+            response.put("cmtReact", result[2]);
+            response.put("message", result[1]);
+        } else {
+            response.put("cmtReact", "0");
+            response.put("message", "0");
+        }
+        return response;
+    }
+    
+    @GetMapping(value = "getCmtStatus.exco", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public Map<String, Object> getCmtStatus(String boardNo, String commentNo, String memberNo) {
+        // 댓글 상태를 가져오는 서비스 호출
+        String cmtReact = boardservice.getCommentReaction(boardNo, commentNo, memberNo);
+        System.out.println("cmtReact 넘어온 값:"+ cmtReact);
+        Map<String, Object> response = new HashMap<>();
+        if (cmtReact != null) {
+            response.put("cmtReact", cmtReact); // 현재 상태 반환 (1, -1, 0 등)
+            response.put("status", "success");
+        } else {
+            response.put("cmtReact", "0"); // 기본 상태
+            response.put("status", "error");
+            response.put("message", "댓글 상태를 가져오는 데 실패했습니다.");
+        }
+        return response;
     }
     
   //관리자페이지 - 커뮤니티 관리(게시판 구별 없이 게시글 전부 불러오기)
