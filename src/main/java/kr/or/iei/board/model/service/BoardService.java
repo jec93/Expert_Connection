@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.board.model.vo.BoardPageData;
+import kr.or.iei.board.model.vo.BoardReact;
 import kr.or.iei.board.model.vo.CommentPageData;
 import kr.or.iei.board.model.vo.CommentReact;
 import kr.or.iei.board.model.vo.MoveStin;
@@ -312,7 +314,7 @@ public class BoardService {
 	        if (result > 0) {
 	            commentParamMap.put("like", like);
 	            commentParamMap.put("newAction", true);
-	            boardDao.updateCommentLikeByReact(commentParamMap);
+	            boardDao.updateCommentLikeByComment(commentParamMap);
 	            msg = like == -1 ? "댓글 싫어요가 완료되었습니다." : "댓글 좋아요가 완료되었습니다.";
 	        }
 	    } else {
@@ -323,7 +325,7 @@ public class BoardService {
     			if (result > 0) {
     				commentParamMap.put("like", like);
     				commentParamMap.put("newAction", true);
-    				boardDao.updateCommentLikeByReact(commentParamMap);
+    				boardDao.updateCommentLikeByComment(commentParamMap);
     				msg = like == -1 ? "댓글 싫어요가 완료되었습니다." : "댓글 좋아요가 완료되었습니다.";
     			}
 	    	}else {	    		
@@ -335,7 +337,7 @@ public class BoardService {
 	    				commentParamMap.put("like", like);
 	    				commentParamMap.put("newAction", false);
 	    				System.out.println("Upd Params : " + commentParamMap);
-	    				boardDao.updateCommentLikeByReact(commentParamMap);
+	    				boardDao.updateCommentLikeByComment(commentParamMap);
 	    				msg = like == -1 ? "댓글 싫어요가 취소되었습니다." : "댓글 좋아요가 취소되었습니다.";
 	    				like = 0; //최종 유저 선호도 값 없음 반영하기 위해
 	    			}
@@ -348,12 +350,12 @@ public class BoardService {
 	    				// 이전 상태 감소
 	    				commentParamMap.put("like", oldLike);
 	    				commentParamMap.put("newAction", false);
-	    				boardDao.updateCommentLikeByReact(commentParamMap);
+	    				boardDao.updateCommentLikeByComment(commentParamMap);
 	    				
 	    				// 새로운 상태 증가
 	    				commentParamMap.put("like", like);
 	    				commentParamMap.put("newAction", true);
-	    				boardDao.updateCommentLikeByReact(commentParamMap);
+	    				boardDao.updateCommentLikeByComment(commentParamMap);
 	    				msg = like == -1 ? "댓글 싫어요가 완료되었습니다." : "댓글 좋아요가 완료되었습니다.";
 	    			}
 	    		}
@@ -562,7 +564,104 @@ public class BoardService {
 	    infoNumMap.put("comment", commentNo);
 	    infoNumMap.put("member", memberNo);
 		CommentReact commentReact = boardDao.chkLikeByComment(infoNumMap);
-		
+		if(Objects.isNull(commentReact)) {
+			return null;
+		}
 		return String.valueOf(commentReact.getCommentChk());
+	}
+
+	public String[] chkLikeByBoard(String boardNo, String memberNo, int like) {
+		// TODO Auto-generated method stub
+		String[] likeChkData = new String[3];
+	    HashMap<String, String> infoNumMap = new HashMap<>();
+	    infoNumMap.put("boardNo", boardNo);
+	    infoNumMap.put("memberNo", memberNo);
+
+	    // 현재 사용자의 좋아요/싫어요 상태 조회
+	    BoardReact boardReact = boardDao.chkBoardLikeByBoard(infoNumMap);
+	    int result = 0;
+	    String msg = "";
+
+	    HashMap<String, Object> boardParamMap = new HashMap<>();
+	    boardParamMap.put("boardNo", boardNo);
+
+	    if (boardReact == null) {
+	    	// 처음 좋아요/싫어요를 누른 경우
+	        BoardReact reactInfo = new BoardReact(boardNo, memberNo, like, 0);
+	        result = boardDao.insertBoardLikeInfo(reactInfo);
+	        if (result > 0) {
+	        	boardParamMap.put("like", like);
+	        	boardParamMap.put("newAction", true);
+	        	//like값과 newAction(변화값)에 따른 데이터 수정
+	            boardDao.updateBoardLikeByBoard(boardParamMap);
+	            msg = like == -1 ? "게시글 싫어요가 완료되었습니다." : "게시글 좋아요가 완료되었습니다.";
+	        }
+	    } else {
+	    	if(boardReact.getBoardReaction() == 0) {
+	    		//이부분은 좋아요/아쉬워요 취소후 다시 누를때 새로운 컬럼을 생성해버려서 추가함
+	    		boardReact.setBoardReaction(like);
+    			result = boardDao.updBoardByReact(boardReact);
+    			if (result > 0) {
+    				boardParamMap.put("like", like);
+    				boardParamMap.put("newAction", true);
+    				boardDao.updateBoardLikeByBoard(boardParamMap);
+    				msg = like == -1 ? "게시글 싫어요가 완료되었습니다." : "게시글 좋아요가 완료되었습니다.";
+    			}
+	    	}else {	    		
+	    		if (boardReact.getBoardReaction() == like) {
+	    			// 같은 값이면 취소
+	    			boardReact.setBoardReaction(0);
+	    			result = boardDao.updBoardByReact(boardReact);
+	    			if (result > 0) {
+	    				boardParamMap.put("like", like);
+	    				boardParamMap.put("newAction", false);
+	    				System.out.println("Upd Params : " + boardParamMap);
+	    				boardDao.updateBoardLikeByBoard(boardParamMap);
+	    				msg = like == -1 ? "게시글 싫어요가 취소되었습니다." : "게시글 좋아요가 취소되었습니다.";
+	    				like = 0; //최종 유저 선호도 값 없음 반영하기 위해
+	    			}
+	    		} else {
+	    			// 다른 값으로 변경
+	    			int oldLike = boardReact.getBoardReaction(); //1
+	    			boardReact.setBoardReaction(like); //-1
+	    			result = boardDao.updBoardByReact(boardReact); 
+	    			if (result > 0) {
+	    				// 이전 상태 감소
+	    				boardParamMap.put("like", oldLike);
+	    				boardParamMap.put("newAction", false);
+	    				System.out.println("이전값"+boardParamMap.get("like"));
+	    				System.out.println(boardParamMap.get("newAction"));
+	    				boardDao.updateBoardLikeByBoard(boardParamMap);
+	    				
+	    				// 새로운 상태 증가
+	    				boardParamMap.put("like", like);
+	    				boardParamMap.put("newAction", true);
+	    				System.out.println("이후값"+boardParamMap.get("like"));
+	    				System.out.println(boardParamMap.get("newAction"));
+	    				boardDao.updateBoardLikeByBoard(boardParamMap);
+	    				msg = like == -1 ? "게시글 싫어요가 완료되었습니다." : "게시글 좋아요가 완료되었습니다.";
+	    			}
+	    		}
+	    	}
+	    }
+
+	    if (result > 0) {
+	        likeChkData[0] = String.valueOf(result);
+	        likeChkData[1] = msg;
+	        likeChkData[2] = String.valueOf(like);
+	    }
+	    return likeChkData;
+	}
+
+	public String getBoardReaction(String boardNo, String memberNo) {
+		// TODO Auto-generated method stub
+		HashMap<String, String> infoNumMap = new HashMap<>();
+	    infoNumMap.put("boardNo", boardNo);
+	    infoNumMap.put("memberNo", memberNo);
+		BoardReact boardReact = boardDao.chkBoardLikeByBoard(infoNumMap);
+		if(Objects.isNull(boardReact)) {
+			return null;
+		}
+		return String.valueOf(boardReact.getBoardReaction());
 	}
 }

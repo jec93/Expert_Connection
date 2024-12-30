@@ -23,36 +23,49 @@ public class AdminController {
 	@Autowired
 	@Qualifier("adminService")
 	private AdminService adminService;
-	
-	//private MemberService memberService;
-	
-	//관리자페이지 -> 신고항목 관리 페이지 이동
+
+	// private MemberService memberService;
+
+	// 관리자페이지 -> 신고항목 관리 페이지 이동
 	@GetMapping("reportManageFrm.exco")
 	public String reportManageFrm() {
-		
-		
+
 		return "admin/reportManage";
 	}
-	
-	//관리자페이지 -> 회원관리 - 신고내역관리 페이지 이동 + 신고내역 불러오기
+
+	// 관리자페이지 -> 회원관리 - 신고내역관리 페이지 이동 + 신고내역 불러오기
+
 	@GetMapping("memberManage.exco")
 	public String memberManage(Integer reqPage, String searchName, Model model) {
 
 		ReportPageData pd = null;
-		if(searchName.equals("report")) {
-			pd = adminService.selectAllReportList(reqPage,searchName);
+		if (searchName.equals("report")) {
+			pd = adminService.selectAllReportList(reqPage, searchName);
 		} else if (searchName.equals("null")) {
-			pd = adminService.selectAllReportList(reqPage,searchName);
+			pd = adminService.selectAllReportList(reqPage, searchName);
 		} else {
-			pd = adminService.selectAllReportList(reqPage,searchName);
+			pd = adminService.selectAllReportList(reqPage, searchName);
 		}
-		
+
 		model.addAttribute("reportList", pd.getList());
 		model.addAttribute("pageNavi", pd.getPageNavi());
 		model.addAttribute("searchName", searchName);
-		
+
 		System.out.println(pd.getList());
-		
+
 		return "admin/memberManage";
+	}
+
+	// 게시글,댓글 신고하기
+	@GetMapping("reportBoard.exco")
+	public String insertReportByInfo(String targetNo, String boardType, String reporter, String reportType,
+			String reportReason) {
+		Report reportData = new Report();
+		reportData.setTargetNo(targetNo);
+		reportData.setReporter(reporter);
+		reportData.setReportType(Integer.parseInt(reportType));
+		reportData.setThirdCategoryCd(reportReason);
+		adminService.insertReportByInfo(reportData);
+		return "redirect:/board/list.exco?reqPage=1&boardType=" + boardType + "&boardTypeNm=" + boardType;
 	}
 }
