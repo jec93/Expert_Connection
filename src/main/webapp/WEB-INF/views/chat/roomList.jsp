@@ -112,9 +112,8 @@
 		<jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 		<main class="content">
-			<form action="/chat/createChat.exco" method="post">
-				<a href="javascript:void(0)" onclick="fn.createRoom()">채팅방 만들기</a>
-			</form>
+			<a href="/expert/expertList.exco">전문가리스트 (테스트)</a>
+
 
 			<!-- 채팅방 목록 -->
 			<div class="chat-header">채팅 목록</div>
@@ -129,7 +128,7 @@
 								<div class="chat-message">${room.msg}</div>
 							</div>
 							<div class="chat-date">${room.msgDate}</div>
-							<button class="chat-hide-btn" onclick="fn.hideRoom(event, this)">X${room.roomId}</button>
+							<button class="chat-hide-btn" onclick="fn.hideRoom(event, this)">X</button>
 						</div>
 					</div>
 				</div>

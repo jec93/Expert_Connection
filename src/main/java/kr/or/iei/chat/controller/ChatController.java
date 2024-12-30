@@ -174,7 +174,6 @@ public class ChatController {
 	@GetMapping("/createRoomFrm.exco")
 	public String createRoomFrm(Model model) {
 		ArrayList<Member> memberList =  chatMemberService.selectMemberList();
-		System.out.println("여기도 멤버리스트 잘 받아오는데 : " + memberList); //로그 확인용
 		model.addAttribute("memberList", memberList);
 		
 		return "chat/createRoom";

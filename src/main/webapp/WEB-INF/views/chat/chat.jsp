@@ -293,7 +293,7 @@ a.leaveRoom:hover {
 								<img src="/path/to/profileImage.jpg" alt="Profile Image">
 							</div>
 							<div>
-								<div class="member-name">${member.memberNickname}(${member.memberNo})</div>
+								<div class="member-name">${member.memberNickname}</div>
 							</div>
 						</div>
 					</c:forEach>
@@ -360,6 +360,7 @@ a.leaveRoom:hover {
 	<script>
         var ws;
         var memberNo = '${sessionScope.loginMember.memberNo}';
+        var memberNickname = '${sessionScope.loginMember.memberNickname}';
         var roomId = '${roomId}';
 
         let fn = {
@@ -395,7 +396,7 @@ a.leaveRoom:hover {
                                 '<img src="/path/to/profileImage.jpg" alt="Profile Image">' +
                             '</div>' +
                             '<div>' +
-                                '<div class="member-id">' + memberNo + '</div>' +
+                                '<div class="member-id">' + memberNickname + '</div>' +
                                 '<div class="message-content">' + fileLink + msg + '</div>' +
                                 '<div class="chat-time">' + currentTime + '</div>' +
                             '</div>' +

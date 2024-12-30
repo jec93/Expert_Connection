@@ -13,7 +13,7 @@ public class Chat {
 	private String msgDate;
 	
 	//조인
-	private String memberName;
+	private String memberNickname;
 
 	public Chat() {
 		super();
@@ -21,7 +21,7 @@ public class Chat {
 	}
 
 	public Chat(String roomId, String roomName, String chatId, String memberNo, String msgGb, String msg,
-			String fileName, String filePath, String msgDate, String memberName) {
+			String fileName, String filePath, String msgDate, String memberNickname) {
 		super();
 		this.roomId = roomId;
 		this.roomName = roomName;
@@ -32,7 +32,7 @@ public class Chat {
 		this.fileName = fileName;
 		this.filePath = filePath;
 		this.msgDate = msgDate;
-		this.memberName = memberName;
+		this.memberNickname = memberNickname;
 	}
 
 	public String getRoomId() {
@@ -107,13 +107,13 @@ public class Chat {
 		this.msgDate = msgDate;
 	}
 
-	public String getMemberName() {
-		return memberName;
+	public String getMemberNickname() {
+		return memberNickname;
 	}
 
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
+	public void setMemberNickname(String memberNickname) {
+		this.memberNickname = memberNickname;
 	}
-}
-
 	
+	
+}

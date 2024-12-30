@@ -49,7 +49,10 @@ public class ChatDao {
 
 	//숨김 상태 업데이트
 	public int updateHiddenStatus(String roomId, String memberNo, boolean isHidden) {
-		//Mapper 호출
+		
+		System.out.println("roomID : " + roomId);
+		System.out.println("memberNo : " + memberNo);
+		System.out.println("isHidden : " + isHidden);
 		Map<String, Object> params = new HashMap<>();
 		params.put("roomId", roomId);
 		params.put("memberNo", memberNo);

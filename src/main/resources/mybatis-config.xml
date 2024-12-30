@@ -4,6 +4,8 @@
 
 	<settings>
 		<setting name="jdbcTypeForNull" value="NULL"/>
+		<!-- MyBatis 로그를 표준 출력으로 설정 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
 	</settings>
 	
 	<typeAliases>
@@ -16,6 +18,7 @@
       	<typeAlias type="kr.or.iei.chat.model.vo.Chat" alias="chat"/>
 		<typeAlias type="kr.or.iei.board.model.vo.CommentReact" alias="commentReact"/>
 		<typeAlias type="kr.or.iei.board.model.vo.MoveStin" alias="moveStin"/>
+		<typeAlias type="kr.or.iei.expert.model.vo.ExpertManagement" alias="expertManagement"/>
 	</typeAliases>
 	
 	

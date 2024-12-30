@@ -38,6 +38,29 @@
 		
 	</table>
 	
+	<table>
+	    <thead>
+	        <tr>
+	            <th>전문가 번호</th>
+	            <th>회원 번호</th>
+	            <th>카테고리</th>
+	            <th>등급</th>
+	            <th>상태</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <c:forEach var="expert" items="${expertList}">
+	            <tr>
+	                <td>${expert.receive_no}</td>
+	                <td>${expert.member_no}</td>
+	                <td>${expert.category_name}</td>
+	                <td>${expert.expert_grade}</td>
+	                <td>${expert.permission_state}</td>
+	            </tr>
+	        </c:forEach>
+	    </tbody>
+	</table>
+	
 	<script>
 		function createRoom() {
 			let checks = $('input[name=members]:checked');

@@ -95,7 +95,8 @@
 	</insert>
 	
 	<select id="getRoomId" resultType="string">
-	select seq_room.nextval from dual
+	SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(seq_room.NEXTVAL, 4, '0') 
+	       FROM DUAL
 	</select>
 	
 	<insert id="insertRoom" parameterType="room">
