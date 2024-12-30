@@ -12,7 +12,11 @@
 		<typeAlias type="kr.or.iei.member.model.vo.Expert" alias="expert"/>
 		<typeAlias type="kr.or.iei.board.model.vo.BoardFile" alias="boardFile"/>
 		<typeAlias type="kr.or.iei.board.model.vo.BoardComment" alias="boardComment"/>
+		<typeAlias type="kr.or.iei.chat.model.vo.Room" alias="room"/>
+      	<typeAlias type="kr.or.iei.chat.model.vo.Chat" alias="chat"/>
 	</typeAliases>
+	
+	
 	
 </configuration>
 

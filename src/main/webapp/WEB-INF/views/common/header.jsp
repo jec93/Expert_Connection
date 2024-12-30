@@ -57,7 +57,7 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
                </c:when>
                <c:otherwise>
                         <li class="chat_box">
-                          <a href=""><img id="icon_chat" src="/resources/images/icon_chat.png">채팅</a>
+                          <a href="/chat/getRoomList.exco"><img id="icon_chat" src="/resources/images/icon_chat.png">채팅</a>
                       </li>
                        <li class="alarm_box">
                           <a href=""><img id="icon_alarm" src="/resources/images/icon_alarm.png">알람</a>
