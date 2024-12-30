@@ -27,5 +27,10 @@ public class AdminDao {
 	public int selectAllReportCount() {
 		return sqlSession.selectOne("report.selectAllReportCount");
 	}
+
+	public void insertReportByInfo(Report reportData) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.board.model.vo.BoardFile;
+import kr.or.iei.board.model.vo.BoardReact;
 import kr.or.iei.board.model.vo.CommentReact;
 import kr.or.iei.board.model.vo.MoveStin;
 
@@ -127,19 +128,9 @@ public class BoardDao {
 		return sqlSession.selectOne("board.chkLikeByComment",infoNumMap);
 	}
 
-	public int updReactByReact(CommentReact commentReact) {
-		// TODO Auto-generated method stub
-		return sqlSession.update("board.updReactByReact",commentReact);
-	}
-
 	public int updateComLikeCnt(MoveStin moveData) {
 		// TODO Auto-generated method stub
 		return sqlSession.update("board.updateComLikeCnt",moveData);
-	}
-
-	public int updateComLikeByReact(CommentReact commentReact) {
-		// TODO Auto-generated method stub
-		return sqlSession.update("board.updateComLikeByReact",commentReact);
 	}
 
 	public int insertComLikeInfo(CommentReact ractInfo) {
@@ -147,8 +138,38 @@ public class BoardDao {
 		return sqlSession.insert("board.insertComLikeInfo",ractInfo);
 	}
 
-	public void updateCommentLikeByReact(HashMap<String, Object> commentParamMap) {
+	public void updateCommentLikeByComment(HashMap<String, Object> commentParamMap) {
 		// TODO Auto-generated method stub
-	    sqlSession.update("board.updateCommentLikeByReact", commentParamMap);
+	    sqlSession.update("board.updateCommentLikeByComment", commentParamMap);
+	}
+
+	public int insertBoardLikeInfo(BoardReact reactInfo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("board.insertBoardLikeInfo",reactInfo);
+	}
+
+	public void updateBoardLikeByBoard(HashMap<String, Object> boardParamMap) {
+		// TODO Auto-generated method stub
+		sqlSession.update("board.updateBoardLikeByBoard", boardParamMap);
+	}
+
+	public int updBoardByReact(BoardReact boardReact) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updBoardByReact",boardReact);
+	}
+
+	public BoardReact chkBoardLikeByBoard(HashMap<String, String> infoNumMap) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("board.chkBoardLikeByBoard",infoNumMap);
+	}
+
+	public BoardComment commentBycommentNo(String commentNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("board.commentBycommentNo",commentNo);
+	}
+
+	public int updReactByReact(CommentReact commentReact) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updReactByReact",commentReact);
 	}
 }

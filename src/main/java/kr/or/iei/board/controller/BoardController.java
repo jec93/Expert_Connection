@@ -333,6 +333,22 @@ public class BoardController {
         Map<String, String> response = new HashMap<String, String>();
         
         if (Integer.parseInt(result[0]) > 0) {
+            response.put("boardReact", result[2]);
+            response.put("message", result[1]);
+        } else {
+            response.put("boardReact", "0");
+            response.put("message", "0");
+        }
+        return response;
+    }
+    
+    @GetMapping(value="updBoardLike.exco", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public Map<String, String> chkLikeByBoard(String boardNo, String commentNo, String memberNo, int like) {
+        String[] result = boardservice.chkLikeByBoard(boardNo, memberNo, like);
+        Map<String, String> response = new HashMap<String, String>();
+        
+        if (Integer.parseInt(result[0]) > 0) {
             response.put("cmtReact", result[2]);
             response.put("message", result[1]);
         } else {
@@ -354,6 +370,24 @@ public class BoardController {
             response.put("status", "success");
         } else {
             response.put("cmtReact", "0"); // 기본 상태
+            response.put("status", "error");
+            response.put("message", "댓글 상태를 가져오는 데 실패했습니다.");
+        }
+        return response;
+    }
+    
+    @GetMapping(value = "getBoardStatus.exco", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public Map<String, Object> getBoardStatus(String boardNo, String memberNo) {
+        // 댓글 상태를 가져오는 서비스 호출
+        String boardReact = boardservice.getBoardReaction(boardNo, memberNo);
+        System.out.println("boardReact 넘어온 값:"+ boardReact);
+        Map<String, Object> response = new HashMap<>();
+        if (boardReact != null) {
+            response.put("boardReact", boardReact); // 현재 상태 반환 (1, -1, 0 등)
+            response.put("status", "success");
+        } else {
+            response.put("boardReact", "0"); // 기본 상태
             response.put("status", "error");
             response.put("message", "댓글 상태를 가져오는 데 실패했습니다.");
         }

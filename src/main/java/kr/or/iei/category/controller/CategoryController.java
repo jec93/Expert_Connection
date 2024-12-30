@@ -69,7 +69,7 @@ public class CategoryController {
     	loginMember.setMemberPhone("010-1234-1234");
     	loginMember.setMemberAddr("대한민국");
     	loginMember.setMemberGender("0");
-    	loginMember.setMemberType("1");
+    	loginMember.setMemberType("0");
     	loginMember.setMemberEmail("admin@kh.com");
     	loginMember.setEnrollDate("24/12/23");
     	session.setAttribute("loginMember", loginMember);

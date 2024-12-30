@@ -376,7 +376,7 @@
 		)		
 	</insert>
 	
-	<update id="updateCommentLikeByReact"
+	<update id="updateCommentLikeByComment"
 	parameterType="map">
     UPDATE TBL_COMMENT
     <set>
@@ -396,5 +396,90 @@
         </if>
     </set>
     WHERE COMMENT_NO = #{commentNo}
+	</update>
+	
+	<select id="commentBycommentNo"
+	parameterType="string"
+	resultType="boardComment">
+	SELECT
+	    COMMENT_NO AS commentNo,
+	    BOARD_NO AS boardNo,
+        MEMBER_NO AS memberNo,
+	    (SELECT W.MEMBER_NICKNAME
+	        FROM (
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME  FROM TBL_KAKAO_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	    	) W
+	    WHERE W.MEMBER_NO = TBL_COMMENT.MEMBER_NO) AS commentWriter,
+	    COMMENT_CONTENT AS commentContent,
+	    COMMENT_DATE AS commentDate,
+	    COMMENT_LIKE AS commentLike,
+	    COMMENT_DISLIKE AS commentDislike
+	FROM
+	    TBL_COMMENT
+	WHERE COMMENT_NO = #{string}
+	</select>
+	
+	<select id="chkBoardLikeByBoard"
+	parameterType="map"
+	resultType="boardReact">
+	SELECT
+    	BOARD_NO AS boardNo,
+    	MEMBER_NO AS memberNo,
+    	BOARD_REACTION AS boardReaction,
+    	REPORT AS report
+	FROM TBL_BOARD_REACT
+	WHERE BOARD_NO = #{boardNo} AND MEMBER_NO = #{memberNo}
+	</select>
+	
+	<insert id="insertBoardLikeInfo"
+	parameterType="boardReact">
+	INSERT INTO
+		TBL_BOARD_REACT
+		(
+			BOARD_NO,
+			MEMBER_NO,
+			BOARD_REACTION
+		)
+		VALUES
+		(
+			#{boardNo},
+			#{memberNo},
+			#{boardReaction}
+		)		
+	</insert>
+	
+	<update id="updateBoardLikeByBoard"
+	parameterType="map">
+    UPDATE TBL_BOARD
+    <set>
+        <if test="like == 1">
+            BOARD_LIKE = BOARD_LIKE + 
+            <choose>
+                <when test="newAction">1</when>
+                <otherwise>-1</otherwise>
+            </choose>
+        </if>
+        <if test="like == -1">
+            BOARD_DISLIKE = BOARD_DISLIKE + 
+            <choose>
+                <when test="newAction">1</when>
+                <otherwise>-1</otherwise>
+            </choose>
+        </if>
+    </set>
+    WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<update id="updBoardByReact"
+	parameterType="boardReact">
+	UPDATE
+	    TBL_BOARD_REACT
+	    SET BOARD_REACTION = #{boardReaction}
+	    WHERE BOARD_NO = #{boardNo}
+	    AND MEMBER_NO = #{memberNo}
 	</update>
 </mapper>
