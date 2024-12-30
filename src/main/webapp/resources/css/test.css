@@ -327,7 +327,7 @@ display: block;
 
 .content {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1450px;
   /* padding-top: 20px; */
 /* padding-bottom : 10px; */
   margin: 50px auto 30px auto;
@@ -357,7 +357,7 @@ section.section {
 [class^="btn-"] { 
   cursor: pointer; 
   font-size: 14px;
-  padding: 9px 20px;
+  padding: 8px 15px;
   border: none;
   border-radius: 10px;
   font-family: ns-b;
@@ -379,6 +379,15 @@ section.section {
 }
 .btn-secondary:hover {
   background-color: rgba(143, 143, 143, 0.8);
+}
+.btn-tertiary {
+	border: 1px solid #DE0707;
+	background-color: #DE0707;
+	color: var(--gray8);
+}
+.btn-tertiary:hover {
+	background-color: rgba(222, 7, 7, 0.6);
+ 	border: 1px solid rgba(222, 7, 7, 0.1);
 }
 .btn-point {
   border: 1px solid var(--main3);
@@ -402,6 +411,13 @@ section.section {
 }
 .btn-secondary.outline:hover {
   background-color: rgba(143, 143, 143, 0.2);
+}
+.btn-tertiary.outline {
+	color: #DE0707;
+  	background-color: #DE0707;
+}
+.btn-tertiary:outline:hover {
+	background-color: rgba(222, 7, 7, 0.2);
 }
 .btn-point.outline {
   color: var(--main5);

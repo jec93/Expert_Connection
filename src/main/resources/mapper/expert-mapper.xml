@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="expertManagement">
+
+	<select id="selectExpertList" resultType="expertManagement">
+		SELECT e.receive_no as receiveNo, e.member_no as memberNo, e.expert_file as expertFile, e.permission_state as permissionState, 
+		       e.expert_grade as expertGrade, c.third_category_nm as thirdCategoryNm
+		FROM TBL_EXPERT_MANAGEMENT e
+		JOIN TBL_CODE c ON e.third_category_cd = c.third_category_cd
+	</select>
+
+	<select id="getExpertDetail" parameterType="string" resultType="expertManagement">
+	    SELECT 
+	        e.receive_no AS receiveNo,
+	        e.member_no AS memberNo,
+	        COALESCE(ex.member_nickname, kak.member_nickname, nav.member_nickname) AS memberNickname,
+	        COALESCE(ex.member_Addr, kak.member_Addr, nav.member_Addr) AS memberAddr,
+	        e.expert_file AS expertFile,
+	        e.permission_state AS permissionState,
+	        e.expert_grade AS expertGrade,
+	        c.third_category_nm AS thirdCategoryNm
+	    FROM 
+	        TBL_EXPERT_MANAGEMENT e
+	    LEFT JOIN 
+	        TBL_EXCO ex
+	    ON 
+	        e.member_no = ex.member_no
+	    LEFT JOIN 
+	        TBL_KAKAO_EXCO kak
+	    ON 
+	        e.member_no = kak.member_no
+	    LEFT JOIN 
+	        TBL_NAVER_EXCO nav
+	    ON 
+	        e.member_no = nav.member_no
+	    JOIN 
+	        TBL_CODE c
+	    ON 
+	        e.third_category_cd = c.third_category_cd
+	    WHERE 
+	        e.receive_no = #{receiveNo}
+	</select>
+</mapper>
+

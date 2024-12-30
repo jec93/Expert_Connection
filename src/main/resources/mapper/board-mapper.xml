@@ -304,7 +304,7 @@
 	                UNION ALL
 	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
 	            )W)NICK
-	      ON C.BOARD_NO = NICK.MEMBER_NO
+	      ON C.MEMBER_NO = NICK.MEMBER_NO
 	 LEFT JOIN (SELECT R.REPORT
 	            FROM (
 	                SELECT * FROM TBL_COMMENT_REACT

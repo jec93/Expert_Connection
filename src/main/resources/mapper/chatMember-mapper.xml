@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chatMember">
+
+	<select id="selectOneMember" parameterType="member" resultType="member">
+      SELECT 
+         exco.member_no AS memberNo,
+         exco.member_id AS memberId,
+         exco.member_pw AS memberPw,
+         exco.member_nickname AS memberNickname,
+         exco.member_phone AS memberPhone,
+         exco.member_addr AS memberAddr,
+         exco.member_gender AS memberGender,
+         exco.member_email AS memberEmail,
+         exco.enroll_date AS enrollDate,
+         whole.member_type AS memberType
+		 FROM tbl_exco exco
+		 JOIN tbl_whole_member whole
+		   ON exco.member_no = whole.member_no
+		WHERE exco.member_id = #{memberId}
+		  AND exco.member_pw = #{memberPw}
+   </select>
+   
+	<select id="selectMemberList" resultType="member">
+		select member_no as memberNo,
+               member_nickname as memberNickname
+		  from tbl_exco											 -- 테이블 변경할 것(임시 지정)
+	</select>
+	
+	<select id="selectRoomMembers" resultType="member">
+	    SELECT 
+		    m.MEMBER_NO AS memberNo,
+		    m.MEMBER_NICKNAME AS memberNickname
+		FROM tbl_chat_members cm
+		JOIN tbl_exco m 										-- 테이블 변경할 것(임시 지정)
+		ON cm.MEMBER_NO = m.MEMBER_NO
+		WHERE TRIM(cm.ROOM_ID) = #{roomId}
+	</select>
+</mapper>

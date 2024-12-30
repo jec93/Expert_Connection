@@ -9,12 +9,16 @@ public class BoardComment {
 	private String commentDate;
 	private String commentLike;
 	private String commentDislike;
+	
+	private int report;		// 댓글 신고
+
 	public BoardComment() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
 	public BoardComment(String commentNo, String boardNo, String memberNo, String commentWriter, String commentContent,
-			String commentDate, String commentLike, String commentDislike) {
+			String commentDate, String commentLike, String commentDislike, int report) {
 		super();
 		this.commentNo = commentNo;
 		this.boardNo = boardNo;
@@ -24,7 +28,9 @@ public class BoardComment {
 		this.commentDate = commentDate;
 		this.commentLike = commentLike;
 		this.commentDislike = commentDislike;
+		this.report = report;
 	}
+
 	public String getCommentNo() {
 		return commentNo;
 	}
@@ -73,4 +79,19 @@ public class BoardComment {
 	public void setCommentDislike(String commentDislike) {
 		this.commentDislike = commentDislike;
 	}
+	public int getReport() {
+		return report;
+	}
+	public void setReport(int report) {
+		this.report = report;
+	}
+
+	@Override
+	public String toString() {
+		return "BoardComment [commentNo=" + commentNo + ", boardNo=" + boardNo + ", memberNo=" + memberNo
+				+ ", commentWriter=" + commentWriter + ", commentContent=" + commentContent + ", commentDate="
+				+ commentDate + ", commentLike=" + commentLike + ", commentDislike=" + commentDislike + ", report="
+				+ report + "]";
+	}
+	
 }
