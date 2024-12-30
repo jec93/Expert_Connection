@@ -369,7 +369,7 @@ public class BoardService {
 	}
 	
 	//관리자페이지 게시판 구별 없이 모든 게시글 불러오기
-	public BoardPageData selectAllBoardList(int reqPage) {
+	public BoardPageData selectAllBoardList(int reqPage, String searchName) {
 		//한 페이지에서 보여줄 게시글의 갯수
 		int viewboardCnt = 10;
 		
@@ -391,7 +391,7 @@ public class BoardService {
 		//게시글 리스트
 		ArrayList<Board> list = (ArrayList<Board>) boardDao.selectAllboardList(map);
 		
-		System.out.println("boardService" + list);
+		System.out.println("boardService - boardList" + list);
 		
 		//전체 게시글 갯수
 		int totCnt = boardDao.selectAllBoardCount();
@@ -424,7 +424,7 @@ public class BoardService {
 		//시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
 		if(pageNo != 1) {
 			pageNavi += "<li>";
-			pageNavi += "<a class='page-item' href='/board/adminManageList.exco?reqPage=" + (pageNo - 1) + "'>이전</a>";
+			pageNavi += "<a class='page-item' href='/board/adminManageCommunity.exco?reqPage=" + (pageNo - 1) + "&boardType="+"&searchName="+searchName+"'>";
 			pageNavi += "<span class='material-icons'>chevron_left</span></a>";
 			pageNavi += "</li>";
 		}
@@ -434,9 +434,9 @@ public class BoardService {
 			pageNavi += "<li>";
 			
 			if(pageNo == reqPage) {
-				pageNavi += "<a class='page-item active-page' href='/board/adminManageList.exco?reqPage="+pageNo+"'>";
+				pageNavi += "<a class='page-item active-page' href='/board/adminManageCommunity.exco?reqPage="+pageNo+ "&boardType="+"&searchName="+searchName+"'>";
 			} else {
-				pageNavi += "<a class='page-item' href='/board/adminManageList.exco?reqPage="+pageNo+"'>"+pageNo + "</a>";
+				pageNavi += "<a class='page-item' href='/board/adminManageCommunity.exco?reqPage="+pageNo+ "&boardType="+"&searchName="+searchName+"'>";
 			}
 			pageNavi += pageNo + "</a></li>";
 			
@@ -450,7 +450,7 @@ public class BoardService {
 		//다음버튼
 		if(pageNo <= totPage) {
 			pageNavi += "<li>";
-			pageNavi += "<a class = 'page-item' href='/board/adminManageList.exco?reqPage=" + pageNo+"'>";
+			pageNavi += "<a class = 'page-item' href='/board/adminManageCommunity.exco?reqPage=" + pageNo + "&boardType="+"&searchName="+searchName+"'>";
 			pageNavi += "<span class='material-icons'>chevron_right</span></a>";
 			pageNavi += "</li>";
 		}
@@ -463,7 +463,7 @@ public class BoardService {
 	}
 
 	//관리자페이지 - 커뮤니티관리(모든 댓글 불러오기)
-	public CommentPageData selectAllCommentList(Integer reqPage) {
+	public CommentPageData selectAllCommentList(Integer reqPage, String searchName) {
 		//한 페이지에서 보여줄 게시글의 갯수
 		int viewboardCnt = 10;
 		
@@ -482,12 +482,12 @@ public class BoardService {
 		map.put("end", end);
 		/* map.put("boardType", boardType); */
 		
-		//게시글 리스트
+		//댓글 리스트
 		ArrayList<BoardComment> list = (ArrayList<BoardComment>) boardDao.selectAllCommentList(map);
 		
-		System.out.println("boardService" + list);
+		System.out.println("boardService - commentList" + list);
 		
-		//전체 게시글 갯수
+		//전체 댓글 갯수
 		int totCnt = boardDao.selectAllCommentCount();
 		
 		//전체 페이지 갯수
@@ -518,7 +518,7 @@ public class BoardService {
 		//시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
 		if(pageNo != 1) {
 			pageNavi += "<li>";
-			pageNavi += "<a class='page-item' href='/board/adminManageComment.exco?reqPage=" + (pageNo - 1) + "'>이전</a>";
+			pageNavi += "<a class='page-item' href='/board/adminManageComment.exco?reqPage=" + (pageNo - 1) + "&searchName="+searchName+"'>";
 			pageNavi += "<span class='material-icons'>chevron_left</span></a>";
 			pageNavi += "</li>";
 		}
@@ -528,9 +528,9 @@ public class BoardService {
 			pageNavi += "<li>";
 			
 			if(pageNo == reqPage) {
-				pageNavi += "<a class='page-item active-page' href='/board/adminManageComment.exco?reqPage="+pageNo+"'>";
+				pageNavi += "<a class='page-item active-page' href='/board/adminManageComment.exco?reqPage="+ pageNo + "&searchName="+searchName+"'>";
 			} else {
-				pageNavi += "<a class='page-item' href='/board/adminManageComment.exco?reqPage="+pageNo+"'>"+pageNo + "</a>";
+				pageNavi += "<a class='page-item' href='/board/adminManageComment.exco?reqPage="+ pageNo + "&searchName="+searchName+"'>";
 			}
 			pageNavi += pageNo + "</a></li>";
 			
@@ -544,7 +544,7 @@ public class BoardService {
 		//다음버튼
 		if(pageNo <= totPage) {
 			pageNavi += "<li>";
-			pageNavi += "<a class = 'page-item' href='/board/adminManageComment.exco?reqPage=" + pageNo+"'>";
+			pageNavi += "<a class = 'page-item' href='/board/adminManageComment.exco?reqPage=" + pageNo + "&searchName="+searchName+"'>";
 			pageNavi += "<span class='material-icons'>chevron_right</span></a>";
 			pageNavi += "</li>";
 		}
@@ -552,6 +552,7 @@ public class BoardService {
 		
 		CommentPageData pd = new CommentPageData(list, pageNavi);
 				
+		System.out.println(pd.getList());
 		return pd;
 	}
 

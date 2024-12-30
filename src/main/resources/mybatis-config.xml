@@ -19,6 +19,7 @@
 		<typeAlias type="kr.or.iei.board.model.vo.CommentReact" alias="commentReact"/>
 		<typeAlias type="kr.or.iei.board.model.vo.MoveStin" alias="moveStin"/>
 		<typeAlias type="kr.or.iei.expert.model.vo.ExpertManagement" alias="expertManagement"/>
+		<typeAlias type="kr.or.iei.admin.model.vo.Report" alias="report"/>
 	</typeAliases>
 	
 	

@@ -67,7 +67,7 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
                        	<a href="/member/mypageFrm.exco"><img id="icon_mypage" src="/resources/images/icon_mypage.png">마이페이지</a>
                        	</c:if>
                        	<c:if test="${sessionScope.loginMember.memberId eq 'admin'}">
-                       	<a href="/board/adminListPage.exco?reqPage=1&boardType=6&boardTypeNm=6"><img id="icon_mypage" src="/resources/images/icon_mypage.png">관리자페이지</a>
+                       	<a href="/board/adminPage.exco?reqPage=1&boardType=6&boardTypeNm=6"><img id="icon_mypage" src="/resources/images/icon_mypage.png">관리자페이지</a>
                        	</c:if>
                       </li>
                        <li class="logout_box">

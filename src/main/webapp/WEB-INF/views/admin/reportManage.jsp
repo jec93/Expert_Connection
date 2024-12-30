@@ -21,7 +21,7 @@
 							<li>회원관리</li>
 						</ul>
 						<ul class="side-menu">
-							<li><a href="#">신고내역 관리</a></li>
+							<li><a href="/admin/memberManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
 							<li><a href="#">전문가 승인 검토</a></li>
 						</ul>
 						<ul class="side-menu-title">
@@ -31,7 +31,7 @@
 							<li><a href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항 관리</a></li>
 							<li><a href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ 관리</a></li>
 							<li><a href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6">1:1문의 작성</a></li>
-							<li><a href="/board/adminManageList.exco?reqPage=1">커뮤니티 관리</a></li>
+							<li><a href="/board/adminManageCommunity.exco?reqPage=1&boardType=${board.boardType}&searchName=board">커뮤니티 관리</a></li>
 							<li><a href="#">카테고리 관리</a></li>
 							<li><a href="/admin/reportManageFrm.exco">신고항목 관리</a></li>
 						</ul>

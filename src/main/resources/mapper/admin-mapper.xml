@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="report">
+
+<!-- 신고내역 목록 조회  -->
+<select id="selectAllReportList"
+		parameterType = "hashmap"
+		resultType = "report">
+SELECT REPORT_NO AS REPORTNO,
+		REPORT_TYPE AS REPORTTYPE,
+		REPORT_DATE AS REPORTDATE,
+        NICK01.MEMBER_NICKNAME AS REPORTER,
+        NICK02.MEMBER_NICKNAME AS SUSPECT,
+		REPORT_RESULT AS REPORTRESULT,
+		TARGET_NO AS TARGETNO,
+		FIRST_CATEGORY_CD AS FIRSTCATEGORYCD,
+		FIRST_CATEGORY_NM AS FIRSTCATEGORYNM,
+		SECOND_CATEGORY_CD AS SECONDCATEGORYCD,
+		SECOND_CATEGORY_NM AS SECONDCATEGORYNM,
+		THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+		THIRD_CATEGORY_NM AS THIRDCATEGORYNM
+FROM (
+	      SELECT ROWNUM RNUM, R.* 
+	      FROM
+               ( 
+	               SELECT R.*
+	               FROM TBL_REPORT R
+	               ORDER BY R.REPORT_DATE DESC
+               ) R
+	      ) R
+    LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+            FROM (
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+            )W)NICK01
+    ON R.REPORTER = NICK01.MEMBER_NO
+    LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+            FROM (
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+            )W)NICK02
+    ON R.SUSPECT = NICK02.MEMBER_NO
+    WHERE RNUM BETWEEN #{START} AND #{END}
+    ORDER BY R.REPORT_DATE DESC
+</select>
+
+<!-- 신고내역 갯수 조회 -->
+<select id="selectAllReportCount"
+		resultType="_int">
+SELECT COUNT(*)
+FROM TBL_REPORT
+</select>
+</mapper>

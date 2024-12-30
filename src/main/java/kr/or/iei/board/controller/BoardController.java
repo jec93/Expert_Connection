@@ -228,7 +228,7 @@ public class BoardController {
 	}
 	
 	//관리자페이지 - 1:1문의 목록 불러오기
-	@GetMapping("adminListPage.exco")
+	@GetMapping("adminPage.exco")
 	public String getListAdminPage(Integer reqPage, Integer boardType, String boardTypeNm, Model model) {
 		
 	    // null 체크 및 예외 처리
@@ -360,18 +360,27 @@ public class BoardController {
         return response;
     }
     
-  //관리자페이지 - 커뮤니티 관리(게시판 구별 없이 게시글 전부 불러오기)
-  	@GetMapping("adminManageList.exco")
-  	public String getManageListAdminPage(Integer reqPage, Integer boardType, Model model) {		
+    //관리자페이지 - 커뮤니티 관리(게시판 구별 없이 게시글 전부 불러오기)
+  	@GetMapping("adminManageCommunity.exco")
+  	public String getManageListAdminPage(Integer reqPage, String searchName, Integer boardType, Model model) {		
   		
   	    // BoardPageData 호출
-  	    BoardPageData pd = boardservice.selectAllBoardList(reqPage);
+  	    BoardPageData pd = null;
+  	    
+  	    if(searchName.equals("board")) {
+  	    	pd = boardservice.selectAllBoardList(reqPage, searchName);
+		} else if(searchName.equals("null")){ 
+			pd = boardservice.selectAllBoardList(reqPage, searchName);
+		} else {
+  	    	pd = boardservice.selectAllBoardList(reqPage, searchName);
+  	    }
 
   	    // Model에 데이터 추가
   	    model.addAttribute("boardList", pd.getList());
   	   // model.addAttribute("boardTypeNm", boardTypeNm); // 숫자로 변환된 값을 사용
   	    model.addAttribute("pageNavi", pd.getPageNavi());
   		model.addAttribute("boardType", boardType);
+  		model.addAttribute("searchName", searchName);
   		
   		//System.out.println(pd.getList());
   		
@@ -380,14 +389,68 @@ public class BoardController {
   	
   	//관리자페이지 - 커뮤니티관리(모든 댓글 불러오기)
   	@GetMapping("adminManageComment.exco")
-  	public String getManageCommentList(Integer reqPage, Model model) {
+  	public String getManageCommentList(Integer reqPage, String searchName, Model model) {
   		
-  		CommentPageData pd = boardservice.selectAllCommentList(reqPage);
-  		
+  		CommentPageData pd = null;
+  		if(searchName.equals("comment")) {
+  			pd = boardservice.selectAllCommentList(reqPage, searchName);
+		} else if(searchName.equals("null")) {
+			pd = boardservice.selectAllCommentList(reqPage, searchName);
+		} else {
+  			pd = boardservice.selectAllCommentList(reqPage, searchName);
+  		}
+  		  		
   		model.addAttribute("commentList", pd.getList());
   		model.addAttribute("pageNavi", pd.getPageNavi());
+  		model.addAttribute("searchName", searchName);
+  		
+  		//System.out.println("commentList 2 : " +pd.getList());
   		
   		return "admin/communityManage";
   	}
   	
-  }
+  	//관리자페이지 - 커뮤니티 관리, 게시글 삭제
+  	@GetMapping("adminDeleteBoard.exco")
+	public String adminDeleteBoardByBoardNo(String boardNo, int boardType, String searchName, HttpServletRequest request, Model model) {
+		ArrayList<BoardFile> fileList = boardservice.deleteBoardByBoardNo(boardNo);
+		
+		if (fileList != null && fileList.size() > 0) {
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/board/");
+
+			for (BoardFile file : fileList) {
+				File delFile = new File(savePath + file.getFilePath());
+
+				if (delFile.exists()) {
+					delFile.delete();
+				}
+			}
+		}
+		
+		model.addAttribute("title", "성공");
+		model.addAttribute("msg", "게시글 삭제가 완료되었습니다.");
+		model.addAttribute("icon", "success");
+		model.addAttribute("loc", "adminManageList.exco?reqPage=1&boardType="+boardType+"&searchName="+searchName);
+		
+		return "common/msg";
+		//return "redirect:/board/adminManageList.exco?reqPage=1&boardType="+boardType+"&searchName=" + searchName;
+	}
+  	
+  	//관리자페이지 - 커뮤니티 관리, 댓글 삭제
+  	@GetMapping("adminDeleteComment.exco")
+    public String adminDeleteComment(String commentNo, String boardNo, Model model) {
+    	int result = boardservice.deleteCommentByCommentNo(commentNo);
+    	if(result > 0) {
+    		model.addAttribute("title", "성공");
+    		model.addAttribute("msg", "댓글 삭제를 완료했습니다.");
+    		model.addAttribute("icon", "success");
+    		model.addAttribute("loc", "adminManageComment.exco?reqPage=1&searchName=comment");
+    	}else {
+    		model.addAttribute("title", "오류");
+    		model.addAttribute("msg", "댓글 삭제에 실패했습니다.");
+    		model.addAttribute("icon", "error");
+    		model.addAttribute("loc", "adminManageComment.exco?reqPage=1&searchName=comment");    		
+    	}
+		return "common/msg";
+    }
+  	
+}
