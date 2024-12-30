@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.ServletOutputStream;
@@ -25,13 +27,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.iei.board.model.service.BoardService;
 import kr.or.iei.board.model.vo.Board;
+import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.board.model.vo.BoardPageData;
 import kr.or.iei.board.model.vo.BoardType;
+import kr.or.iei.board.model.vo.CommentPageData;
 
 @Controller("boardController")
 @RequestMapping("/board/")
@@ -106,7 +111,7 @@ public class BoardController {
 		return "common/msg";
 	}
 
-	@GetMapping("/viewBoardFrm.exco")
+	@GetMapping("viewBoardFrm.exco")
 	public String viewFrm(String boardNo, String commentChk, Model model) { // 댓글 작성 후 돌아오는 화면에서 조회수를 늘리지 않기 위한
 																			// commentChk변수
 		Board board = boardservice.viewFrm(boardNo, commentChk);
@@ -117,7 +122,7 @@ public class BoardController {
 		return "board/view";
 	}
 
-	@GetMapping("/updateFrm.exco")
+	@GetMapping("updateFrm.exco")
 	public String updateFrm(String boardNo, Model model) {
 		// 기존 게시글 정보 가져오기(viewFrm)의 경우 접근시 조회수가 증가하므로 다르게 접근
 		Board board = boardservice.connectView(boardNo);
@@ -126,7 +131,7 @@ public class BoardController {
 		return "board/updateFrm";
 	}
 
-	@PostMapping("/update.exco")
+	@PostMapping("update.exco")
 	public String updateBoard(@RequestParam("boardNo") String boardNo, @RequestParam("boardTitle") String boardTitle,@RequestParam("boardType") Integer boardType,
 			@RequestParam("boardContent") String boardContent,
 			@RequestParam(value = "files", required = false) MultipartFile[] files, // 기존 파일을 MultipartFile[]로 받음
@@ -251,4 +256,138 @@ public class BoardController {
 
 	    return "member/mypage_p";
 	}
-}
+	
+    @GetMapping("insertComment.exco")
+    public String isertComment(String boardNo, String memberNo, String commentContent, Model model) {
+    	if (commentContent == null || commentContent.trim().isEmpty()) {
+			// 이전 페이지(뷰) URL 가져오기
+    		model.addAttribute("title", "오류");
+    		model.addAttribute("msg", "내용입력해주세요");
+    		model.addAttribute("icon", "error");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo);
+			return "common/msg";
+		}
+    	
+    	BoardComment comment = new BoardComment();
+    	comment.setBoardNo(boardNo);
+    	comment.setMemberNo(memberNo);
+    	comment.setCommentContent(commentContent);
+    	int result = boardservice.insertCommentByComment(comment);
+    	
+    	if(result>0) {
+    		model.addAttribute("title", "성공");
+    		model.addAttribute("msg", "댓글 등록 완료");
+    		model.addAttribute("icon", "success");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}else {
+    		model.addAttribute("title", "오류");
+    		model.addAttribute("msg", "댓글 등록 실패");
+    		model.addAttribute("icon", "error");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");    		
+    	}
+		return "common/msg";
+    }
+    
+    @GetMapping("deleteComment.exco")
+    public String deleteComment(String commentNo, String boardNo, Model model) {
+    	int result = boardservice.deleteCommentByCommentNo(commentNo);
+    	if(result>0) {
+    		model.addAttribute("title", "성공");
+    		model.addAttribute("msg", "댓글 삭제 완료");
+    		model.addAttribute("icon", "success");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}else {
+    		model.addAttribute("title", "오류");
+    		model.addAttribute("msg", "댓글 삭제 실패");
+    		model.addAttribute("icon", "error");
+    		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");    		
+    	}
+		return "common/msg";
+    }
+    
+    @PostMapping("updateComment.exco")
+    public String updateCommentByComment(String commentNo, String boardNo, String commentContent, Model model) {
+    	BoardComment comment = new BoardComment();
+    	comment.setCommentNo(commentNo);
+    	comment.setCommentContent(commentContent);
+    	
+    	int result = boardservice.updateCommentByComment(comment);
+    	if(result >0 ) {
+    		model.addAttribute("title","알림");
+    		model.addAttribute("msg","댓글 수정이 완료되었습니다.");
+    		model.addAttribute("icon","success");
+    		model.addAttribute("loc","viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}else {
+    		model.addAttribute("title","에러");
+    		model.addAttribute("msg","댓글 수정중 오류 발생");
+    		model.addAttribute("icon","error");
+    		model.addAttribute("loc","viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    	}
+    	return "common/msg";
+    }
+    
+    @GetMapping(value="updCmtLike.exco", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public Map<String, String> chkLikeByComment(String boardNo, String commentNo, String memberNo, int like) {
+        String[] result = boardservice.chkLikeByComment(boardNo, commentNo, memberNo, like);
+        Map<String, String> response = new HashMap<String, String>();
+        
+        if (Integer.parseInt(result[0]) > 0) {
+            response.put("cmtReact", result[2]);
+            response.put("message", result[1]);
+        } else {
+            response.put("cmtReact", "0");
+            response.put("message", "0");
+        }
+        return response;
+    }
+    
+    @GetMapping(value = "getCmtStatus.exco", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public Map<String, Object> getCmtStatus(String boardNo, String commentNo, String memberNo) {
+        // 댓글 상태를 가져오는 서비스 호출
+        String cmtReact = boardservice.getCommentReaction(boardNo, commentNo, memberNo);
+        System.out.println("cmtReact 넘어온 값:"+ cmtReact);
+        Map<String, Object> response = new HashMap<>();
+        if (cmtReact != null) {
+            response.put("cmtReact", cmtReact); // 현재 상태 반환 (1, -1, 0 등)
+            response.put("status", "success");
+        } else {
+            response.put("cmtReact", "0"); // 기본 상태
+            response.put("status", "error");
+            response.put("message", "댓글 상태를 가져오는 데 실패했습니다.");
+        }
+        return response;
+    }
+    
+  //관리자페이지 - 커뮤니티 관리(게시판 구별 없이 게시글 전부 불러오기)
+  	@GetMapping("adminManageList.exco")
+  	public String getManageListAdminPage(Integer reqPage, Integer boardType, Model model) {		
+  		
+  	    // BoardPageData 호출
+  	    BoardPageData pd = boardservice.selectAllBoardList(reqPage);
+
+  	    // Model에 데이터 추가
+  	    model.addAttribute("boardList", pd.getList());
+  	   // model.addAttribute("boardTypeNm", boardTypeNm); // 숫자로 변환된 값을 사용
+  	    model.addAttribute("pageNavi", pd.getPageNavi());
+  		model.addAttribute("boardType", boardType);
+  		
+  		//System.out.println(pd.getList());
+  		
+  	    return "admin/communityManage";
+  	}
+  	
+  	//관리자페이지 - 커뮤니티관리(모든 댓글 불러오기)
+  	@GetMapping("adminManageComment.exco")
+  	public String getManageCommentList(Integer reqPage, Model model) {
+  		
+  		CommentPageData pd = boardservice.selectAllCommentList(reqPage);
+  		
+  		model.addAttribute("commentList", pd.getList());
+  		model.addAttribute("pageNavi", pd.getPageNavi());
+  		
+  		return "admin/communityManage";
+  	}
+  	
+  }

@@ -10,8 +10,10 @@
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <style>
 .circle-button {
-   width: 90px;
-   height: 90px;
+   width: 120px;
+   height: 120px;
+   overflow : hidden;
+   position : relative;
    border-radius: 50%;
    color: #fff;
    font-size: 12px;
@@ -120,6 +122,37 @@
    display : inline-block;
    margin-left : 80px;
 }
+.auto-response{
+   margin-right: 80px;
+}
+.fifth-group{
+   margin-left : 350px;
+   margin-top : 70px;
+}
+.fifth-title{
+   font-weight : bold;
+   font-size : 18px;
+   margin-bottom : 10px;
+}
+.portfolio{
+   display : inline-block;
+}
+.introduce{
+   display : inline-block;
+   margin-left : 80px;
+}
+.qualifications{
+   display : inline-block;
+   margin-left : 80px;
+}
+.profile-img {
+    width: 100%;           /* 버튼 너비에 맞춤 */
+    height: 100%;          /* 버튼 높이에 맞춤 */
+    object-fit: cover;     /* 이미지 비율 유지하면서 잘라냄 */
+    position: absolute;    /* 컨테이너 내 배치 */
+    top: 0;
+    left: 0;
+}
 </style>
 </head>
 <body>
@@ -134,7 +167,11 @@
 
          <div class="button-group-container">
             <div class="button-group">
-               <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button"><span>프로필 사진</span></a>
+                <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button">
+           		 <img src="${profileImagePath != null ? profileImagePath : '/resources/logo/expert_connection_favicon.png'}" 
+                 alt="프로필 사진" class="profile-img">
+            <span>프로필 사진</span>
+            </a>
             </div>
             <div>
                <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
@@ -179,7 +216,6 @@
                   <a href="#" class="site-introduce">사이트 소개</a>
                </div>
          </div>
-
       </div>
    </div>
        </c:when>
@@ -189,12 +225,15 @@
          <input type="hidden" id="memberNo" name="memberNo"
             value="${loginMember.memberNo}">
 
-         <div class="button-group-container">
+        <div class="button-group-container">
             <div class="button-group">
-               <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button"><span>프로필 사진</span></a>
-            </div>
+                <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button">
+           		 <img src="${profileImagePath != null ? profileImagePath : '/resources/logo/expert_connection_favicon.png'}" 
+                 alt="프로필 사진" class="profile-img">
+            <span>프로필 사진</span>
+            </a>
             <div>
-               <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
+               <h3 class="memberNickname">${loginMember.memberNickname} 전문가님</h3>
                <span class="memberEmail">${loginMember.memberEmail}</span>
             </div>
             <div class="update">
@@ -204,25 +243,21 @@
          </div>
          
          <div class="first-group">
-            <div class="first-title">서비스 이용내역</div>
-               <div class="first-children">
-                  <a href="#" class="usage-detail">사용내역💰</a>
-                  <a href="#" class="save-expert">찜한 전문가</a>
-                  <a href="#" class="review">리뷰</a>
-               </div>
+            <div class="first-title"><a href="#" class="usage-detail">사용내역💰</a></div>
          </div>
          
          <div class="second-group">
-            <div class="second-title">채팅</div>
+            <div class="second-title">커뮤니티</div>
                <div class="second-children">
-                  <a href="#" class="community-post">커뮤니티 작성글</a>
-                  <a href="#" class="comment">댓글</a>
+                  <a href="#" class="community-post">커뮤니티 작성글/댓글</a>
+                  <a href="#" class="comment">전문가 게시판</a>
                </div>
          </div>
          
          <div class="third-group">
-            <div class="third-title">커뮤니티</div>
+            <div class="third-title">채팅</div>
                <div class="third-children">
+               	  <a href="#" class="auto-response">자동응답 설정</a>
                   <a href="#" class="chat-history">채팅 내역</a>
                </div>
          </div>
@@ -236,7 +271,16 @@
                   <a href="#" class="site-introduce">사이트 소개</a>
                </div>
          </div>
-
+                 
+         <div class="fifth-group">
+         <div class="fifth-title">PR</div>
+               <div class="fifth-children">
+                  <a href="#" class="portfolio">포트폴리오</a>
+                  <a href="#" class="introduce">소개</a>
+                  <a href="#" class="qualifications">자격증</a>
+               </div>
+         </div>
+		</div>
       </div>
    </div>
        </c:when>
@@ -248,8 +292,11 @@
 
          <div class="button-group-container">
             <div class="button-group">
-               <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button"><span>프로필 사진</span></a>
-            </div>
+                <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button">
+           		 <img src="${profileImagePath != null ? profileImagePath : '/resources/logo/expert_connection_favicon.png'}" 
+                 alt="프로필 사진" class="profile-img">
+            <span>프로필 사진</span>
+            </a>
             <div>
                <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
                <span class="memberEmail">${loginMember.memberEmail}</span>
@@ -293,7 +340,7 @@
                   <a href="#" class="site-introduce">사이트 소개</a>
                </div>
          </div>
-
+	   </div>
       </div>
    </div>
        </c:when>

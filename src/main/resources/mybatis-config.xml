@@ -14,8 +14,9 @@
 		<typeAlias type="kr.or.iei.board.model.vo.BoardComment" alias="boardComment"/>
 		<typeAlias type="kr.or.iei.chat.model.vo.Room" alias="room"/>
       	<typeAlias type="kr.or.iei.chat.model.vo.Chat" alias="chat"/>
+		<typeAlias type="kr.or.iei.board.model.vo.CommentReact" alias="commentReact"/>
+		<typeAlias type="kr.or.iei.board.model.vo.MoveStin" alias="moveStin"/>
 	</typeAliases>
-	
 	
 	
 </configuration>

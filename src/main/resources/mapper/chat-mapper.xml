@@ -75,7 +75,7 @@
 	FROM tbl_chat a
 	JOIN tbl_exco m 									-- 테이블 변경할 것(임시 지정)
 	ON a.member_no = m.member_no
-	WHERE a.room_id = #{_parameter}
+	WHERE TRIM(a.room_id) = #{_parameter}
 	ORDER BY a.msg_date
 	</select>
 	
@@ -124,7 +124,7 @@
 	<update id="updateHiddenStatus" parameterType="map">
 	update tbl_chat_members
 	   set is_hidden = #{isHidden}
-	 where room_id = #{roomId}
+	 where TRIM(room_id) = #{roomId}
 	   and member_no = #{memberNo}
 	</update>
 	
@@ -132,14 +132,14 @@
 	<select id="getRecipientIdsByRoomId" parameterType="string" resultType="string">
     SELECT member_no
       FROM tbl_chat_members
-     WHERE room_id = #{roomId}
+     WHERE TRIM(room_id) = #{roomId}
        AND status = 'Y' -- 활성 상태인 사용자만 조회
 	</select>
 	
 	<update id="deleteRoom" parameterType="chat">
 	update tbl_chat_members
 	   set status = 'N'
-	 where room_id = #{roomId}
+	 where TRIM(room_id) = #{roomId}
 	   and member_no = #{memberNo} 
 	</update>
   

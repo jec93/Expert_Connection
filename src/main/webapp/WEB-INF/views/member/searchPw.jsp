@@ -152,10 +152,9 @@ button:hover {
             alert("아이디와 이메일을 입력해 주세요.");
             return;
         }
-       
 
         $.ajax({
-            url: '/member/searchPw.exco', // 서블릿 URL
+            url: '/member/searchPw.exco', 
             type: 'POST',
             data: {
                 memberId: memberId,

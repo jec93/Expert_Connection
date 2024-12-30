@@ -1,5 +1,8 @@
 package kr.or.iei.member.model.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,6 +55,24 @@ public class MemberDao {
 	
 	public int updateMember(Member member) {
 		return sqlSession.update("member.updateMember", member);
+	}
+	public String searchMemberId(String memberPhone, String memberEmail) {
+		Map<String, String> params = new HashMap<>();
+        params.put("memberPhone", memberPhone);
+        params.put("memberEmail", memberEmail);
+		return sqlSession.selectOne("member.searchMemberId", params);
+	}
+	public String searchMemberPw(String memberId, String memberEmail) {
+		Map<String, String> params = new HashMap<>();
+		params.put("memberId", memberId);
+		params.put("memberEmail", memberEmail);
+		return sqlSession.selectOne("member.searchMemberPw", params);
+	}
+	public int updateMemberPassword(String memberId, String hashedPassword) {
+		Map<String, String> params = new HashMap<>();
+		params.put("memberId", memberId);
+		params.put("hashedPassword", hashedPassword);
+		return sqlSession.update("member.updateMemberPw", params);
 	}
 
 }

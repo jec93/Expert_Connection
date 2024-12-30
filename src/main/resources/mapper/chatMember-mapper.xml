@@ -34,6 +34,6 @@
 		FROM tbl_chat_members cm
 		JOIN tbl_exco m 										-- 테이블 변경할 것(임시 지정)
 		ON cm.MEMBER_NO = m.MEMBER_NO
-		WHERE cm.ROOM_ID = #{roomId}
+		WHERE TRIM(cm.ROOM_ID) = #{roomId}
 	</select>
 </mapper>

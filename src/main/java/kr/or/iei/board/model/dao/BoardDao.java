@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.board.model.vo.BoardFile;
+import kr.or.iei.board.model.vo.CommentReact;
+import kr.or.iei.board.model.vo.MoveStin;
 
 @Repository("boardDao")
 public class BoardDao {
@@ -85,4 +87,68 @@ public class BoardDao {
 		sqlSession.delete("board.deleteBoardFileByFileId",fileNo);
 	}
 
+	public int insertCommentByComment(BoardComment comment) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("board.insertCommentByComment",comment);
+	}
+
+	public int deleteCommentByCommentNo(String commentNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("board.deleteCommentByCommentNo", commentNo);
+	}
+
+	public int updateCommentByComment(BoardComment comment) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updateCommentByComment",comment);
+	}
+
+	//관리자페이지 - 게시판 분류 없이 모든 게시글 조회
+	public List<Board> selectAllboardList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("board.selectAllBoardList", map);
+	}
+	
+	//관리자페이지 - 게시판 분류 없이 모든 게시글 갯수 조회
+	public int selectAllBoardCount() {
+		return sqlSession.selectOne("board.selectAllBoardCount");
+	}
+
+	//관리자페이지 - 모든 댓글 조회
+	public List<BoardComment> selectAllCommentList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("board.selectAllCommentList", map);
+	}
+	
+	//관리자페이지 - 모든 댓글 갯수 조회
+	public int selectAllCommentCount() {
+		return sqlSession.selectOne("board.selectAllCommentCount");
+	}
+	
+	public CommentReact chkLikeByComment(HashMap<String, String> infoNumMap) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("board.chkLikeByComment",infoNumMap);
+	}
+
+	public int updReactByReact(CommentReact commentReact) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updReactByReact",commentReact);
+	}
+
+	public int updateComLikeCnt(MoveStin moveData) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updateComLikeCnt",moveData);
+	}
+
+	public int updateComLikeByReact(CommentReact commentReact) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("board.updateComLikeByReact",commentReact);
+	}
+
+	public int insertComLikeInfo(CommentReact ractInfo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("board.insertComLikeInfo",ractInfo);
+	}
+
+	public void updateCommentLikeByReact(HashMap<String, Object> commentParamMap) {
+		// TODO Auto-generated method stub
+	    sqlSession.update("board.updateCommentLikeByReact", commentParamMap);
+	}
 }

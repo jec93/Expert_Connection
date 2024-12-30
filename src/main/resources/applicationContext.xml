@@ -37,6 +37,20 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <property name="host" value="smtp.gmail.com" />
+    <property name="port" value="587" />
+    <property name="username" value="expertconnection250114@gmail.com" />
+    <property name="password" value="vexc aihf ykuh uoia" />
+    <property name="javaMailProperties">
+        <props>
+            <prop key="mail.smtp.auth">true</prop>
+            <prop key="mail.smtp.starttls.enable">true</prop>
+            <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+        </props>
+    </property>
+    
+</bean>
 	<tx:annotation-driven/>
 	
 	<websocket:handlers>

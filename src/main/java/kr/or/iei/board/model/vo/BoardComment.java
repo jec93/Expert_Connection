@@ -3,6 +3,7 @@ package kr.or.iei.board.model.vo;
 public class BoardComment {
 	private String commentNo;
 	private String boardNo;
+	private String memberNo;
 	private String commentWriter;
 	private String commentContent;
 	private String commentDate;
@@ -12,11 +13,12 @@ public class BoardComment {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public BoardComment(String commentNo, String boardNo, String commentWriter, String commentContent,
+	public BoardComment(String commentNo, String boardNo, String memberNo, String commentWriter, String commentContent,
 			String commentDate, String commentLike, String commentDislike) {
 		super();
 		this.commentNo = commentNo;
 		this.boardNo = boardNo;
+		this.memberNo = memberNo;
 		this.commentWriter = commentWriter;
 		this.commentContent = commentContent;
 		this.commentDate = commentDate;
@@ -34,6 +36,12 @@ public class BoardComment {
 	}
 	public void setBoardNo(String boardNo) {
 		this.boardNo = boardNo;
+	}
+	public String getMemberNo() {
+		return memberNo;
+	}
+	public void setMemberNo(String memberNo) {
+		this.memberNo = memberNo;
 	}
 	public String getCommentWriter() {
 		return commentWriter;
@@ -65,5 +73,4 @@ public class BoardComment {
 	public void setCommentDislike(String commentDislike) {
 		this.commentDislike = commentDislike;
 	}
-	
 }
