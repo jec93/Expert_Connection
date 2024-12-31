@@ -164,7 +164,7 @@
 							<h4 class="mypage-group-title">회원관리</h4>
 							<div class="adminPage_link_box">
 							<ul class="adminPage_link_box">
-								<li><a id="adminPage_link" href="/admin/memberManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
+								<li><a id="adminPage_link" href="/admin/memberReportManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
 								<li><a id="adminPage_link" href="#">전문가 승인 검토</a></li>
 							</ul>
 							</div>

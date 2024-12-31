@@ -91,8 +91,8 @@ public class BoardService {
 		//시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
 		if(pageNo != 1) {
 			pageNavi += "<li>";
-			pageNavi += "<a class='page-item' href='/board/list.exco?reqPage=" + (pageNo - 1) + "'>이전</a>";
-			pageNavi += "<span class='material-icons'>chevron_left</span></a>";
+			pageNavi += "<a class='page-item' href='/board/list.exco?reqPage=" + (pageNo - 1) + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+ "'>";
+			pageNavi += "<span class='material-icons'> < </span></a>";
 			pageNavi += "</li>";
 		}
 		
@@ -103,7 +103,7 @@ public class BoardService {
 			if(pageNo == reqPage) {
 				pageNavi += "<a class='page-item active-page' href='/board/list.exco?reqPage="+pageNo+"&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>";
 			} else {
-				pageNavi += "<a class='page-item' href='/board/list.exco?reqPage="+ pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>"+pageNo + "</a>";
+				pageNavi += "<a class='page-item' href='/board/list.exco?reqPage="+ pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>";
 			}
 			pageNavi += pageNo + "</a></li>";
 			
@@ -118,7 +118,7 @@ public class BoardService {
 		if(pageNo <= totPage) {
 			pageNavi += "<li>";
 			pageNavi += "<a class = 'page-item' href='/board/list.exco?reqPage=" + pageNo + "&boardType="+boardType+"&boardTypeNm="+boardTypeNm+"'>";
-			pageNavi += "<span class='material-icons'>chevron_right</span></a>";
+			pageNavi += "<span class='material-icons'> > </span></a>";
 			pageNavi += "</li>";
 		}
 		pageNavi += "</ul>";
@@ -427,7 +427,7 @@ public class BoardService {
 		if(pageNo != 1) {
 			pageNavi += "<li>";
 			pageNavi += "<a class='page-item' href='/board/adminManageCommunity.exco?reqPage=" + (pageNo - 1) + "&boardType="+"&searchName="+searchName+"'>";
-			pageNavi += "<span class='material-icons'>chevron_left</span></a>";
+			pageNavi += "<span class='material-icons'> < </span></a>";
 			pageNavi += "</li>";
 		}
 		
@@ -453,7 +453,7 @@ public class BoardService {
 		if(pageNo <= totPage) {
 			pageNavi += "<li>";
 			pageNavi += "<a class = 'page-item' href='/board/adminManageCommunity.exco?reqPage=" + pageNo + "&boardType="+"&searchName="+searchName+"'>";
-			pageNavi += "<span class='material-icons'>chevron_right</span></a>";
+			pageNavi += "<span class='material-icons'> > </span></a>";
 			pageNavi += "</li>";
 		}
 		pageNavi += "</ul>";
@@ -521,7 +521,7 @@ public class BoardService {
 		if(pageNo != 1) {
 			pageNavi += "<li>";
 			pageNavi += "<a class='page-item' href='/board/adminManageComment.exco?reqPage=" + (pageNo - 1) + "&searchName="+searchName+"'>";
-			pageNavi += "<span class='material-icons'>chevron_left</span></a>";
+			pageNavi += "<span class='material-icons'> < </span></a>";
 			pageNavi += "</li>";
 		}
 		
@@ -547,7 +547,7 @@ public class BoardService {
 		if(pageNo <= totPage) {
 			pageNavi += "<li>";
 			pageNavi += "<a class = 'page-item' href='/board/adminManageComment.exco?reqPage=" + pageNo + "&searchName="+searchName+"'>";
-			pageNavi += "<span class='material-icons'>chevron_right</span></a>";
+			pageNavi += "<span class='material-icons'> > </span></a>";
 			pageNavi += "</li>";
 		}
 		pageNavi += "</ul>";

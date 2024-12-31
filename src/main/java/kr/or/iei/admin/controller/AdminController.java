@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.or.iei.admin.model.service.AdminService;
+import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
 import kr.or.iei.board.model.vo.BoardType;
@@ -34,9 +35,8 @@ public class AdminController {
 	}
 
 	// 관리자페이지 -> 회원관리 - 신고내역관리 페이지 이동 + 신고내역 불러오기
-
-	@GetMapping("memberManage.exco")
-	public String memberManage(Integer reqPage, String searchName, Model model) {
+	@GetMapping("memberReportManage.exco")
+	public String memberReportManage(Integer reqPage, String searchName, Model model) {
 
 		ReportPageData pd = null;
 		if (searchName.equals("report")) {
@@ -67,5 +67,25 @@ public class AdminController {
 		reportData.setThirdCategoryCd(reportReason);
 		adminService.insertReportByInfo(reportData);
 		return "redirect:/board/list.exco?reqPage=1&boardType=" + boardType + "&boardTypeNm=" + boardType;
+	}
+	
+	//관리자페이지 -> 회원관리 - 회원정보 + 신고한 횟수, 신고받은 횟수, 접근제한 횟수 불러오기
+	@GetMapping("memberManage.exco")
+	public String memberManage(int reqPage, String searchName, Model model) {
+		
+		MemberPageData pd = null;
+		if(searchName.equals("whole")) {
+			pd = adminService.selectWholeMemberList(reqPage, searchName);
+		} else if (searchName.equals("null")) {
+			pd = adminService.selectWholeMemberList(reqPage, searchName);
+		} else {
+			pd = adminService.selectWholeMemberList(reqPage, searchName);
+		}
+		
+		model.addAttribute("reportMemberList", pd.getList());
+		model.addAttribute("pageNavi", pd.getPageNavi());
+		model.addAttribute("searchName", searchName);
+		
+		return "admin/memberManage";
 	}
 }

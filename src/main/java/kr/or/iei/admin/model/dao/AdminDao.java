@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import kr.or.iei.admin.model.vo.Report;
+import kr.or.iei.member.model.vo.Member;
 
 @Repository("adminDao")
 public class AdminDao {
@@ -31,6 +32,16 @@ public class AdminDao {
 	public void insertReportByInfo(Report reportData) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	//관리자페이지 -> 회원관리 - 회원정보 + 신고한 횟수, 신고받은 횟수, 접근제한 횟수 불러오기
+	public List<Member> selectWholeMemberList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("report.selectWholeMemberList", map);
+	}
+
+	//관리자페이지 -> 사용자 + 전문가 전체회원수 조회
+	public int selectWholeMemberCount() {
+		return sqlSession.selectOne("report.selectWholeMemberCount");
 	}
 	
 }

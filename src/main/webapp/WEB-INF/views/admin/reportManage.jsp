@@ -21,7 +21,7 @@
 							<li>회원관리</li>
 						</ul>
 						<ul class="side-menu">
-							<li><a href="/admin/memberManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
+							<li><a href="/admin/memberReportManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
 							<li><a href="#">전문가 승인 검토</a></li>
 						</ul>
 						<ul class="side-menu-title">
