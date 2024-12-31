@@ -203,7 +203,7 @@
          <div class="third-group">
             <div class="third-title">커뮤니티</div>
                <div class="third-children">
-                  <a href="#" class="chat-history">채팅 내역</a>
+                  <a href="/chat/getRoomList.exco" class="chat-history">채팅 내역</a>
                </div>
          </div>
          
@@ -258,7 +258,7 @@
             <div class="third-title">채팅</div>
                <div class="third-children">
                	  <a href="/autoRes/autoResFrm.exco" class="auto-response">자동응답 설정</a>
-                  <a href="#" class="chat-history">채팅 내역</a>
+                  <a href="/chat/getRoomList.exco" class="chat-history">채팅 내역</a>
                </div>
          </div>
          

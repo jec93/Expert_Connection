@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="autoRes">
+	
+	<!-- 자동응답 리스트 조회 -->
+    <select id="getResponseList" parameterType="string" resultType="autoRes">
+        SELECT response_no AS responseNo,
+               member_no AS memberNo,
+               trigger_word AS triggerWord,
+               response_content AS responseContent,
+               response_date AS responseDate,
+               is_active AS isActive
+        FROM tbl_auto_response
+        where member_no = #{memberNo}
+        ORDER BY response_date DESC
+    </select>
+
+    <!-- 자동응답 추가 -->
+    <insert id="insertResponse">
+        INSERT INTO tbl_auto_response (
+            response_no,
+            member_no,
+            trigger_word,
+            response_content,
+            response_date,
+            is_active
+        ) VALUES (
+            TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(seq_autoRes.NEXTVAL, 4, '0'),
+            #{memberNo},
+            #{triggerWord},
+            #{responseContent},
+            SYSDATE,
+            'Y'
+        )
+    </insert>
+	
+	<!-- 자동응답 on/off 업데이트 -->
+	<update id="updateAutoResState" parameterType="map">
+	    UPDATE tbl_auto_response
+	    SET is_active = #{state}
+	    WHERE member_no = #{memberNo}
+	</update>
+	
+	<select id="getAutoResState" parameterType="string" resultType="string">
+	    SELECT is_active
+	    FROM tbl_auto_response
+	    WHERE member_no = #{memberNo}
+	    AND ROWNUM = 1
+	</select>
+	
+	<delete id="deleteResponse" parameterType="String">
+	    DELETE FROM tbl_auto_response
+	    WHERE response_no = #{responseNo}
+	</delete>
+
+</mapper>

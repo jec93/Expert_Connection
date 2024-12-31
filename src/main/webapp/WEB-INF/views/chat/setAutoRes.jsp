@@ -1,38 +1,84 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>자동응답 설정</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 body {
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
+	background-color: #f9f9f9;
 }
 
 .container {
 	max-width: 800px;
 	margin: 50px auto;
 	padding: 20px;
+	background-color: white;
+	border-radius: 15px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 
 .toggle-section {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 50px;
+	margin-bottom: 20px;
 	padding: 10px;
-	border: 3px solid #ddd;
+	border: 3px solid #beeac5;
 	border-radius: 15px;
+	background-color: #f5fff5;
 }
 
 .toggle-section label {
 	font-size: 16px;
 	font-weight: bold;
-	color: #333;
+	color: #34805C;
+}
+
+/* 토글 스위치 */
+.toggle-switch {
+	position: relative;
+	width: 60px;
+	height: 30px;
+	background-color: #ddd;
+	border-radius: 15px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.toggle-switch input {
+	display: none; /* 기본 체크박스 숨김 */
+}
+
+.toggle-switch .slider {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 24px;
+	height: 24px;
+	background-color: white;
+	border-radius: 50%;
+	transition: transform 0.3s;
+}
+
+/* 체크 상태에서의 스타일 */
+.toggle-switch input:checked+.slider {
+	transform: translateX(30px); /* 슬라이더 오른쪽 이동 */
+}
+
+.toggle-switch input:checked ~ .slider {
+	background-color: #34805C; /* 활성화 색상 */
+}
+
+.disabled {
+	pointer-events: none;
+	opacity: 0.5;
 }
 
 .response-list ul {
@@ -47,7 +93,7 @@ body {
 	align-items: center;
 	padding: 15px;
 	margin-bottom: 10px;
-	border: 3px solid #ddd;
+	border: 3px solid #beeac5;
 	border-radius: 15px;
 	background-color: #f7f7f7;
 	cursor: pointer;
@@ -55,7 +101,7 @@ body {
 }
 
 .response-list li:hover {
-	background-color: #eaeaea;
+	background-color: #e0f5e0;
 }
 
 .response-list span {
@@ -64,8 +110,30 @@ body {
 	color: #555;
 }
 
+.addList {
+	text-align: right;
+	margin: 20px 0;
+}
+
+.addList button {
+	padding: 10px 20px;
+	background-color: #34805C;
+	color: white;
+	border: 2px solid #34805C;
+	border-radius: 10px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.addList button:hover {
+	background-color: #223B24;
+	color: white;
+}
+
 .modal {
-	display: none; /* 숨김 상태 */
+	display: none;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -80,9 +148,9 @@ body {
 .modal-content {
 	background: white;
 	padding: 20px;
-	border-radius: 8px;
-	width: 90%; /* 화면의 90% 너비 */
-    max-width: 500px; /* 최대 너비 */
+	border-radius: 15px;
+	width: 90%;
+	max-width: 500px;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 	text-align: center;
 }
@@ -92,8 +160,8 @@ body {
 	height: 100px;
 	padding: 10px;
 	margin-bottom: 20px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
+	border: 1px solid #beeac5;
+	border-radius: 8px;
 	resize: none;
 	box-sizing: border-box;
 }
@@ -101,59 +169,22 @@ body {
 .modal-content button {
 	padding: 10px 20px;
 	margin: 5px;
-	background-color: #007bff;
+	background-color: #34805C;
 	color: white;
 	border: none;
-	border-radius: 4px;
+	border-radius: 8px;
 	font-size: 14px;
 	cursor: pointer;
+	transition: background-color 0.3s;
 }
 
 .modal-content button.close {
 	background-color: #ff4d4d;
 }
 
-/* 토글 스위치 스타일 추가 */
-.toggle-switch {
-    position: relative;
-    width: 50px;
-    height: 25px;
-    background-color: #ddd;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.modal-content button:hover {
+	background-color: #276e4b;
 }
-
-.toggle-switch input {
-    display: none; /* 기본 체크박스 숨김 */
-}
-
-.toggle-switch .slider {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.3s;
-}
-
-/* 체크 상태에서의 스타일 */
-.toggle-switch input:checked + .slider {
-    transform: translateX(25px); /* 슬라이더 오른쪽 이동 */
-}
-
-.toggle-switch input:checked ~ .slider {
-    background-color: white;
-}
-
-/* 체크 상태에서의 배경색 */
-.toggle-switch input:checked {
-    background-color: #4caf50;
-}
-
-
 </style>
 </head>
 <body>
@@ -162,35 +193,40 @@ body {
 
 		<main class="content">
 			<div class="container">
-
-				<section class="toggle-section">
-				    <label for="auto-response-toggle">자동응답</label>
-				    <div class="toggle-switch">
-					    <input type="checkbox" id="auto-response-toggle">
-					    <label for="auto-response-toggle" class="slider"></label>
+				<!-- 자동응답 토글 -->
+				<div class="toggle-section">
+					<label for="auto-response-toggle">자동응답</label>
+					<div class="toggle-switch">
+						<input type="checkbox" id="auto-response-toggle"
+							${isActive == 'Y' ? 'checked' : ''}> <label
+							for="auto-response-toggle" class="slider"></label>
 					</div>
-				</section>
-
-				<section class="response-list">
-					<ul>
-						<li data-question="안녕하세요, 진행 방식은 어떻게 되나요?"><span>안녕하세요,
-								진행 방식은 어떻게 되나요?</span></li>
-						<li data-question="안녕하세요, 언제 가능할까요?"><span>안녕하세요, 언제
-								가능할까요?</span></li>
-						<li data-question="전화 상담 언제 가능하실까요?"><span>전화 상담 언제
-								가능하실까요?</span></li>
-						<li data-question="제 요청과 비슷한 경험이 있으실까요?"><span>제 요청과
-								비슷한 경험이 있으실까요?</span></li>
-					</ul>
-				</section>
-				<div class="addList">
-					<button>질문 추가</button>
 				</div>
 
+				<!-- 자동응답 관리 섹션 -->
+				<div id="response-section" class="disabled">
+					<section class="response-list">
+						<ul id="response-list">
+							<c:forEach var="response" items="${autoResList}">
+								<li data-response-no="${response.responseNo}"
+									data-response-question="${response.triggerWord}"
+									data-response-answer="${response.responseContent}"><span>${response.triggerWord}</span>
+									<button class="delete-response-btn" data-response-no="${response.responseNo}">삭제</button>
+								</li>
+							</c:forEach>
+						</ul>
+					</section>
+					<div class="addList">
+						<button id="add-question-btn">질문 추가</button>
+					</div>
+				</div>
+
+				<!-- 모달 -->
 				<div class="modal" id="response-modal">
 					<div class="modal-content">
-						<textarea id="modal-textarea" placeholder="답변을 입력해주세요."></textarea>
-						<button class="save">저장</button>
+						<textarea id="modal-question" placeholder="질문을 입력해주세요."></textarea>
+						<textarea id="modal-answer" placeholder="답변을 입력해주세요."></textarea>
+						<button id="save-response-btn" class="save">저장</button>
 						<button class="close">닫기</button>
 					</div>
 				</div>
@@ -201,50 +237,160 @@ body {
 	</div>
 
 	<script>
-    // 모달 열기
-    document.querySelectorAll('.response-list li').forEach(item => {
-        item.addEventListener('click', function () {
-            const question = this.dataset.question;
-            document.getElementById('modal-textarea').value = question;
-            document.getElementById('response-modal').style.display = 'flex';
-        });
-    });
+		$(document).ready(function() {
+			const isChecked = $('#auto-response-toggle').is(':checked');
+			const responseSection = $('#response-section');
 
-    // 모달 닫기
-    document.querySelector('.modal .close').addEventListener('click', function () {
-        document.getElementById('response-modal').style.display = 'none';
-    });
+			// 페이지 로드 시 초기 상태 설정
+			if (isChecked) {
+				responseSection.removeClass('disabled');
+			} else {
+				responseSection.addClass('disabled');
+			}
 
-    // 저장 버튼 동작
-    document.querySelector('.modal .save').addEventListener('click', function () {
-        const response = document.getElementById('modal-textarea').value;
-        console.log(`저장된 답변: ${response}`);
-        document.getElementById('response-modal').style.display = 'none';
-    });
-    
-    // 토글 상태 변경 이벤트
-    document.querySelectorAll('.toggle-switch').forEach(toggle => {
-        const checkbox = toggle.querySelector('input[type="checkbox"]');
-        const slider = toggle.querySelector('.slider');
+			// 토글 상태 변경에 따라 활성화/비활성화 처리
+			$('#auto-response-toggle').on('change', function() {
+				const isChecked = $(this).is(':checked');
+				if (isChecked) {
+					responseSection.removeClass('disabled');
+				} else {
+					responseSection.addClass('disabled');
+				}
 
-        // 토글 상태 변경 시 이벤트 처리
-        checkbox.addEventListener('change', function () {
-            if (this.checked) {
-                toggle.style.backgroundColor = '#4caf50'; // 활성화 색상
-            } else {
-                toggle.style.backgroundColor = '#ddd'; // 비활성화 색상
-            }
-        });
+				// 상태 업데이트 AJAX 호출
+				$.ajax({
+					url : '/autoRes/autoResUpdateState.exco',
+					type : 'POST',
+					data : {
+						state : isChecked ? 'Y' : 'N'
+					},
+					success : function(data) {
+						if (!data.success) {
+							alert('자동응답 상태를 저장하지 못했습니다.');
+						}
+					},
+					error : function() {
+						alert('서버 요청 중 오류가 발생했습니다.');
+					}
+				});
+			});
 
-        // 초기화 (페이지 로드 시)
-        if (checkbox.checked) {
-            toggle.style.backgroundColor = '#4caf50'; // 활성화 색상
-        } else {
-            toggle.style.backgroundColor = '#ddd'; // 비활성화 색상
-        }
-    });
-</script>
+			// 질문 추가 모달 열기
+			$('#add-question-btn').on('click', function() {
+				$('#modal-question').val('');
+				$('#modal-answer').val('');
+				$('#response-modal').css('display', 'flex');
+			});
 
+			// 질문 클릭 시 편집 모달 열기
+			$('#response-list').on('click', 'li', function() {
+				const question = $(this).data('response-question');
+				const answer = $(this).data('response-answer');
 
+				$('#modal-question').val(question);
+				$('#modal-answer').val(answer);
+				$('#response-modal').css('display', 'flex');
+			});
+
+			// 모달 닫기
+			$('.close').on('click', function() {
+				$('#response-modal').css('display', 'none');
+			});
+
+			// 질문과 답변 저장
+			$('#save-response-btn').on('click', function() {
+				const triggerWord = $('#modal-question').val(); // 질문
+				const responseContent = $('#modal-answer').val(); // 답변
+
+				if (!triggerWord.trim() || !responseContent.trim()) {
+					alert('질문과 답변을 모두 입력해주세요.');
+					return;
+				}
+				
+				console.log('전송 데이터:', {
+			        triggerWord: triggerWord,
+			        responseContent: responseContent
+			    });
+
+				$.ajax({
+				    url: '/autoRes/autoResSave.exco',
+				    type: 'POST',
+				    data: {
+				    	triggerWord: triggerWord,
+				    	responseContent: responseContent
+				    },
+				    success: function(data) {
+				        if (data.success) {
+				            alert('질문과 답변이 성공적으로 저장되었습니다!');
+				            location.reload();
+				        } else {
+				            alert(data.message || '저장에 실패했습니다.');
+				        }
+				    },
+				    error: function(xhr, status, error) {
+				        alert('서버 요청 중 오류가 발생했습니다.');
+				        console.error('Error:', error);
+				    }
+				});
+
+				$('#response-modal').css('display', 'none');
+			});
+		});
+
+		$('#auto-response-toggle').on('change', function() {
+			const isChecked = $(this).is(':checked');
+			const responseSection = $('#response-section');
+
+			if (isChecked) {
+				responseSection.removeClass('disabled');
+			} else {
+				responseSection.addClass('disabled');
+			}
+
+			// 상태 업데이트 AJAX 호출
+			$.ajax({
+				url : '/autoRes/autoResUpdateState.exco',
+				type : 'POST',
+				data : {
+					state : isChecked ? 'Y' : 'N'
+				},
+				success : function(data) {
+					if (data.success) {
+			            console.log('자동응답 상태가 성공적으로 저장되었습니다.');
+			        } else {
+			            alert('자동응답 상태를 저장하지 못했습니다: ' + data.message);
+			        }
+				},
+				error : function() {
+					alert('서버 요청 중 오류가 발생했습니다.');
+				}
+			});
+		});
+		
+		// 질문 삭제
+		$('#response-list').on('click', '.delete-response-btn', function() {
+		    const responseNo = $(this).data('response-no');
+
+		    if (confirm('정말로 삭제하시겠습니까?')) {
+		        $.ajax({
+		            url: '/autoRes/autoResDelete.exco',
+		            type: 'POST',
+		            data: { responseNo: responseNo },
+		            success: function(data) {
+		                if (data.success) {
+		                    alert('질문이 성공적으로 삭제되었습니다!');
+		                    location.reload();
+		                } else {
+		                    alert(data.message || '질문 삭제에 실패했습니다.');
+		                }
+		            },
+		            error: function(xhr, status, error) {
+		                alert('서버 요청 중 오류가 발생했습니다.');
+		                console.error('Error:', error);
+		            }
+		        });
+		    }
+		});
+	</script>
 </body>
 </html>
