@@ -12,14 +12,17 @@ public class Expert {
 	private String expertEmail;
 	private String memberType;
 	private String enrollDate;
-	
+	private String thirdCategoryCd;
+	private String expertGrade;
+
 	public Expert() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Expert(String memberNo, String expertId, String expertPw, String expertNickname, String expertPhone,
-			String expertAddr, String expertGender, String expertEmail, String memberType, String enrollDate) {
+			String expertAddr, String expertGender, String expertEmail, String memberType, String enrollDate,
+			String thirdCategoryCd, String expertGrade) {
 		super();
 		this.memberNo = memberNo;
 		this.expertId = expertId;
@@ -31,8 +34,26 @@ public class Expert {
 		this.expertEmail = expertEmail;
 		this.memberType = memberType;
 		this.enrollDate = enrollDate;
+		this.thirdCategoryCd = thirdCategoryCd;
+		this.expertGrade = expertGrade;
 	}
-	
+
+	public String getExpertGrade() {
+		return expertGrade;
+	}
+
+	public void setExpertGrade(String expertGrade) {
+		this.expertGrade = expertGrade;
+	}
+
+	public String getThirdCategory() {
+		return thirdCategoryCd;
+	}
+
+	public void setThirdCategory(String thirdCategoryCd) {
+		this.thirdCategoryCd = thirdCategoryCd;
+	}
+
 	public String getMemberNo() {
 		return memberNo;
 	}

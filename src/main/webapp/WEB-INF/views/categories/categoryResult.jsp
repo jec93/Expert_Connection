@@ -1,9 +1,12 @@
+<%@page import="kr.or.iei.member.model.vo.Expert"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
   	Map<String, Object> categories = (Map<String, Object>) request.getAttribute("categories");
+	ArrayList<Expert> expertList = (ArrayList<Expert>) request.getAttribute("expertList");
  %>
 <!DOCTYPE html>
 <html>
@@ -42,6 +45,7 @@
 
 .main-category {
 	margin-left: 5%;
+	display: flex;
 }
 
 .other-categories{
@@ -54,6 +58,11 @@
 	width: 150px;
 	height: 150px;
 	border: 1px solid;
+}
+.info-container{
+	width: 200px;
+	height : 300px;
+	border:1px solid;
 }
 </style>
 </head>
@@ -70,7 +79,7 @@
 				(추후에 쓰려고 적어둠)<br>
 				<p>
 					선택된 소분류 코드:
-					<%= request.getParameter("cateKey") %></p>
+					<%= request.getParameter("thirdCode") %></p>
 				<p>
 					소분류 이름:
 					<%= request.getParameter("thirdName") %></p>
@@ -105,6 +114,23 @@
 					</div>
 					<div id="tird-category-title" class="main-category">
 						<div class="sub-header"><%=request.getParameter("thirdName") %></div>
+						<% for(Expert e : expertList) {%>
+						<div class="info-container">
+							<div class="expert-profile">이미지?</div>
+							<div>
+								타이틀?
+							</div>
+							<div>
+								닉네임 : <%=e.getExpertNickname() %>
+							</div>
+							<div>
+								좋아요 수?
+							</div>
+							<div>
+								소개 글?
+							</div>
+						</div>
+						<%} %>
 					</div>
 				</div>
 			</section>
@@ -112,19 +138,7 @@
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
 	<script>
-        // 모든 .clickable 요소를 선택
-        const divs = document.querySelectorAll('.other-categories');
-
-        // 각 div에 클릭 이벤트 추가
-        divs.forEach(div => {
-            div.addEventListener('click', (event) => {
-                // 클릭된 div의 data-value 속성 값을 가져옴
-                const value = event.target.getAttribute('data-value');
-
-                // 화면 중간에 표시
-                document.getElementById('tird-category-title').innerHTML = '<div class="sub-header">'+value+'</div>';
-            });
-        });
+        
     </script>
 </body>
 </html>
