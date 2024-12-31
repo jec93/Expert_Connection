@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import kr.or.iei.member.model.vo.Expert;
+
 @Repository("categoryDao")
 public class CategoryDao {
 	@Autowired
@@ -26,6 +28,11 @@ public class CategoryDao {
 
 	public List<Map<String, Object>> getSubCategories() {
 	    return sqlSession.selectList("category.getAllSubCategories");
+	}
+
+	public List<Expert> viewExpertListByThirdCd(String thirdCode) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("expertManagement.viewExpertListByThirdCd",thirdCode);
 	}
 	
 	

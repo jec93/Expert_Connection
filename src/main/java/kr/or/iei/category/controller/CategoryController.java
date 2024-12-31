@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import kr.or.iei.category.model.service.CategoryService;
+import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,10 @@ public class CategoryController {
 
 	@Autowired
     private ServletContext servletContext;
+	
+	@Autowired
+	@Qualifier("categoryService")
+	CategoryService categoryService;
 
     // 초기화 시 대분류 데이터 캐싱
     @GetMapping("/categoryFrm.exco")
@@ -42,20 +48,16 @@ public class CategoryController {
     }
     
     @GetMapping("/categoriesResult.exco")
-    public String resultCategory(String cateKey, String thirdName, String secondCode, Model model) {
+    public String resultCategory(String thirdCode, String thirdName, String secondCode, Model model) {
     	
-    	 
-    	model.addAttribute("cateKey", cateKey);
+    	model.addAttribute("thirdCode", thirdCode);
 	    model.addAttribute("thirdName", thirdName);
 	    model.addAttribute("secondCode", secondCode);
-    	 
-    	 /*
-    	cateKey(=전문가를 검색할 소분류 카테고리 코드값)을 사용하여
-    	카테고리 결과창에 해당 소분류 전문가 출력 내용 작성 공간
-    	 
-    	 
-    	 
-    	 */
+    	
+	    //해당 소분류 코드를 가진 전문가 검색
+	    ArrayList<Expert> expertList = categoryService.viewExpertListByThirdCd(thirdCode);
+	    model.addAttribute("expertList",expertList);
+	    
     	return "categories/categoryResult";
     }
     //임시 로그인 학원컴터기준 admin 정보
