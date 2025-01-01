@@ -22,7 +22,7 @@
 								<li>회원관리</li>
 							</ul>
 							<ul class="side-menu">
-								<li><a href="/admin/memberManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
+								<li><a href="/admin/memberReportManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
 								<li><a href="#">전문가 승인 검토</a></li>
 								<li></li>
 								<li></li>
@@ -43,7 +43,7 @@
 					<div class="list-content">
 						<div class="manage-title">커뮤니티 관리</div>
 						
-						<div class="community_manage_select_box">
+						<div class="manage_select_box">
 							<c:choose>
 							<c:when test="${searchName eq 'comment'}">
 							<select name="commnuity_select" id="searchCommunity" onchange="search(this.value)">

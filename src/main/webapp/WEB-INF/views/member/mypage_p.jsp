@@ -115,8 +115,8 @@
 				<div class="mypage-group">
 					<h3 class="mypage-group-title">채팅</h3>
 						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">채팅 내역</a></li>
-							<li><a id="mypage_link" href="#">자동응답 설정</a></li>
+							<li><a id="mypage_link" href="/chat/getRoomList.exco">채팅 내역</a></li>
+							<li><a id="mypage_link" href="/autoRes/autoResFrm.exco">자동응답 설정</a></li>
 						</ul>
 				</div>
 				
@@ -164,7 +164,7 @@
 							<h4 class="mypage-group-title">회원관리</h4>
 							<div class="adminPage_link_box">
 							<ul class="adminPage_link_box">
-								<li><a id="adminPage_link" href="/admin/memberManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
+								<li><a id="adminPage_link" href="/admin/memberReportManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
 								<li><a id="adminPage_link" href="#">전문가 승인 검토</a></li>
 							</ul>
 							</div>

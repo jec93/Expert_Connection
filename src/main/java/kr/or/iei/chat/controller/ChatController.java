@@ -57,8 +57,6 @@ public class ChatController {
 		ArrayList<Room> roomList = chatService.getRoomList(loginMember.getMemberNo());
 		model.addAttribute("roomList", roomList);	
 		
-		System.out.println("여기 룸 리스트는 잘 받아오는뎅 : " + roomList); //로그 확인용
-		
 		return "chat/roomList";
 	}
 	
@@ -68,9 +66,6 @@ public class ChatController {
 	public String goChat(Model model, String roomId) {
 		ArrayList<Chat> chatList = chatService.getChatList(roomId);
 		List<Member> memberList = chatMemberService.getRoomMembers(roomId);
-		
-		System.out.println("멤버리스트좀 줘... = " + memberList);	//로그 확인용
-		System.out.println("채팅리스트좀 줘... = " + chatList);	//로그 확인용
 		
 		model.addAttribute("memberList", memberList);
 		model.addAttribute("roomId", roomId);

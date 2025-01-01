@@ -1256,7 +1256,13 @@ section.section {
   	font-size: 18px;
   	margin : 20px auto;
 }
-.community_manage_select_box {
+.manage_select_box {
 	justify-content : start;
 	margin : 5px auto; 
+}
+#searchMember, #searchCommunity {
+	size : 20px;
+	font-size : 15px;
+	padding : 5px;
+    box-sizing: border-box;
 }

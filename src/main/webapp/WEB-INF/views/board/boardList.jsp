@@ -70,10 +70,7 @@
 							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberId ne 'admin' and sessionScope.loginMember.memberNickname ne board.boardWriter}">
 								<td>작성자만 확인 가능합니다</td>
 							</c:if>
-							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberNickname eq board.boardWriter}">
-								<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
-							</c:if>
-							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberId eq 'admin'}">
+							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberNickname eq board.boardWriter or not empty sessionScope.loginMember and sessionScope.loginMember.memberId eq 'admin'}">
 								<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
 							</c:if>
 						</c:when>

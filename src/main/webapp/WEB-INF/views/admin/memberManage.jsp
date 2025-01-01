@@ -22,7 +22,7 @@
 							<li>회원관리</li>
 						</ul>
 						<ul class="side-menu">
-							<li><a href="#">신고내역 관리</a></li>
+							<li><a href="/admin/memberReportManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
 							<li><a href="#">전문가 승인 검토</a></li>
 						</ul>
 						<ul class="side-menu-title">
@@ -40,44 +40,34 @@
 					
 					<div class="list-content">
 						<div class="page-title">신고내역 관리</div>
-						<div class="community_manage_select_box">
+						<div class="manage_select_box">
 						<c:choose>
 							<c:when test="${searchName eq 'report'}">
-							<select name="commnuity_select" id="searchCommunity" onchange="search(this.value)">
-								<option value="report" selected>전체 신고내역 조회</option>
-								<option value="member">전체 사용자 조회</option>
-								<option value="expert">전체 전문가 조회</option>
+							<select name="manage_select" id="searchMember" onchange="search(this.value)">
+								<option value="report" selected >전체 신고내역 조회</option>
+								<option value="whole">전체 사용자 조회</option>
 							</select>
 							</c:when>
 							
-							<c:when test="${searchName eq 'member'}">
-							<select name="commnuity_select" id="searchCommunity" onchange="search(this.value)">
+							<c:when test="${searchName eq 'whole'}">
+							<select name="manage_select" id="searchMember" onchange="search(this.value)">
 								<option value="report">전체 신고내역 조회</option>
-								<option value="member" selected>전체 사용자 조회</option>
-								<option value="expert">전체 전문가 조회</option>
+								<option value="whole" selected>전체 사용자 조회</option>
 							</select>
 							</c:when>
-							
-							<c:when test="${searchName eq 'expert'}">
-							<select name="commnuity_select" id="searchCommunity" onchange="search(this.value)">
-								<option value="report">전체 신고내역 조회</option>
-								<option value="member">전체 사용자 조회</option>
-								<option value="expert" selected>전체 전문가 조회</option>
-							</select>
-							</c:when>	
 						</c:choose>
 						</div>
 						
 						<c:choose>
 		                  	<c:when test="${searchName eq 'report'}">
-		                  	<table class="tbl community_manage">
+		                  	<table class="tbl manage_member">
 		                     <tr>
-		                        <th style="width:10%">신고번호</th>
+		                        <th style="width:7%">신고번호</th>
 		                        <th style="width:10%">신고한 회원</th>
 		                        <th style="width:10%">신고받은 회원</th>
-		                        <th style="width:10%">신고분류</th>
+		                        <th style="width:7%">신고분류</th>
 		                        <th style="width:10%">신고대상</th>
-		                        <th style="width:10%">신고날짜</th>
+		                        <th style="width:15%">신고날짜</th>
 		                        <th style="width:10%">신고내역 확인</th>
 		                     </tr>
 		                     
@@ -100,6 +90,50 @@
 		                    </table>
 		                  	<div id="pageNavi">${pageNavi}</div>
 		                  	</c:when>
+		                  	<c:when test="${searchName eq 'whole'}">
+		                  	<table class="tbl manage_member">
+		                     <tr>
+		                        <th style="width:7%">회원번호</th>
+		                        <th style="width:10%">아이디</th>
+		                        <th style="width:10%">닉네임</th>
+		                        <th style="width:10%">회원구분</th>
+		                        <th style="width:10%">신고받은 횟수</th>
+		                        <th style="width:10%">신고한 횟수</th>
+		                        <th style="width:10%">활동정지횟수</th>
+		                        <th style="width:10%">활동제한</th>
+		                     </tr>
+		                  	
+		                  	<c:forEach var="member" items="${reportMemberList}">
+		                     <tr>
+		                     	<td>${member.memberNo}</td>
+		                        <td>${member.memberId}</td>
+		                        <td>${member.memberNickname}</td>
+		                        <c:choose>
+		                     	<c:when test="${member.memberType eq '0'}">
+		                     	<td>관리자</td>
+		                     	</c:when>
+		                     	<c:when test="${member.memberType eq '1' or member.memberType eq '2' or member.memberType eq '3'}">
+		                     	<td>사용자</td>
+		                     	</c:when>
+		                     	<c:when test="${member.memberType eq '4' or member.memberType eq '5' or member.memberType eq '6'}">
+		                     	<td>전문가</td>
+		                     	</c:when>
+		                     	</c:choose>
+		                        <td>${member.reportCount}</td>
+		                        <td>${member.suspectCount}</td>
+		                        <td>${member.restrictionCount}</td>
+		                        <c:choose>
+		                        <c:when test="${member.restrictionCount eq 0 or 1}">
+		                        <td><button class="btn-secondary" onclick="">활동정지</button></td>
+		                        </c:when>
+								<c:when test="${member.restrictionCount eq 2}">
+		                        <td><button class="btn-tertiary" onclick="">사용정지</button></td>
+		                        </c:when>
+		                        </c:choose>
+		                     </tr>
+		                     </c:forEach>
+		                  	</table>
+		                  	</c:when>
 		                </c:choose>
 					</div>
 				</div>
@@ -108,6 +142,14 @@
 		
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
-
+<script>
+function search(choice){
+	if(choice == 'report') {
+	    location.href = "/admin/memberReportManage.exco?reqPage=1&searchName="+choice;
+	} else if(choice == 'whole') {
+		location.href = "/admin/memberManage.exco?reqPage=1&searchName="+choice;
+	}
+}
+</script>
 </body>
 </html>
