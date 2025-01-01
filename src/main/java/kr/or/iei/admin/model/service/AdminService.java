@@ -118,7 +118,7 @@ public class AdminService {
 			break;
 		}
 		reportData.setSuspect(suspect);
-		reportData.setReportResult("신고중");
+		reportData.setReportResult("0");
 		reportData.setFirstCategoryCd("D0001");
 		reportData.setFirstCategoryNM("신고 코드 관리");
 		reportData.setSecondCategoryCd("301_a0001");
@@ -153,7 +153,6 @@ public class AdminService {
 			break;
 		}
 		adminDao.insertReportByInfo(reportData);
-		System.out.println("신고No 제외한 값들 : "+reportData);
 	}
 
 	//관리자페이지 -> 회원관리 - 회원정보 + 신고한 횟수, 신고받은 횟수, 접근제한 횟수 불러오기

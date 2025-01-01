@@ -111,4 +111,39 @@
 	SELECT COUNT(*)
 	FROM TBL_WHOLE_MEMBER
 	</select>
+	
+	<insert id="insertReportByInfo"
+	parameterType="report">
+	INSERT INTO
+    TBL_REPORT
+    (
+        REPORT_NO,
+        REPORT_TYPE,
+        REPORTER,
+        SUSPECT,
+        REPORT_RESULT,
+        TARGET_NO,
+        FIRST_CATEGORY_CD,
+        FIRST_CATEGORY_NM,
+        SECOND_CATEGORY_CD,
+        SECOND_CATEGORY_NM,
+        THIRD_CATEGORY_CD,
+        THIRD_CATEGORY_NM
+    )
+    VALUES
+    (
+        TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_REPORT.NEXTVAL, 4,'0'),
+        #{reportType},
+        #{reporter},
+        #{suspect},
+        #{reportResult},
+        #{targetNo},
+        #{firstCategoryCd},
+        #{firstCategoryNM},
+        #{secondCategoryCd},
+        #{secondCategoryNM},
+        #{thirdCategoryCd},
+        #{thirdCategoryNM}
+    )
+	</insert>
 </mapper>

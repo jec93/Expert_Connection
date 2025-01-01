@@ -58,15 +58,18 @@ public class AdminController {
 
 	// 게시글,댓글 신고하기
 	@GetMapping("reportBoard.exco")
-	public String insertReportByInfo(String targetNo, String boardType, String reporter, String reportType,
-			String reportReason) {
+	public String insertReportByInfo(String targetNo, String boardType, String reporter, String reportType, String reportReason, Model model) {
 		Report reportData = new Report();
 		reportData.setTargetNo(targetNo);
 		reportData.setReporter(reporter);
 		reportData.setReportType(Integer.parseInt(reportType));
 		reportData.setThirdCategoryCd(reportReason);
 		adminService.insertReportByInfo(reportData);
-		return "redirect:/board/list.exco?reqPage=1&boardType=" + boardType + "&boardTypeNm=" + boardType;
+		model.addAttribute("title","신고 완료");
+		model.addAttribute("msg","검토 후 회신드리겠습니다.");
+		model.addAttribute("icon","info");
+		model.addAttribute("loc","/board/list.exco?reqPage=1&boardType=" + boardType + "&boardTypeNm=" + boardType);
+		return "common/msg";
 	}
 	
 	//관리자페이지 -> 회원관리 - 회원정보 + 신고한 횟수, 신고받은 횟수, 접근제한 횟수 불러오기

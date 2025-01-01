@@ -28,10 +28,11 @@ public class AdminDao {
 	public int selectAllReportCount() {
 		return sqlSession.selectOne("report.selectAllReportCount");
 	}
-
+	
+	//신고테이블에 값 넣기
 	public void insertReportByInfo(Report reportData) {
 		// TODO Auto-generated method stub
-		
+		sqlSession.insert("report.insertReportByInfo",reportData);
 	}
 
 	//관리자페이지 -> 회원관리 - 회원정보 + 신고한 횟수, 신고받은 횟수, 접근제한 횟수 불러오기
