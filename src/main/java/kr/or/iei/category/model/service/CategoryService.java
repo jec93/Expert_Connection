@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import kr.or.iei.category.model.dao.CategoryDao;
+import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.member.model.vo.Expert;
 
 @Service("categoryService")
@@ -40,9 +41,9 @@ public class CategoryService {
         return allCategories;
     }
 
-	public ArrayList<Expert> viewExpertListByThirdCd(String thirdCode) {
+	public ArrayList<ExpertIntroduce> viewExpertListByThirdCd(String thirdCode) {
 		// TODO Auto-generated method stub
-		return (ArrayList<Expert>)categoryDao.viewExpertListByThirdCd(thirdCode);
+		return (ArrayList<ExpertIntroduce>)categoryDao.viewExpertListByThirdCd(thirdCode);
 	}
 
 }

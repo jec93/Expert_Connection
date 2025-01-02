@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="expertManagement">
 
-	<select id="selectExpertList" resultType="expertManagement">
+	<select id="selectExpertList"
+	resultType="expertManagement">
 		SELECT
 			e.receive_no as receiveNo,
 			e.member_no as memberNo,
@@ -14,7 +15,9 @@
 		JOIN TBL_CODE c ON e.third_category_cd = c.third_category_cd
 	</select>
 
-	<select id="getExpertDetail" parameterType="string" resultType="expertManagement">
+	<select id="getExpertDetail"
+	parameterType="string"
+	resultType="expertManagement">
 	    SELECT 
 	        e.receive_no AS receiveNo,
 	        e.member_no AS memberNo,
@@ -49,7 +52,7 @@
 	<!-- 소분류 코드로 전문가 정보 리스트 검색 -->
 	<select id="viewExpertListByThirdCd"
 	parameterType="string"
-	resultType="expert">
+	resultType="expertIntro">
 	SELECT
 	    E.MEMBER_NO AS memberNo,
 	    E.MEMBER_ID AS expertId,
@@ -62,13 +65,53 @@
 	    W.MEMBER_TYPE AS memberType,
 	    E.ENROLL_DATE AS enrollDate,
 	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
-	    M.EXPERT_GRADE AS expertGrade
+	    M.EXPERT_GRADE AS expertGrade,
+	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_PATH AS expertFilePath,
+	    I.INTRODUCE_TITLE AS introduceTitle,
+	    I.INTRODUCE_CONTENT AS introduceContent,
+	    I.EXPERT_LIKE AS expertLike,
+    	I.EXPERT_DISLIKE AS expertDislike
     FROM TBL_EXCO E
-    LEFT JOIN TBL_EXPERT_MANAGEMENT M
-    ON E.MEMBER_NO = M.MEMBER_NO
-    LEFT JOIN TBL_WHOLE_MEMBER W
-    ON E.MEMBER_NO = W.MEMBER_NO
+   	LEFT JOIN TBL_EXPERT_MANAGEMENT M
+	ON E.MEMBER_NO = M.MEMBER_NO
+	LEFT JOIN TBL_WHOLE_MEMBER W
+	ON E.MEMBER_NO = W.MEMBER_NO
+	LEFT JOIN TBL_EXPERT_INTRODUCE I
+	ON I.MEMBER_NO = E.MEMBER_NO
     WHERE M.THIRD_CATEGORY_CD = #{string}
+	</select>
+	
+	<select id="viewExpertInfoByMemberNo"
+	parameterType="string"
+	resultType="expertIntro">
+	SELECT
+	    E.MEMBER_NO AS memberNo,
+	    E.MEMBER_ID AS expertId,
+	    E.MEMBER_PW AS expertPw,
+	    E.MEMBER_NICKNAME AS expertNickname,
+	    E.MEMBER_PHONE AS expertPhone,
+	    E.MEMBER_ADDR AS expertAddr,
+	    E.MEMBER_GENDER AS expertGender,
+	    E.MEMBER_EMAIL AS expertEmail,
+	    W.MEMBER_TYPE AS memberType,
+	    E.ENROLL_DATE AS enrollDate,
+	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
+	    M.EXPERT_GRADE AS expertGrade,
+	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_PATH AS expertFilePath,
+	    I.INTRODUCE_TITLE AS introduceTitle,
+	    I.INTRODUCE_CONTENT AS introduceContent,
+	    I.EXPERT_LIKE AS expertLike,
+    	I.EXPERT_DISLIKE AS expertDislike
+	FROM TBL_EXCO E
+	LEFT JOIN TBL_EXPERT_MANAGEMENT M
+	ON E.MEMBER_NO = M.MEMBER_NO
+	LEFT JOIN TBL_WHOLE_MEMBER W
+	ON E.MEMBER_NO = W.MEMBER_NO
+	LEFT JOIN TBL_EXPERT_INTRODUCE I
+	ON I.MEMBER_NO = E.MEMBER_NO
+	WHERE E.MEMBER_NO = #{string}
 	</select>
 </mapper>
 

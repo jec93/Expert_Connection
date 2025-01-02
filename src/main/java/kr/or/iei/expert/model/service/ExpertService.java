@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.iei.expert.model.dao.ExpertDao;
+import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.expert.model.vo.ExpertManagement;
 
 @Service("expertService")
@@ -21,5 +22,9 @@ public class ExpertService {
 	//전문가 상세페이지 정보 가져오기
 	public ExpertManagement getExpertDetail(String receiveNo) {
 		return expertDao.getExpertDetail(receiveNo);
+	}
+
+	public ExpertIntroduce viewExpertInfoByMemberNo(String memberNo) {
+		return expertDao.viewExpertInfoByMemberNo(memberNo);
 	}
 }
