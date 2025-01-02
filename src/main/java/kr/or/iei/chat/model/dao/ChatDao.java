@@ -78,5 +78,15 @@ public class ChatDao {
 	public List<String> getRecipientIdsByRoomId(String roomId) {
 		return sqlSession.selectList("chat.getRecipientIdsByRoomId", roomId);
 	}
-	
+
+	public String findRoomByMembers(String memberNo, String otherMemberNo) {
+		Map<String, String> params = new HashMap<>();
+		params.put("memberNo", memberNo);
+		params.put("otherMemberNo", otherMemberNo);
+
+		System.out.println("memberNo 조오오오옴 : " + memberNo);
+		System.out.println("otherMemberNo 조오오오옴 :" + otherMemberNo);
+		return sqlSession.selectOne("chat.findRoomByMembers", params);
+	}
+
 }

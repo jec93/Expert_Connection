@@ -151,7 +151,7 @@ body {
 			<div class="profile-header">
 				<img class="profile-img" src="/resources/logo/expert_connection_favicon.png" alt="프로필 사진">
 				<h1 class="profile-header-title">
-				    ${expertDetail.memberNickname}
+				    ${expertDetail.expertNickname}
 				    <c:choose>
 				        <c:when test="${expertDetail.expertGrade == 0}">
 				            <img src="/resources/images/expert_type_01.png" alt="등급 0" class="grade-icon">
@@ -165,7 +165,7 @@ body {
 				    </c:choose>
 				</h1>
 				
-				<p> ${expertDetail.thirdCategoryNm} 전문가 | ${expertDetail.memberAddr}</p>
+				<p> ${expertDetail.thirdCategoryNm} 전문가 | ${expertDetail.expertAddr}</p>
 				<p>전문가의 간단한 소개 내용이 여기에 들어갑니다.</p>
 				<div class="actions">
 					<button>찜</button>
@@ -186,7 +186,7 @@ body {
 				<button data-tab="portfolio-tab" onclick="showTab('portfolio-tab')">포트폴리오</button>
 			</div>
 			<div id="info-tab" class="tab-content active">
-				<h2>전문가 정보</h2>
+				<h2>정보</h2>
 				<div class="details">
 					<p>경력: 10년</p>
 					<p>직원 수: 1명</p>
@@ -210,7 +210,7 @@ body {
         const roomName = "1:1 Chat with " + memberNo; 
 
         $.ajax({
-            url: '/chat/createRoom.exco',
+            url: '/payment/goChat.exco',
             method: 'GET',
             data: {
                 roomName: roomName,

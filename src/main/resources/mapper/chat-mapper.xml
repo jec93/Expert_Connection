@@ -143,5 +143,18 @@
 	 where TRIM(room_id) = #{roomId}
 	   and member_no = #{memberNo} 
 	</update>
+	
+	<!-- 기존 채팅방 검색 -->
+    <select id="findRoomByMembers" parameterType="map" resultType="string">
+       SELECT room_id 
+        FROM tbl_chat_members
+        WHERE room_id IN (
+            SELECT room_id
+            FROM tbl_chat_members
+            WHERE member_no = #{memberNo}
+        )
+        AND member_no = #{otherMemberNo}
+        GROUP BY room_id
+    </select>
   
 </mapper>
