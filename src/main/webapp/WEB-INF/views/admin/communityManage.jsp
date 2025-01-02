@@ -49,19 +49,22 @@
 							<select name="commnuity_select" id="searchCommunity" onchange="search(this.value)">
 								<option value="board">전체 게시글 조회</option>
 								<option value="comment" selected>전체 댓글 조회</option>
+							<%System.out.println("123");%>
 							</select>
 							</c:when>
-							
 							<c:when test="${searchName eq 'board'}">
 							<select name="commnuity_select" id="searchCommunity" onchange="search(this.value)">
 								<option value="board" selected>전체 게시글 조회</option>
 								<option value="comment">전체 댓글 조회</option>
+								<%System.out.println("4565");%>
 							</select>
 							</c:when>
+							
 							<c:when test="${searchName eq 'null'}">
 							<select name="commnuity_select" id="searchCommunity" onchange="search(this.value)">
 								<option value="board" selected>전체 게시글 조회</option>
 								<option value="comment">전체 댓글 조회</option>
+								<%System.out.println("8");%>
 							</select>
 							</c:when>
 							</c:choose>
@@ -117,10 +120,7 @@
 									<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberId ne 'admin' and sessionScope.loginMember.memberNickname ne board.boardWriter}">
 										<td>작성자만 확인 가능합니다</td>
 									</c:if>
-									<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberNickname eq board.boardWriter}">
-										<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
-									</c:if>
-									<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberId eq 'admin'}">
+									<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberNickname eq board.boardWriter or not empty sessionScope.loginMember and sessionScope.loginMember.memberId eq 'admin'}">
 										<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
 									</c:if>
 								</c:when>
@@ -152,7 +152,6 @@
                			  <div id="pageNavi">${pageNavi}</div>
 		                  	</c:when>
 		                  	<c:when test="${searchName eq 'null'}">
-		                  	<h1>ERROR</h1>
 		                  	<table class="tbl community_manage">
 		                     <tr>
 		                        <th style="width:7%">번호</th>

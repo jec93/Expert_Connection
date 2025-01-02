@@ -305,12 +305,12 @@
 	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
 	            )W)NICK
 	      ON C.MEMBER_NO = NICK.MEMBER_NO
-	 LEFT JOIN (SELECT R.REPORT
+	 LEFT JOIN (SELECT R.REPORT, R.MEMBER_NO
 	            FROM (
 	                SELECT * FROM TBL_COMMENT_REACT
 	                )R)REPO
-	      ON COMMENT_NO = COMMENT_NO
-	 WHERE RNUM BETWEEN 1 AND 10
+	      ON C.MEMBER_NO = REPO.MEMBER_NO
+	 WHERE RNUM BETWEEN #{start} AND #{end}
 	    ORDER BY REPO.REPORT DESC
 	</select>
 	
@@ -482,4 +482,14 @@
 	    WHERE BOARD_NO = #{boardNo}
 	    AND MEMBER_NO = #{memberNo}
 	</update>
+	
+	<!-- 관리자페이지 - 댓글 번호로 댓글이 작성된 게시글 번호 조회 -->
+	<select id="searchBoardNoByCommentNo"
+			parameterType = "boardComment"
+			resultType="string"	>
+	SELECT BOARD_NO AS BOARDNO
+	FROM TBL_COMMENT
+	WHERE COMMENT_NO = #{commentNo}
+	</select>
+	
 </mapper>

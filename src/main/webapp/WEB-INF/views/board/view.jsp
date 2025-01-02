@@ -11,8 +11,7 @@ boolean isLogin = loginChk != null; %>
 <meta charset="UTF-8">
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png" />
-<link rel="apple-touch-icon"
-	href="/resources/logo/expert_connection_favicon.png" />
+<link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png" />
 <style>
 .boardContent {
 	height: 200px;
@@ -84,11 +83,11 @@ boolean isLogin = loginChk != null; %>
 	display: flex;
 	justify-content: center;
 }
-.btn-report {
+/* .btn-report {
   border: 1px solid #611300;
   background-color: red;
   color: var(--gray8);
-}
+} */
 </style>
 </head>
 <body>
@@ -133,9 +132,9 @@ boolean isLogin = loginChk != null; %>
 										<c:if test="${loginMember.memberNickname eq board.boardWriter}">
 										<a href='/board/updateFrm.exco?boardNo=${board.boardNo}'
 											class="btn-primary">수정</a>
-											<button class="btn-secondary2" onclick="deleteBoard('${board.boardNo}','${board.boardType }');">삭제</button>
+											<button class="btn-quaternary" onclick="deleteBoard('${board.boardNo}','${board.boardType }');">삭제</button>
 										</c:if>
-											<button class="btn-report" onclick="reportBoard('${board.boardNo}','${board.boardType }','0');">신고하기</button>
+											<button class="btn-tertiary" onclick="reportBoard('${board.boardNo}','${board.boardType }','0');">신고하기</button>
 										</td>
 									</tr>
 									</c:if>
@@ -334,7 +333,7 @@ boolean isLogin = loginChk != null; %>
 			              <label><input type="radio" name="radioOption" value="A_301_a0007"> 본인과 타인의 개인정보 노출</label><br>
 			              <label><input type="radio" name="radioOption" value="A_301_a0008"> 권리침해</label><br>
 			              <label><input type="radio" name="radioOption" value="A_301_a0009"> 게시판 주제에 맞지 않는 게시글</label><br>
-			              /* <label><input type="radio" name="radioOption" value="A_301_a0010">기타<br><input type="text"></label> */
+			              <label><input type="radio" name="radioOption" value="A_301_a0010">기타<br><input type="text"></label>
 			            </div>
 			          </div>
 			        `

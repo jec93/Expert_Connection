@@ -44,5 +44,10 @@ public class AdminDao {
 	public int selectWholeMemberCount() {
 		return sqlSession.selectOne("report.selectWholeMemberCount");
 	}
+
+	//관리자페이지 -> 신고내역 확인
+	public Report checkReport(String reportNo) {
+		return sqlSession.selectOne("report.checkReport", reportNo);
+	}
 	
 }

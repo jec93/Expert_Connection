@@ -11,7 +11,7 @@
 	<script>
 		const title = '${title}'; //메세지 제목(request.setAttribute("title", "회원가입")로 등록한 속성의 키값)
 		const msg = '${msg}'; //메세지 본문
-		const icon = '${icon}'; //alert 아이콘 종류(success,error, warning)
+		const icon = '${icon}'; //alert 아이콘 종류(success,error, warning, info)
 		const loc = '${loc}'; //이동할 서블릿의 url
 		const callback = '${callback}'; //메세지를 띄워주고, 실행할 함수
 		

@@ -381,13 +381,22 @@ section.section {
   background-color: rgba(143, 143, 143, 0.8);
 }
 .btn-tertiary {
-	border: 1px solid #DE0707;
-	background-color: #DE0707;
+	border: 1px solid #FF1A1A;
+	background-color: #FF1A1A;
 	color: var(--gray8);
 }
 .btn-tertiary:hover {
-	background-color: rgba(222, 7, 7, 0.6);
- 	border: 1px solid rgba(222, 7, 7, 0.1);
+	background-color: rgba(255, 26, 26, 0.6);
+ 	border: 1px solid rgba(255, 26, 26, 0.1);	
+}
+.btn-quaternary {
+	border: 1px solid #F0F0F0;
+	background-color: #F0F0F0;
+	color: var(--main1);
+}
+.btn-quaternary:hover {
+	background-color: rgba(240, 240, 240, 0.6);
+ 	border: 1px solid rgba(240, 240, 240, 0.1);
 }
 .btn-point {
   border: 1px solid var(--main3);
@@ -413,11 +422,18 @@ section.section {
   background-color: rgba(143, 143, 143, 0.2);
 }
 .btn-tertiary.outline {
-	color: #DE0707;
-  	background-color: #DE0707;
+	color: #FF1A1A;
+  	background-color: #FF1A1A;
 }
 .btn-tertiary:outline:hover {
-	background-color: rgba(222, 7, 7, 0.2);
+	background-color: rgba(255, 26, 26, 0.2);
+}
+.btn-quaternary.outline {
+	color: #F0F0F0;
+  	background-color: #F0F0F0;
+}
+.btn-quaternary:outline:hover {
+	background-color: rgba(240, 240, 240, 0.2);
 }
 .btn-point.outline {
   color: var(--main5);
@@ -558,6 +574,11 @@ section.section {
     white-space : nowrap;
     overflow : hidden;
     text-overflow : ellipsis;
+}
+.writeBoard-btn-box {
+	margin-top : 10px;
+	margin-bottom : 10px;
+	justify-items : end;
 }
 
 /* 게시글 상세보기 */
@@ -1265,4 +1286,56 @@ section.section {
 	font-size : 15px;
 	padding : 5px;
     box-sizing: border-box;
+}
+
+/* 신고관리 */
+.checkReport {
+	display: grid;
+    justify-self: center;
+	border-radius : 20px;
+	background-color : var(--gray8);
+	padding : 10px;
+	margin-top: 40px;
+	width : fit-content;
+}
+.checkReport-header {
+	display : flex;
+	justify-content: center;
+	margin : 10px auto;
+}
+.checkReport-body {
+	padding : 10px;
+}
+.checkReport-content {
+	display : flex;
+	align-items: center;
+	margin : 5px;
+	height : 30px;
+}
+.checkReport-content > span {
+	line-height : 20px;
+	padding-right : 10px;
+}
+#reportTitle {
+	width : 100px;
+	color : var(--main2);
+	font-weight : bold;
+	font-size : 15px;
+	padding-right : 20px;
+}
+.checkReport-bottom{
+	display : flex;
+	justify-content: center;
+	margin : 10px auto;	
+	gap : 20px;
+}
+.check-board {
+	width : 970px;
+	margin : 15px;
+}
+#check-board-title {
+	display : flex;
+	justify-content: center;
+	color : var(--main2);
+	margin : 30px;
 }

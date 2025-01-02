@@ -67,7 +67,7 @@
 		                        <th style="width:10%">신고받은 회원</th>
 		                        <th style="width:7%">신고분류</th>
 		                        <th style="width:10%">신고대상</th>
-		                        <th style="width:15%">신고날짜</th>
+		                        <th style="width:13%">신고날짜</th>
 		                        <th style="width:10%">신고내역 확인</th>
 		                     </tr>
 		                     
@@ -76,15 +76,20 @@
 		                     	<td>${report.reportNo}</td>
 		                        <td>${report.reporter}</td>
 		                        <td>${report.suspect}</td>
-		                        <c:if test="${report.reportType eq '0'}">
+								 <c:if test="${report.reportType eq '0'}">
 		                        <td>게시글</td>
 		                        </c:if>
 		                        <c:if test="${report.reportType eq '1'}">
 		                        <td>댓글</td>
 		                        </c:if>
-		                        <td>${report.targetNo}</td>
+		                        <c:if test="${report.reportType eq '0'}">
+		                        <td><a href="/admin/viewBoard.exco?targetNo=${report.targetNo}">${report.targetNo}</a></td>
+		                        </c:if>
+		                        <c:if test="${report.reportType eq '1'}">
+		                        <td><a href="/admin/viewComment.exco?targetNo=${report.targetNo}">${report.targetNo}</a></td>
+		                        </c:if>		                       
 		                        <td>${report.reportDate}</td>
-		                        <td><button class="btn-primary" onclick="">확인</button></td>
+		                        <td><button class="btn-primary" onclick="reportCheck('${report.reportNo}')">확인</button></td>
 		                     </tr>
 		                     </c:forEach>
 		                    </table>
@@ -123,7 +128,10 @@
 		                        <td>${member.suspectCount}</td>
 		                        <td>${member.restrictionCount}</td>
 		                        <c:choose>
-		                        <c:when test="${member.restrictionCount eq 0 or 1}">
+		                        <c:when test="${member.restrictionCount eq 0}">
+		                        <td><button class="btn-secondary" onclick="">활동정지</button></td>
+		                        </c:when>
+		                        <c:when test="${member.restrictionCount eq 1}">
 		                        <td><button class="btn-secondary" onclick="">활동정지</button></td>
 		                        </c:when>
 								<c:when test="${member.restrictionCount eq 2}">
@@ -149,6 +157,13 @@ function search(choice){
 	} else if(choice == 'whole') {
 		location.href = "/admin/memberManage.exco?reqPage=1&searchName="+choice;
 	}
+}
+
+function reportCheck(reportNo) {
+	var popupURL = "/admin/checkReport.exco?reportNo="+reportNo;
+	var popupProperties = "width=500, height=550, scrollbars=no";
+	
+	window.open(popupURL, "Popup", popupProperties);
 }
 </script>
 </body>

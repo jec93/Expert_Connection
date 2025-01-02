@@ -488,6 +488,7 @@ public class BoardService {
 		ArrayList<BoardComment> list = (ArrayList<BoardComment>) boardDao.selectAllCommentList(map);
 		
 		System.out.println("boardService - commentList" + list);
+		System.out.println("boardService commentListSize : " + list.size());
 		
 		//전체 댓글 갯수
 		int totCnt = boardDao.selectAllCommentCount();
@@ -554,7 +555,7 @@ public class BoardService {
 		
 		CommentPageData pd = new CommentPageData(list, pageNavi);
 				
-		System.out.println(pd.getList());
+		//System.out.println(pd.getList());
 		return pd;
 	}
 
@@ -664,4 +665,5 @@ public class BoardService {
 		}
 		return String.valueOf(boardReact.getBoardReaction());
 	}
+
 }
