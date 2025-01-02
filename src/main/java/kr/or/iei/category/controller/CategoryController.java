@@ -12,15 +12,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import kr.or.iei.category.model.service.CategoryService;
+import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
@@ -55,7 +53,7 @@ public class CategoryController {
 	    model.addAttribute("secondCode", secondCode);
     	
 	    //해당 소분류 코드를 가진 전문가 검색
-	    ArrayList<Expert> expertList = categoryService.viewExpertListByThirdCd(thirdCode);
+	    ArrayList<ExpertIntroduce> expertList = categoryService.viewExpertListByThirdCd(thirdCode);
 	    model.addAttribute("expertList",expertList);
 	    
     	return "categories/categoryResult";

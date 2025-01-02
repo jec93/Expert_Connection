@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.or.iei.expert.model.service.ExpertService;
+import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.expert.model.vo.ExpertManagement;
 
 @Controller("expertController")
@@ -33,6 +34,14 @@ public class ExpertController {
 		
 		ExpertManagement expertDetail = expertService.getExpertDetail(receiveNo);
 		model.addAttribute("expertDetail", expertDetail);
+		return "member/expertDetail";
+	}
+	
+	//회원 번호로 전문가 소개 페이지 불러오기
+	@GetMapping("/viewExpertInfoByMemberNo.exco")
+	public String viewExpertInfoByMemberNo(String memberNo, Model model ) {
+		ExpertIntroduce expertDetail = expertService.viewExpertInfoByMemberNo(memberNo);
+		model.addAttribute("expertDetail",expertDetail);
 		return "member/expertDetail";
 	}
 }

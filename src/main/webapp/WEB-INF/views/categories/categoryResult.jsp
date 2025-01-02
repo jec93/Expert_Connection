@@ -1,3 +1,4 @@
+<%@page import="kr.or.iei.expert.model.vo.ExpertIntroduce"%>
 <%@page import="kr.or.iei.member.model.vo.Expert"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
@@ -6,7 +7,7 @@
 	pageEncoding="UTF-8"%>
 <%
   	Map<String, Object> categories = (Map<String, Object>) request.getAttribute("categories");
-	ArrayList<Expert> expertList = (ArrayList<Expert>) request.getAttribute("expertList");
+	ArrayList<ExpertIntroduce> expertList = (ArrayList<ExpertIntroduce>) request.getAttribute("expertList");
  %>
 <!DOCTYPE html>
 <html>
@@ -114,20 +115,20 @@
 					</div>
 					<div id="tird-category-title" class="main-category">
 						<div class="sub-header"><%=request.getParameter("thirdName") %></div>
-						<% for(Expert e : expertList) {%>
-						<div class="info-container">
+						<% for(ExpertIntroduce i : expertList) {%>
+						<div class="info-container" onclick="viewSelectedExpert(<%=i.getMemberNo()%>);">
 							<div class="expert-profile">이미지?</div>
 							<div>
-								타이틀?
+								타이틀 : <%=i.getIntroduceTitle() %>
 							</div>
 							<div>
-								닉네임 : <%=e.getExpertNickname() %>
+								닉네임 : <%=i.getExpertNickname() %>
 							</div>
 							<div>
 								좋아요 수?
 							</div>
 							<div>
-								소개 글?
+								소개 글 : <%=i.getIntroduceContent() %>
 							</div>
 						</div>
 						<%} %>
@@ -138,7 +139,9 @@
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
 	<script>
-        
+        function viewSelectedExpert(memberNo){
+        	location.href = '/expert/viewExpertInfoByMemberNo.exco?&memberNo='+memberNo;
+        }
     </script>
 </body>
 </html>

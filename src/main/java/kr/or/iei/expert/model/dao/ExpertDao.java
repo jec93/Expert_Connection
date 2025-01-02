@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.expert.model.vo.ExpertManagement;
 
 
@@ -24,6 +25,11 @@ public class ExpertDao {
 
 	public ExpertManagement getExpertDetail(String receiveNo) {
 		return sqlSession.selectOne("expertManagement.getExpertDetail", receiveNo);
+	}
+
+	public ExpertIntroduce viewExpertInfoByMemberNo(String memberNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("expertManagement.viewExpertInfoByMemberNo", memberNo);
 	}
 
 }
