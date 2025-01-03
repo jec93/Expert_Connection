@@ -156,5 +156,4 @@
         AND member_no = #{otherMemberNo}
         GROUP BY room_id
     </select>
-  
 </mapper>

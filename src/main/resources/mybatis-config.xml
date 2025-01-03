@@ -5,7 +5,7 @@
 	<settings>
 		<setting name="jdbcTypeForNull" value="NULL"/>
 		<!-- MyBatis 로그를 표준 출력으로 설정 -->
-        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- <setting name="logImpl" value="STDOUT_LOGGING"/> -->
 	</settings>
 	
 	<typeAliases>
@@ -23,6 +23,8 @@
 		<typeAlias type="kr.or.iei.admin.model.vo.Report" alias="report"/>
 		<typeAlias type="kr.or.iei.board.model.vo.BoardReact" alias="boardReact"/>
 		<typeAlias type="kr.or.iei.expert.model.vo.ExpertIntroduce" alias="expertIntro"/>
+		<typeAlias type="kr.or.iei.payment.model.vo.Orders" alias="orders"/>
+		<typeAlias type="kr.or.iei.payment.model.vo.Payment" alias="payment"/>
 	</typeAliases>
 </configuration>
 
