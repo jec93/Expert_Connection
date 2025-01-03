@@ -58,6 +58,32 @@ public class CategoryController {
 	    
     	return "categories/categoryResult";
     }
+    
+    //카테고리를 선택(클릭)하고 넘어온 전문가 출력페이지에서 다른 소분류를 누를때 새로운 결과창
+    @GetMapping(value = "/changThirdCategories", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ArrayList<ExpertIntroduce> changThirdCategories(String thirdCode, String thirdName, String secondCode, Model model) {
+    	ArrayList<ExpertIntroduce> response = categoryService.viewExpertListByThirdCd(thirdCode);
+    	model.addAttribute("expertList",response);
+    	return response;
+    }
+    
+    @GetMapping("/searchThirdNm.exco")
+    public String searchThirdNm(String keyword, Model model) {
+    	ArrayList<ExpertIntroduce> srchList = categoryService.searchExperts(keyword);
+    	if(srchList==null) {
+    		model.addAttribute("title", "정보");
+    		model.addAttribute("msg", "검색 결과 없음.");
+    		model.addAttribute("icon", "info");
+    		model.addAttribute("loc", "/categoryFrm.exco");
+    		return "common/msg";
+    	}
+    	model.addAttribute("keyword",keyword);
+    	model.addAttribute("srchList",srchList);
+    	return"/categories/srchResult";
+    }
+    
+    
     //임시 로그인 학원컴터기준 admin 정보
     @GetMapping("/autoLogin.exco")
     public String autoLogin(HttpSession session) {

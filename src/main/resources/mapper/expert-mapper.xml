@@ -116,5 +116,70 @@
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD -- 추가된 조인 조건
 	WHERE TRIM(E.MEMBER_NO) = #{string}
 	</select>
+	
+	<select id="viewAllExpertList"
+	resultType="expertIntro">
+	SELECT
+	    E.MEMBER_NO AS memberNo,
+	    E.MEMBER_ID AS expertId,
+	    E.MEMBER_PW AS expertPw,
+	    E.MEMBER_NICKNAME AS expertNickname,
+	    E.MEMBER_PHONE AS expertPhone,
+	    E.MEMBER_ADDR AS expertAddr,
+	    E.MEMBER_GENDER AS expertGender,
+	    E.MEMBER_EMAIL AS expertEmail,
+	    W.MEMBER_TYPE AS memberType,
+	    E.ENROLL_DATE AS enrollDate,
+	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
+	    M.EXPERT_GRADE AS expertGrade,
+	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_PATH AS expertFilePath,
+	    I.INTRODUCE_TITLE AS introduceTitle,
+	    I.INTRODUCE_CONTENT AS introduceContent,
+	    I.EXPERT_LIKE AS expertLike,
+    	I.EXPERT_DISLIKE AS expertDislike
+	FROM TBL_EXCO E
+	LEFT JOIN TBL_EXPERT_MANAGEMENT M
+	ON E.MEMBER_NO = M.MEMBER_NO
+	LEFT JOIN TBL_WHOLE_MEMBER W
+	ON E.MEMBER_NO = W.MEMBER_NO
+	LEFT JOIN TBL_EXPERT_INTRODUCE I
+	ON I.MEMBER_NO = E.MEMBER_NO
+	</select>
+	
+	<select id="srchExpertsByKeyList"
+	parameterType="list"
+	resultType="expertIntro">
+	SELECT
+		E.MEMBER_NO AS memberNo,
+	    E.MEMBER_ID AS expertId,
+	    E.MEMBER_PW AS expertPw,
+	    E.MEMBER_NICKNAME AS expertNickname,
+	    E.MEMBER_PHONE AS expertPhone,
+	    E.MEMBER_ADDR AS expertAddr,
+	    E.MEMBER_GENDER AS expertGender,
+	    E.MEMBER_EMAIL AS expertEmail,
+	    W.MEMBER_TYPE AS memberType,
+	    E.ENROLL_DATE AS enrollDate,
+	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
+	    M.EXPERT_GRADE AS expertGrade,
+	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_PATH AS expertFilePath,
+	    I.INTRODUCE_TITLE AS introduceTitle,
+	    I.INTRODUCE_CONTENT AS introduceContent,
+	    I.EXPERT_LIKE AS expertLike,
+    	I.EXPERT_DISLIKE AS expertDislike 
+        FROM TBL_EXCO E
+	LEFT JOIN TBL_EXPERT_MANAGEMENT M
+	ON E.MEMBER_NO = M.MEMBER_NO
+	LEFT JOIN TBL_WHOLE_MEMBER W
+	ON E.MEMBER_NO = W.MEMBER_NO
+	LEFT JOIN TBL_EXPERT_INTRODUCE I
+	ON I.MEMBER_NO = E.MEMBER_NO
+        WHERE THIRD_CATEGORY_CD IN
+        <foreach collection="list" item="keywords" open="(" separator="," close=")">
+            #{keywords}
+        </foreach>
+	</select>
 </mapper>
 
