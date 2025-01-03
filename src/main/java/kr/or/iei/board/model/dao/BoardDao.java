@@ -172,4 +172,9 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.update("board.updReactByReact",commentReact);
 	}
+
+	//댓글번호로 댓글이 작성된 게시글 번호 조회
+	public String searchBoardNoByCommentNo(String commentNo) {
+		return sqlSession.selectOne("board.searchBoardNoByCommentNo", commentNo);
+	}
 }

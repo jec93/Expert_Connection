@@ -82,4 +82,9 @@ public class ChatService {
 	public List<String> getRecipientIdsByRoomId(String roomId) {
 		return chatDao.getRecipientIdsByRoomId(roomId);
 	}
+
+	// 기존 채팅방 조회
+	public String findExistingRoom(String memberNo, String otherMemberNo) {
+		return chatDao.findRoomByMembers(memberNo, otherMemberNo);
+	}
 }

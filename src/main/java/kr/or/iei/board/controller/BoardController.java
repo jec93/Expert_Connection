@@ -438,7 +438,8 @@ public class BoardController {
   		model.addAttribute("pageNavi", pd.getPageNavi());
   		model.addAttribute("searchName", searchName);
   		
-  		//System.out.println("commentList 2 : " +pd.getList());
+  		System.out.println("commentList 2 : " +pd.getList());
+  		System.out.println("boardController commentListSize : " + pd.getList().size());
   		
   		return "admin/communityManage";
   	}

@@ -275,6 +275,9 @@ a.leaveRoom:hover {
     background-color: #e9ecef;
 }
 
+#autoResponsePopup ul li:hover {
+    background-color: #f7f7f7;
+}
 </style>
 </head>
 <body>
@@ -337,6 +340,26 @@ a.leaveRoom:hover {
 
 					<!-- 채팅 입력 영역 -->
 					<div id="chatInput">
+						<!-- 자동응답 아이콘과 팝업 -->
+					    <div id="autoResponseContainer" style="position: relative; margin-right: 10px;">
+					        <button id="autoResponseIcon" style="background: none; border: none; cursor: pointer;">
+					            <img src="/path/to/response-icon.png" alt="자동응답" style="width: 30px; height: 30px;">
+					        </button>
+					        <div id="autoResponsePopup" style="display: none; position: absolute; top: -250%; left: 0; width: 200px; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 1000;">
+					            <ul style="list-style: none; margin: 0; padding: 10px; max-height: 200px; overflow-y: auto;">
+					                <c:forEach var="response" items="${autoResList}">
+					                    <li class="auto-response-item" 
+									        data-response-content="${response.responseContent}" 
+									        data-expert-member-no="${response.expertMemberNo}"
+									        data-expert-nickname="${response.expertNickname}"
+									        style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;">
+									        ${response.triggerWord}
+									    </li>
+					                </c:forEach>
+					            </ul>
+					        </div>
+					    </div>
+						
 						<input type="text" id="chatMsg" placeholder="메시지를 입력하세요...">
 						<input type="file" id="fileInput" style="display: none;" onchange="fn.previewFile()"> <!-- 숨김 처리 -->
 					    <button onclick="document.getElementById('fileInput').click();">+</button> <!-- 버튼으로 트리거 -->
@@ -376,6 +399,7 @@ a.leaveRoom:hover {
                     var msgData = JSON.parse(e.data); 
                     
                     const memberNo = msgData.memberNo;
+                    const memberNickname = msgData.memberNickname; // 발신자 닉네임
                     const msg = msgData.msg;
                     var currentTime = moment().format('YYYY-MM-DD HH:mm:ss'); 
 
@@ -402,7 +426,6 @@ a.leaveRoom:hover {
                             '</div>' +
                         '</div>';
                     
-                    
                     $("#msgArea").append(messageHtml);
                     $("#msgArea").scrollTop($("#msgArea")[0].scrollHeight);
                 };
@@ -411,6 +434,49 @@ a.leaveRoom:hover {
                     console.log("연결종료");
                 };
             },
+            
+            //자동응답 SocketHandler로 전달
+            sendAutoResponseAsExpert: function (responseContent, expertMemberNo, expertNickname, triggerWord) {
+            	// 질문자의 질문 메시지 먼저 서버로 전송
+            	const questionData  = {
+                	type: "chat", // 질문 타입
+                    roomId: roomId,
+                    memberNo: memberNo, // 질문자 ID
+                    msg: triggerWord, // 질문 내용
+                    memberNickname: memberNickname // 질문자 닉네임
+                };
+                // WebSocket으로 메시지 전송
+                ws.send(JSON.stringify(questionData));
+                
+           	    // 전문가 답변 메시지 서버로 전송
+                const answerData = {
+                    type: "autoResponse", // 자동응답 타입
+                    roomId: roomId,       // 채팅방 ID
+                    memberNo: expertMemberNo, // 전문가 ID
+                    msg: responseContent, // 답변 내용
+                    memberNickname: expertNickname // 전문가 닉네임
+                };
+                ws.send(JSON.stringify(answerData));
+            },
+            
+       	  // 자동응답 팝업 열고 닫기
+            toggleAutoResponsePopup: function () {
+                $("#autoResponsePopup").toggle(); // 팝업 열고 닫기
+            },
+
+            // 팝업 외부 클릭 시 닫기
+            closeAutoResponsePopup: function (e) {
+                if (!$(e.target).closest("#autoResponseContainer").length) {
+                    $("#autoResponsePopup").hide();
+                }
+            },
+
+            // 자동응답 리스트 항목 클릭 시 입력창에 답변 추가
+            selectAutoResponse: function (responseContent) {
+                $("#chatMsg").val(responseContent); // 답변 입력창에 추가
+                $("#autoResponsePopup").hide(); // 팝업 닫기
+            },
+
             
             previewFile: function () {
                 const fileInput = document.getElementById("fileInput");					
@@ -490,6 +556,7 @@ a.leaveRoom:hover {
                 sendObj.type = "chat";
                 sendObj.roomId = roomId;
                 sendObj.memberNo = memberNo;
+                sendObj.memberNickname = memberNickname;
                 sendObj.msg = $("#chatMsg").val();
                 
                 ws.send(JSON.stringify(sendObj));
@@ -558,7 +625,27 @@ a.leaveRoom:hover {
 		        });
 		    }
         };
+        
+    	 // 팝업 열기/닫기 이벤트
+        $(document).ready(function () {
+            $("#autoResponseIcon").on("click", fn.toggleAutoResponsePopup);
 
+            // 팝업 외부 클릭 시 닫기
+            $(document).on("click", fn.closeAutoResponsePopup);
+
+            // 자동응답 리스트 항목 클릭 시 이벤트 연결
+            $(".auto-response-item").on("click", function () {
+            	const responseContent = $(this).data("response-content"); // 답변 내용
+                const expertMemberNo = $(this).data("expert-member-no"); // 전문가 ID
+                const expertNickname = $(this).data("expert-nickname"); // 전문가 닉네임
+                const triggerWord = $(this).text(); // 질문 내용 (triggerWord)
+
+                // 전문가 메시지를 WebSocket으로 전송
+                fn.sendAutoResponseAsExpert(responseContent, expertMemberNo, expertNickname, triggerWord);
+            });
+        });
+
+    	 
         document.getElementById("searchMsg").addEventListener("keyup", function (event) {
             if (event.key === "Enter") {
                 fn.searchMessages();

@@ -9,13 +9,17 @@ public class AutoRes {
     private String responseDate;
     private String isActive;
     
+    //조인
+    private String expertNickname;
+    private String expertMemberNo;
+    
 	public AutoRes() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public AutoRes(String responseNo, String memberNo, String triggerWord, String responseContent, String responseDate,
-			String isActive) {
+			String isActive, String expertNickname, String expertMemberNo) {
 		super();
 		this.responseNo = responseNo;
 		this.memberNo = memberNo;
@@ -23,6 +27,8 @@ public class AutoRes {
 		this.responseContent = responseContent;
 		this.responseDate = responseDate;
 		this.isActive = isActive;
+		this.expertNickname = expertNickname;
+		this.expertMemberNo = expertMemberNo;
 	}
 
 	public String getResponseNo() {
@@ -72,5 +78,22 @@ public class AutoRes {
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}
+
+	public String getExpertNickname() {
+		return expertNickname;
+	}
+
+	public void setExpertNickname(String expertNickname) {
+		this.expertNickname = expertNickname;
+	}
+
+	public String getExpertMemberNo() {
+		return expertMemberNo;
+	}
+
+	public void setExpertMemberNo(String expertMemberNo) {
+		this.expertMemberNo = expertMemberNo;
+	}
     
+	
 }

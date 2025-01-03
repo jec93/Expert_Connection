@@ -48,8 +48,54 @@
                </div>
                <div class="list-content">
                   <div class="page-title"> ${boardTypeNm} </div>
+                   <%-- 반대로 로그인 데이터 없을때로 해둠 --%>
+                   <div class="writeBoard-btn-box">
+                   <c:choose>
+                   		<c:when test="${not empty loginMember and loginMember.memberType eq '0'}">
+                   			<c:if test="${boardType eq '4'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   			<c:if test="${boardType eq '5'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   		</c:when>
+                   		<c:when test="${not empty loginMember and loginMember.memberType ne '0' and loginMember.memberType eq '1' or '2' or '3'}">
+                   			<c:if test="${boardType eq '0'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   			<c:if test="${boardType eq '6'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   		</c:when>
+                   		<c:when test="${not empty loginMember and loginMember.memberType ne '0' and loginMember.memberType eq '4' or '5' or '6'}">
+                   			<c:if test="${boardType eq '1'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   			<c:if test="${boardType eq '2'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   			<c:if test="${boardType eq '3'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   			<c:if test="${boardType eq '6'}">
+                   			<div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'> 작성 </div>
+                   			</c:if>
+                   		</c:when>
+                   </c:choose>
+                   </div>
                   <table class="tbl">
-                     <tr>
+                  <c:choose>
+                  <c:when test="${boardType eq 6}">
+                  	<tr>
+                        <th style="width:10%">번호</th>
+                        <th style="width:35%">제목</th>
+                        <th style="width:10%">작성자</th>
+                        <th style="width:15%">작성일</th>
+                        <th style="width:10%">조회수</th>
+                     </tr>
+                  </c:when>
+                  <c:when test="${boardType ne 6}">
+                  	<tr>
                         <th style="width:10%">번호</th>
                         <th style="width:25%">제목</th>
                         <th style="width:10%">작성자</th>
@@ -58,6 +104,9 @@
                         <th style="width:10%">아쉬워요</th>
                         <th style="width:8%">조회수</th>
                      </tr>
+                  </c:when>
+                  </c:choose>
+                     
                      <c:forEach var="board" items="${boardList}">
 
                      <tr>
@@ -73,35 +122,36 @@
 							<c:if test="${not empty sessionScope.loginMember and sessionScope.loginMember.memberNickname eq board.boardWriter or not empty sessionScope.loginMember and sessionScope.loginMember.memberId eq 'admin'}">
 								<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
 							</c:if>
+						<td>${board.boardWriter}</td>
+                        <td>${board.boardDate}</td>
+                        <td>${board.boardCount}</td>
 						</c:when>
 						<c:when test="${boardType ne 6}">
 							<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
+							<td>${board.boardWriter}</td>
+	                        <td>${board.boardDate}</td>
+	                        <td>${board.boardLike}</td>
+	                        <td>${board.boardDislike}</td>
+	                        <td>${board.boardCount}</td>
 						</c:when>
 						<c:otherwise>
                        		<td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo }&boardType=${board.boardType}">${board.boardTitle}</a></td>
-						</c:otherwise>                      
+                       		<td>${board.boardWriter}</td>
+	                        <td>${board.boardDate}</td>
+	                        <td>${board.boardLike}</td>
+	                        <td>${board.boardDislike}</td>
+	                        <td>${board.boardCount}</td>
+						</c:otherwise>
                         </c:choose>
-                        <td>${board.boardWriter}</td>
-                        <td>${board.boardDate}</td>
-                        <td>${board.boardLike}</td>
-                        <td>${board.boardDislike}</td>
-                        <td>${board.boardCount}</td>
                      </tr>
 
                      </c:forEach>
                   </table>
-               <div id="pageNavi">${pageNavi}</div>
-               <%-- 반대로 로그인 데이터 없을때로 해둠 --%>
-               <c:if test="${not empty loginMember }">
-	               <div class="btn-primary" style="width:fit-content" onclick='writeFrm(${boardType},"${boardTypeNm}")'>
-               			작성
-               		</div>
-               </c:if>
+               	<div id="pageNavi">${pageNavi}</div>
                </div>
             </div>
          </section>
       </main>
-
       <jsp:include page="/WEB-INF/views/common/footer.jsp" />
    </div>
    

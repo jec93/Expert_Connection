@@ -30,8 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
+import kr.or.iei.chat.model.service.AutoResService;
 import kr.or.iei.chat.model.service.ChatMemberService;
 import kr.or.iei.chat.model.service.ChatService;
+import kr.or.iei.chat.model.vo.AutoRes;
 import kr.or.iei.chat.model.vo.Chat;
 import kr.or.iei.chat.model.vo.Room;
 import kr.or.iei.member.model.vo.Member;
@@ -47,6 +49,10 @@ public class ChatController {
 	@Autowired
 	@Qualifier("chatMemberService")
 	private ChatMemberService chatMemberService;
+	
+	@Autowired
+	@Qualifier("autoResService")
+	private AutoResService autoResService;
 	
 	//채팅방 목록 조회
 	@GetMapping("/getRoomList.exco")
@@ -70,6 +76,10 @@ public class ChatController {
 		model.addAttribute("memberList", memberList);
 		model.addAttribute("roomId", roomId);
 		model.addAttribute("chatList", chatList);
+		
+		// 전문가의 자동응답 리스트 가져오기
+        ArrayList<AutoRes> expertAutoResList = autoResService.getAutoResByExpertInRoom(roomId);
+        model.addAttribute("autoResList", expertAutoResList);
 		
 		return "chat/chat";
 	}
@@ -180,6 +190,12 @@ public class ChatController {
 	public String createRoom(HttpSession session, String roomName, String members) {
 		Member loginMember = (Member) session.getAttribute("loginMember");
 		
+		// 기존 채팅방이 있는지 확인
+	    String existingRoomId = chatService.findExistingRoom(loginMember.getMemberNo(), members);
+	    if (existingRoomId != null) {
+	        return existingRoomId; // 기존 채팅방 ID 반환
+	    }
+	    
 		String roomId = chatService.createRoom(roomName, loginMember.getMemberNo(), members);
 				
 		return roomId;

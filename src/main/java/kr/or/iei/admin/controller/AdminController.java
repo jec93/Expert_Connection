@@ -13,6 +13,7 @@ import kr.or.iei.admin.model.service.AdminService;
 import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
+import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardType;
 import kr.or.iei.member.model.service.MemberService;
 import kr.or.iei.member.model.vo.Member;
@@ -65,8 +66,8 @@ public class AdminController {
 		reportData.setReportType(Integer.parseInt(reportType));
 		reportData.setThirdCategoryCd(reportReason);
 		adminService.insertReportByInfo(reportData);
-		model.addAttribute("title","신고 완료");
-		model.addAttribute("msg","검토 후 회신드리겠습니다.");
+		model.addAttribute("title","신고해주셔서 감사합니다.");
+		model.addAttribute("msg", "사용자님의 신고로 Expert Connection의 규정을 어기고 이용환경을 해치는 사용자를 적발하는데 많은 도움이 되었습니다. 보내주신 신고내용은 검토 후 회신드리겠습니다. (허위신고 등은 신고자 본인에게 제재가 가해질 수 있습니다.) 앞으로도 규정을 어기는 사용자가 있다면 신고기능을 적극 이용해주시길 부탁드립니다. 감사합니다. 🍀");
 		model.addAttribute("icon","info");
 		model.addAttribute("loc","/board/list.exco?reqPage=1&boardType=" + boardType + "&boardTypeNm=" + boardType);
 		return "common/msg";
@@ -90,5 +91,97 @@ public class AdminController {
 		model.addAttribute("searchName", searchName);
 		
 		return "admin/memberManage";
+	}
+	
+	//관리자페이지 -> 신고대상 클릭시 해당 게시글로 이동
+	@GetMapping("viewBoard.exco")
+	public String viewBoard(String targetNo, String commentChk, Model model) {
+		
+		String boardNo = targetNo;
+		
+		System.out.println(boardNo);
+		
+		Board board = adminService.viewBoard(boardNo, commentChk);
+		
+		if (board == null) {
+			return "redirect:/admin/memberManage";
+		}
+		model.addAttribute("board", board);
+		return "board/view";
+	}
+	
+	//관리자페이지 -> 신고대상 클릭시 해당 댓글로 이동
+	@GetMapping("viewComment.exco")
+	public String viewComment(String targetNo, String commentChk, Model model) {
+		
+		String commentNo = targetNo;
+		
+		//댓글 번호로 댓글이 작성된 게시글 번호 조회
+		String boardNo = adminService.searchBoardNoByCommentNo(commentNo);
+		
+		if (boardNo == null) {
+			return "admin/memberManage";
+		} else {
+			Board board = adminService.viewBoard(boardNo, commentChk);
+			
+			if (board == null) {
+				return "redirect:admin/memberManage";
+			}
+			model.addAttribute("board", board);
+			return "board/view";
+		}
+	}
+	
+	//관리자페이지 -> 신고확인버튼 클릭시 팝업띄워주기
+	@GetMapping("checkReport.exco")
+	public String checkReport(String reportNo, Model model) {
+		
+		Report report = adminService.checkReport(reportNo);
+		
+		if(report == null) {
+			return "admin/memberManage";
+		}
+		model.addAttribute("report", report);
+		
+		return "admin/checkReport";
+	}
+	
+	//관리자페이지 -> 신고대상 클릭시 해당 게시글로 이동
+	@GetMapping("checkBoard.exco")
+	public String checkBoard(String targetNo, String commentChk, Model model) {
+		
+		String boardNo = targetNo;
+		
+		System.out.println(boardNo);
+		
+		Board board = adminService.viewBoard(boardNo, commentChk);
+		
+		if (board == null) {
+			return "redirect:/admin/memberManage";
+		}
+		model.addAttribute("board", board);
+		return "admin/checkBoard";
+	}
+	
+	//관리자페이지 -> 신고대상 클릭시 해당 댓글로 이동
+	@GetMapping("checkComment.exco")
+	public String checkComment(String targetNo, String commentChk, Model model) {
+		
+		String commentNo = targetNo;
+		
+		//댓글 번호로 댓글이 작성된 게시글 번호 조회
+		String boardNo = adminService.searchBoardNoByCommentNo(commentNo);
+		
+		if (boardNo == null) {
+			return "admin/memberManage";
+		} else {
+			Board board = adminService.viewBoard(boardNo, commentChk);
+			
+			if (board == null) {
+				return "redirect:admin/memberManage";
+			}
+			model.addAttribute("board", board);
+			return "admin/checkComment";
+		}
 	}
 }

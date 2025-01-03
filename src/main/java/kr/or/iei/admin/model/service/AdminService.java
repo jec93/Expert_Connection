@@ -12,6 +12,9 @@ import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
 import kr.or.iei.board.model.dao.BoardDao;
+import kr.or.iei.board.model.vo.Board;
+import kr.or.iei.board.model.vo.BoardComment;
+import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.member.model.vo.Member;
 
 @Service("adminService")
@@ -118,7 +121,7 @@ public class AdminService {
 			break;
 		}
 		reportData.setSuspect(suspect);
-		reportData.setReportResult("0");
+		reportData.setReportResult("D");
 		reportData.setFirstCategoryCd("D0001");
 		reportData.setFirstCategoryNM("신고 코드 관리");
 		reportData.setSecondCategoryCd("301_a0001");
@@ -232,5 +235,42 @@ public class AdminService {
       System.out.println("AdminService 전체회원리스트 : " + list);
       
       return pd;
+	}
+	
+	//관리자페이지 -> 신고대상 클릭시 해당 게시글로 이동
+	public Board viewBoard(String boardNo, String commentChk) {
+		Board board = boardDao.viewByBoardNo(boardNo);
+		
+		if(board != null) {
+			int result = 0;
+			
+			//commentChk ==null인 것은 댓글을 작성하고 상세보기 이동하는 경우를 제외 모든 요청
+			if(commentChk ==null) {
+				//조회수 증가
+				result= boardDao.updateReadByboardNo(boardNo);				
+			}
+			
+			//commentChk != null인것은 댓글을 작성하고 상세보기 이동하는 경우에도, 파일 정보를 select 할 수 있도록
+			 if(result>0 || commentChk != null) { ArrayList<BoardFile> fileList =
+			 (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(boardNo);
+			 board.setFileList(fileList);
+			  
+			 ArrayList<BoardComment> commentList = (ArrayList<BoardComment>)boardDao.readCommentListByBoardNo(boardNo);
+			 board.setCommentList(commentList);
+			 }
+		}
+		return board;
+	}
+
+	//댓글 번호로 댓글이 작성된 게시글 번호 조회
+	public String searchBoardNoByCommentNo(String commentNo) {
+		String boardNo = boardDao.searchBoardNoByCommentNo(commentNo);
+		return boardNo;
+	}
+
+	//관리자페이지 -> 신고확인버튼 클릭시 팝업띄워주기
+	public Report checkReport(String reportNo) {
+		Report report = adminDao.checkReport(reportNo);
+		return report;
 	}
 }

@@ -5,7 +5,7 @@
 	<settings>
 		<setting name="jdbcTypeForNull" value="NULL"/>
 		<!-- MyBatis 로그를 표준 출력으로 설정 -->
-        <!-- <setting name="logImpl" value="STDOUT_LOGGING"/> -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
 	</settings>
 	
 	<typeAliases>
@@ -24,8 +24,6 @@
 		<typeAlias type="kr.or.iei.board.model.vo.BoardReact" alias="boardReact"/>
 		<typeAlias type="kr.or.iei.expert.model.vo.ExpertIntroduce" alias="expertIntro"/>
 	</typeAliases>
-	
-	
 </configuration>
 
 

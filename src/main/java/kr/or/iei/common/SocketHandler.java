@@ -68,6 +68,7 @@ public class SocketHandler extends TextWebSocketHandler{
 			//메시지 송신
 			String roomId   = jsonObj.get("roomId").getAsString();
 			String memberNo = jsonObj.get("memberNo").getAsString();
+			String memberNickname = jsonObj.get("memberNickname").getAsString(); // 전문가 닉네임
 			String msg      = jsonObj.get("msg").getAsString();
 			String fileName = jsonObj.get("fileName") != null ? jsonObj.get("fileName").getAsString() : null;
 			String filePath = jsonObj.get("filePath") != null ? jsonObj.get("filePath").getAsString() : null;
@@ -102,6 +103,8 @@ public class SocketHandler extends TextWebSocketHandler{
 		        response.addProperty("fileName", fileName); // 파일 이름 추가
 		        response.addProperty("filePath", filePath); // 파일 경로 추가
 		        response.addProperty("msg", msg);
+		        response.addProperty("memberNickname", memberNickname);
+		        
 		        
 		        this.sendMsg(response.toString());
 				
@@ -111,10 +114,42 @@ public class SocketHandler extends TextWebSocketHandler{
 				 * "\", \"" + filePath + "\")'>" + fileName + "</a> " + msg; }
 				 */
 			}
-		}
-	
-		
+		} else if (type.equals("autoResponse")) {
+	        // 자동응답 메시지 처리
+	        handleAutoResponseMessage(jsonObj);
+	    }
 	}
+	
+	private void handleAutoResponseMessage(JsonObject jsonObj) {
+	    String roomId = jsonObj.get("roomId").getAsString();
+	    String memberNo = jsonObj.get("memberNo").getAsString(); // 전문가의 회원 번호
+	    String msg = jsonObj.get("msg").getAsString();
+	    String memberNickname = jsonObj.get("memberNickname").getAsString(); // 전문가 닉네임
+	    
+	    // 메시지를 채팅 테이블에 저장
+	    Chat chat = new Chat();
+	    chat.setRoomId(roomId);
+	    chat.setMemberNo(memberNo);
+	    chat.setMsg(msg);
+	    chat.setMsgGb("0"); // 일반 메시지
+	    chat.setFileName(null);
+	    chat.setFilePath(null);
+
+	    int result = service.insertChat(chat);
+
+	    if (result > 0) {
+	        // 모든 사용자에게 메시지 브로드캐스트
+	        JsonObject response = new JsonObject();
+	        response.addProperty("type", "chat");
+	        response.addProperty("roomId", roomId);
+	        response.addProperty("memberNo", memberNo); // 전문가의 회원 번호
+	        response.addProperty("msg", msg);
+	        response.addProperty("memberNickname", memberNickname);
+
+	        this.sendMsg(response.toString());
+	    }
+	}
+
 	
 	//연결된 사용자들에게 메세지 전송
 	public void sendMsg(String msg) {

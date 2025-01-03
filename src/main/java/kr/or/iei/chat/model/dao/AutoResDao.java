@@ -1,5 +1,6 @@
 package kr.or.iei.chat.model.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,5 +39,9 @@ public class AutoResDao {
 
 	public int deleteResponse(String responseNo) {
 		return sqlSession.delete("autoRes.deleteResponse", responseNo);
+	}
+
+	public List<AutoRes> getExpertAutoResListByRoomId(String roomId) {
+		return sqlSession.selectList("autoRes.getExpertAutoResListByRoomId", roomId);
 	}
 }

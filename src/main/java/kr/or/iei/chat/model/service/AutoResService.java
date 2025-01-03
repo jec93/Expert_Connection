@@ -41,4 +41,8 @@ public class AutoResService {
 		return autoResDao.deleteResponse(responseNo) > 0;
 	}
 
+	// 채팅방 ID로 전문가의 자동응답 리스트 조회
+	public ArrayList<AutoRes> getAutoResByExpertInRoom(String roomId) {
+		return (ArrayList<AutoRes>)autoResDao.getExpertAutoResListByRoomId(roomId);
+	}
 }
