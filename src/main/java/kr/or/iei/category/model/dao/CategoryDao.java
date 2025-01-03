@@ -35,6 +35,21 @@ public class CategoryDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList("expertManagement.viewExpertListByThirdCd",thirdCode);
 	}
+
+	public List<ExpertIntroduce> viewAllExpertList() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("expertManagement.viewAllExpertList");
+	}
+
+	public List<ExpertIntroduce> srchExpertsByKeyList(List<String> keywords) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("expertManagement.srchExpertsByKeyList",keywords);
+	}
+
+	public List<String> thirdCdListByThirdNmList(List<String> keywords) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("category.thirdCdListByThirdNmList",keywords);
+	}
 	
 	
 }

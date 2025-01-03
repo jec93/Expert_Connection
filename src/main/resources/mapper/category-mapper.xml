@@ -37,4 +37,18 @@
 	    where first_category_cd like 'A%'
 	    order by first_category_cd, second_category_cd, third_category_cd
 	</select>
+	
+	<select id="thirdCdListByThirdNmList"
+	parameterType="list"
+	resultType="string">
+	SELECT
+		THIRD_CATEGORY_CD AS thirdCategoryCd
+	FROM
+		TBL_CODE
+	WHERE
+		THIRD_CATEGORY_NM IN
+		<foreach collection="list" item="keywords" open="(" separator="," close=")">
+            #{keywords}
+        </foreach>
+	</select>
 </mapper>

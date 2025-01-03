@@ -21,6 +21,10 @@
 			<id>Datanucleus</id>
 			<url>https://www.datanucleus.org/downloads/maven2/</url>
 		</repository>
+		<repository>
+	        <id>jitpack.io</id>
+	        <url>https://jitpack.io</url>
+	    </repository>
 	</repositories>
 	
 	
@@ -120,7 +124,12 @@
 		    <artifactId>javax.mail</artifactId>
 		    <version>1.6.2</version>
 		</dependency>
-		
+		<!-- KOMORAN -->
+		<dependency>
+		    <groupId>com.github.shin285</groupId>
+		    <artifactId>KOMORAN</artifactId>
+		    <version>3.3.4</version>
+		</dependency>
 		
 		<!-- Spring -->
 		<dependency>
