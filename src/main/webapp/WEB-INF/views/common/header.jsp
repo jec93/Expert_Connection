@@ -25,13 +25,15 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
            <nav class="nav">
                <ul class="recommend">
                   <li>
+                     <a href="#">전문가 추천</a>
+                  </li>
+                  <li>
                   <% if(isNull){ %>
-                     <a href="#">추천 점검중</a>
+                     <a href="#">검색 점검중</a>
                   <%}else{ %>
-                     <a href="/categories/categoryFrm.exco">전문가 추천</a>
+                     <a href="/categories/categoryFrm.exco">전문가 검색</a>
                   <%} %>
                   </li>
-                  <li><a href="#">카테고리 검색</a></li>
                   <li><a href="#">커뮤니티</a>
                         <ul class="sub-menu">
                            <li><a href="/board/list.exco?reqPage=1&boardType=0&boardTypeNm=0">사용자 게시판</a></li>
