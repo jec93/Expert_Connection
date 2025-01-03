@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.or.iei.expert.model.service.ExpertService;
@@ -44,4 +45,11 @@ public class ExpertController {
 		model.addAttribute("expertDetail",expertDetail);
 		return "member/expertDetail";
 	}
+	
+	@GetMapping("/expertBotSearch.exco")
+	public String expertBotSearch() {
+		return "member/expertBotSearch";
+	}
+	
+	
 }

@@ -113,6 +113,8 @@
 
 		<main class="content">
 			<a href="/expert/expertList.exco">전문가리스트 (테스트)</a>
+			<a href="/expert/expertBotSearch.exco">챗봇 (테스트)</a>
+			
 
 
 			<!-- 채팅방 목록 -->
