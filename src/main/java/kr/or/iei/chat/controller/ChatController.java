@@ -222,4 +222,21 @@ public class ChatController {
 		
 		return "redirect:/chat/getRoomList.exco";
 	}
+	
+	@GetMapping("/goChat.exco")
+	@ResponseBody
+	public String createRoomAndRedirect(HttpSession session, String roomName, String members) {
+	  Member loginMember = (Member) session.getAttribute("loginMember");
+	  
+	  // 기존 채팅방이 있는지 확인
+	  String existingRoomId = chatService.findExistingRoom(loginMember.getMemberNo(), members);
+	  if (existingRoomId != null) {
+	      return existingRoomId; // 기존 채팅방 ID 반환
+	    }
+	       
+	  String roomId = chatService.createRoom(roomName, loginMember.getMemberNo(), members);
+	            
+	  return roomId;
+	 }
+
 }

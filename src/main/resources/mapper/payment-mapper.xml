@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="payment">
+	<insert id="insertOrderByOrderInfo"
+	parameterType="orders">
+	INSERT INTO
+		TBL_ORDERS
+	  		(
+	  			ORDER_NO,
+	  			CUSTOMER_NO,
+	  			CUSTOMER_EMAIL,
+	  			CUSTOMER_NAME,
+	  			SELLER_NO,
+	  			SELLER_NAME,
+	  			TOTAL_AMOUNT,
+	  			STATE
+	  		)
+			VALUES
+			(
+				#{orderNo},
+				#{customerNo},
+				#{customerEmail},
+				#{customerName},
+				#{sellerNo},
+				#{sellerName},
+				#{totalAmount},
+				#{state}
+			)
+	</insert>
+	
+	<select id="createOrderNo"
+	resultType="string">
+	SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_ORDERS.NEXTVAL, 4, '0') FROM DUAL
+	</select>
+	
+	<update id="updateOrderState"
+	 parameterType="string">
+	 UPDATE
+	 	TBL_ORDERS
+	 SET
+	 	STATE = '결제 완료' WHERE ORDER_NO = #{_parameter}
+	 </update>
+	 
+	<insert id="insertPayInfoByOrderInfo"
+	parameterType="payment">
+	INSERT INTO
+	TBL_PAYMENT
+	(
+		IMP_UID,
+		ORDER_NO,
+		TID,
+		AUTH_DATE,
+		PRODUCT_NAME,
+		TOTAL_AMOUNT,
+		CUSTOMER_NAME,
+		CUSTOMER_EMAIL
+	)
+	VALUES
+	(
+		#{impUid},
+		#{orderNo},
+		#{tid},
+		#{authDate},
+		#{productName},
+		#{totalAmount},
+		#{customerName},
+		#{customerEmail}
+	)
+	</insert>
+</mapper>

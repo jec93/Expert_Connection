@@ -64,6 +64,9 @@ public class CategoryService {
 		
 		// 명사만 추출
         List<String> keywords = result.getNouns();
+        for(String s: keywords) {
+        	System.out.println(s);
+        }
         List<String> thirdCdList = categoryDao.thirdCdListByThirdNmList(keywords);
         if(thirdCdList.isEmpty()) {
         	return null;

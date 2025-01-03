@@ -88,5 +88,4 @@ public class ChatDao {
 		System.out.println("otherMemberNo 조오오오옴 :" + otherMemberNo);
 		return sqlSession.selectOne("chat.findRoomByMembers", params);
 	}
-
 }
