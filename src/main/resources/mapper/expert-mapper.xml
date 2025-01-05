@@ -66,12 +66,14 @@
 	    E.ENROLL_DATE AS enrollDate,
 	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
 	    M.EXPERT_GRADE AS expertGrade,
-	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_NAME AS expertFileName,
 	    M.EXPERT_FILE_PATH AS expertFilePath,
 	    I.INTRODUCE_TITLE AS introduceTitle,
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
-    	I.EXPERT_DISLIKE AS expertDislike
+    	I.EXPERT_DISLIKE AS expertDislike,
+    	P.PROFILE_PATH AS profilePath,
+        P.PROFILE_NAME AS profileName
     FROM TBL_EXCO E
    	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -79,7 +81,9 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
-    WHERE M.THIRD_CATEGORY_CD = #{string}
+	LEFT JOIN TBL_PROFILE_IMAGE P
+    ON E.MEMBER_NO = P.MEMBER_NO
+	WHERE M.THIRD_CATEGORY_CD = #{thirdCode}
 	</select>
 	
 	<select id="viewExpertInfoByMemberNo"
@@ -98,13 +102,15 @@
 	    E.ENROLL_DATE AS enrollDate,
 	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
 	    M.EXPERT_GRADE AS expertGrade,
-	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_NAME AS expertFileName,
 	    M.EXPERT_FILE_PATH AS expertFilePath,
 	    I.INTRODUCE_TITLE AS introduceTitle,
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
 	    I.EXPERT_DISLIKE AS expertDislike,
-	    C.THIRD_CATEGORY_NM AS thirdCategoryNm -- 추가된 필드
+	    C.THIRD_CATEGORY_NM AS thirdCategoryNm,
+	    P.PROFILE_PATH AS profilePath,
+        P.PROFILE_NAME AS profileName
 	FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	    ON E.MEMBER_NO = M.MEMBER_NO
@@ -113,8 +119,10 @@
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	    ON I.MEMBER_NO = E.MEMBER_NO
 	LEFT JOIN TBL_CODE C
-	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD -- 추가된 조인 조건
-	WHERE TRIM(E.MEMBER_NO) = #{string}
+	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
+	LEFT JOIN TBL_PROFILE_IMAGE P
+        ON E.MEMBER_NO = P.MEMBER_NO
+	WHERE TRIM(E.MEMBER_NO) = #{thirdCode}
 	</select>
 	
 	<select id="viewAllExpertList"
@@ -132,12 +140,14 @@
 	    E.ENROLL_DATE AS enrollDate,
 	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
 	    M.EXPERT_GRADE AS expertGrade,
-	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_NAME AS expertFileName,
 	    M.EXPERT_FILE_PATH AS expertFilePath,
 	    I.INTRODUCE_TITLE AS introduceTitle,
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
-    	I.EXPERT_DISLIKE AS expertDislike
+    	I.EXPERT_DISLIKE AS expertDislike,
+    	P.PROFILE_PATH AS profilePath,
+        P.PROFILE_NAME AS profileName
 	FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -145,6 +155,8 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
+	LEFT JOIN TBL_PROFILE_IMAGE P
+    ON E.MEMBER_NO = P.MEMBER_NO
 	</select>
 	
 	<select id="srchExpertsByKeyList"
@@ -163,12 +175,14 @@
 	    E.ENROLL_DATE AS enrollDate,
 	    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
 	    M.EXPERT_GRADE AS expertGrade,
-	    M.EXPERT_FILE_NAME AS expertFile_name,
+	    M.EXPERT_FILE_NAME AS expertFileName,
 	    M.EXPERT_FILE_PATH AS expertFilePath,
 	    I.INTRODUCE_TITLE AS introduceTitle,
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
-    	I.EXPERT_DISLIKE AS expertDislike 
+    	I.EXPERT_DISLIKE AS expertDislike,
+    	P.PROFILE_PATH AS profilePath,
+        P.PROFILE_NAME AS profileName
         FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -176,10 +190,70 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
+	LEFT JOIN TBL_PROFILE_IMAGE P
+    ON E.MEMBER_NO = P.MEMBER_NO
         WHERE THIRD_CATEGORY_CD IN
         <foreach collection="list" item="keywords" open="(" separator="," close=")">
             #{keywords}
         </foreach>
+	</select>
+	
+	<select id="viewBestExpertList"
+	resultType="expertIntro">
+	SELECT
+	    MEMBER_NO AS memberNo,
+	    MEMBER_ID AS expertId,
+	    MEMBER_PW AS expertPw,
+	    MEMBER_NICKNAME AS expertNickname,
+	    MEMBER_PHONE AS expertPhone,
+	    MEMBER_ADDR AS expertAddr,
+	    MEMBER_GENDER AS expertGender,
+	    MEMBER_EMAIL AS expertEmail,
+	    MEMBER_TYPE AS memberType,
+	    ENROLL_DATE AS enrollDate,
+	    THIRD_CATEGORY_CD AS thirdCategoryCd,
+	    EXPERT_GRADE AS expertGrade,
+	    EXPERT_FILE_NAME AS expertFileName,
+	    EXPERT_FILE_PATH AS expertFilePath,
+	    INTRODUCE_TITLE AS introduceTitle,
+	    INTRODUCE_CONTENT AS introduceContent,
+	    EXPERT_LIKE AS expertLike,
+	    EXPERT_DISLIKE AS expertDislike,
+	    PROFILE_PATH AS profilePath,
+	    PROFILE_NAME AS profileName
+	FROM
+	    (SELECT
+	        E.MEMBER_NO,
+	        E.MEMBER_ID,
+	        E.MEMBER_PW,
+	        E.MEMBER_NICKNAME,
+	        E.MEMBER_PHONE,
+	        E.MEMBER_ADDR,
+	        E.MEMBER_GENDER,
+	        E.MEMBER_EMAIL,
+	        W.MEMBER_TYPE,
+	        E.ENROLL_DATE,
+	        M.THIRD_CATEGORY_CD,
+	        M.EXPERT_GRADE,
+	        M.EXPERT_FILE_NAME,
+	        M.EXPERT_FILE_PATH,
+	        I.INTRODUCE_TITLE AS,
+	        I.INTRODUCE_CONTENT,
+	        I.EXPERT_LIKE,
+	        I.EXPERT_DISLIKE,
+	        P.PROFILE_PATH,
+	        P.PROFILE_NAME
+		FROM TBL_EXCO E
+		LEFT JOIN TBL_EXPERT_MANAGEMENT M
+		ON E.MEMBER_NO = M.MEMBER_NO
+		LEFT JOIN TBL_WHOLE_MEMBER W
+		ON E.MEMBER_NO = W.MEMBER_NO
+		LEFT JOIN TBL_EXPERT_INTRODUCE I
+		ON I.MEMBER_NO = E.MEMBER_NO
+		LEFT JOIN TBL_PROFILE_IMAGE P
+	    ON E.MEMBER_NO = P.MEMBER_NO
+	    ORDER BY I.EXPERT_LIKE DESC NULLS LAST)
+	    WHERE ROWNUM &lt; 6
 	</select>
 </mapper>
 

@@ -20,6 +20,8 @@ public class ExpertIntroduce {
 	private String expertLike;
 	private String expertDislike;
 	private String thirdCategoryNm;
+	private String profilePath;
+	private String profileName;
 	
 	public ExpertIntroduce() {
 		super();
@@ -30,7 +32,7 @@ public class ExpertIntroduce {
 			String expertAddr, String expertGender, String expertEmail, String memberType, String enrollDate,
 			String thirdCategoryCd, String expertGrade, String expertFile_name, String expertFilePath,
 			String introduceTitle, String introduceContent, String expertLike, String expertDislike,
-			String thirdCategoryNm) {
+			String thirdCategoryNm, String profilePath, String profileName) {
 		super();
 		this.memberNo = memberNo;
 		this.expertId = expertId;
@@ -51,6 +53,24 @@ public class ExpertIntroduce {
 		this.expertLike = expertLike;
 		this.expertDislike = expertDislike;
 		this.thirdCategoryNm = thirdCategoryNm;
+		this.profilePath = profilePath;
+		this.profileName = profileName;
+	}
+
+	public String getProfilePath() {
+		return profilePath;
+	}
+
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
 	}
 
 	public String getMemberNo() {
@@ -203,6 +223,18 @@ public class ExpertIntroduce {
 
 	public void setThirdCategoryNm(String thirdCategoryNm) {
 		this.thirdCategoryNm = thirdCategoryNm;
+	}
+
+	@Override
+	public String toString() {
+		return "ExpertIntroduce [memberNo=" + memberNo + ", expertId=" + expertId + ", expertPw=" + expertPw
+				+ ", expertNickname=" + expertNickname + ", expertPhone=" + expertPhone + ", expertAddr=" + expertAddr
+				+ ", expertGender=" + expertGender + ", expertEmail=" + expertEmail + ", memberType=" + memberType
+				+ ", enrollDate=" + enrollDate + ", thirdCategoryCd=" + thirdCategoryCd + ", expertGrade=" + expertGrade
+				+ ", expertFile_name=" + expertFile_name + ", expertFilePath=" + expertFilePath + ", introduceTitle="
+				+ introduceTitle + ", introduceContent=" + introduceContent + ", expertLike=" + expertLike
+				+ ", expertDislike=" + expertDislike + ", thirdCategoryNm=" + thirdCategoryNm + ", profilePath="
+				+ profilePath + ", profileName=" + profileName + "]";
 	}
 	
 	
