@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.or.iei.category.model.dao.CategoryDao;
+import kr.or.iei.category.model.vo.RankKeywords;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.member.model.vo.Expert;
 
@@ -54,6 +55,10 @@ public class CategoryService {
 
 	public ArrayList<ExpertIntroduce> viewExpertListByThirdCd(String thirdCode) {
 		// TODO Auto-generated method stub
+		//있으면 cnt 추가, 없으면 추가
+		List<String> thirdCdList = new ArrayList<String>();
+		thirdCdList.add(thirdCode); //리스트1개넣고 재활용
+        categoryDao.updateCategoriesCntByCdList(thirdCdList);
 		return (ArrayList<ExpertIntroduce>)categoryDao.viewExpertListByThirdCd(thirdCode);
 	}
 
@@ -64,16 +69,27 @@ public class CategoryService {
 		
 		// 명사만 추출
         List<String> keywords = result.getNouns();
-        for(String s: keywords) {
-        	System.out.println(s);
-        }
+
+        //키워드로 검색 리스트 정리
         List<String> thirdCdList = categoryDao.thirdCdListByThirdNmList(keywords);
         if(thirdCdList.isEmpty()) {
         	return null;
         }
         List<ExpertIntroduce> searchExperts = categoryDao.srchExpertsByKeyList(thirdCdList);
+        //있으면 cnt 추가, 없으면 추가
+        categoryDao.updateCategoriesCntByCdList(thirdCdList);
         
         return (ArrayList<ExpertIntroduce>)searchExperts;
+	}
+
+	public HashMap<String, Object> viewIndexData() {
+		// TODO Auto-generated method stub
+		List<ExpertIntroduce> expertIntro = categoryDao.viewBestExpertList();
+		List<RankKeywords> srchRank = categoryDao.viewRankKeywords();
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("expertList", expertIntro);
+		data.put("rankKeywords", srchRank);
+		return data;
 	}
 
 }

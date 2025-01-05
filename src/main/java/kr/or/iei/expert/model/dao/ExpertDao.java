@@ -32,4 +32,8 @@ public class ExpertDao {
 		return sqlSession.selectOne("expertManagement.viewExpertInfoByMemberNo", memberNo);
 	}
 
+	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm) {
+		return sqlSession.selectList("expertManagement.findExpertsByCategory", categoryNm);
+	}
+
 }

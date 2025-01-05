@@ -14,6 +14,8 @@ public class Expert {
 	private String enrollDate;
 	private String thirdCategoryCd;
 	private String expertGrade;
+	private String profilePath;
+	private String profileName;
 
 	public Expert() {
 		super();
@@ -22,7 +24,7 @@ public class Expert {
 
 	public Expert(String memberNo, String expertId, String expertPw, String expertNickname, String expertPhone,
 			String expertAddr, String expertGender, String expertEmail, String memberType, String enrollDate,
-			String thirdCategoryCd, String expertGrade) {
+			String thirdCategoryCd, String expertGrade, String profilePath, String profileName) {
 		super();
 		this.memberNo = memberNo;
 		this.expertId = expertId;
@@ -36,6 +38,32 @@ public class Expert {
 		this.enrollDate = enrollDate;
 		this.thirdCategoryCd = thirdCategoryCd;
 		this.expertGrade = expertGrade;
+		this.profilePath = profilePath;
+		this.profileName = profileName;
+	}
+
+	public String getThirdCategoryCd() {
+		return thirdCategoryCd;
+	}
+
+	public void setThirdCategoryCd(String thirdCategoryCd) {
+		this.thirdCategoryCd = thirdCategoryCd;
+	}
+
+	public String getProfilePath() {
+		return profilePath;
+	}
+
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
 	}
 
 	public String getExpertGrade() {

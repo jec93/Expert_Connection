@@ -6,7 +6,8 @@ public class ExpertManagement {
 
 	 private String receiveNo;       
 	    private String memberNo;        
-	    private Blob expertFile;       
+	    private String expertFileName;
+	    private String expertFilePath;
 	    private String permissionState; 
 	    private int expertGrade;        
 	    private String thirdCategoryCd;
@@ -21,13 +22,14 @@ public class ExpertManagement {
 			// TODO Auto-generated constructor stub
 		}
 
-		public ExpertManagement(String receiveNo, String memberNo, Blob expertFile, String permissionState,
-				int expertGrade, String thirdCategoryCd, String thirdCategoryNm, String memberNickname,
-				String memberAddr) {
+		public ExpertManagement(String receiveNo, String memberNo, String expertFileName, String expertFilePath,
+				String permissionState, int expertGrade, String thirdCategoryCd, String thirdCategoryNm,
+				String memberNickname, String memberAddr) {
 			super();
 			this.receiveNo = receiveNo;
 			this.memberNo = memberNo;
-			this.expertFile = expertFile;
+			this.expertFileName = expertFileName;
+			this.expertFilePath = expertFilePath;
 			this.permissionState = permissionState;
 			this.expertGrade = expertGrade;
 			this.thirdCategoryCd = thirdCategoryCd;
@@ -52,12 +54,20 @@ public class ExpertManagement {
 			this.memberNo = memberNo;
 		}
 
-		public Blob getExpertFile() {
-			return expertFile;
+		public String getExpertFileName() {
+			return expertFileName;
 		}
 
-		public void setExpertFile(Blob expertFile) {
-			this.expertFile = expertFile;
+		public void setExpertFileName(String expertFileName) {
+			this.expertFileName = expertFileName;
+		}
+
+		public String getExpertFilePath() {
+			return expertFilePath;
+		}
+
+		public void setExpertFilePath(String expertFilePath) {
+			this.expertFilePath = expertFilePath;
 		}
 
 		public String getPermissionState() {

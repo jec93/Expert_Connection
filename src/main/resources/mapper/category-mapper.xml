@@ -39,16 +39,48 @@
 	</select>
 	
 	<select id="thirdCdListByThirdNmList"
-	parameterType="list"
-	resultType="string">
-	SELECT
-		THIRD_CATEGORY_CD AS thirdCategoryCd
-	FROM
-		TBL_CODE
-	WHERE
-		THIRD_CATEGORY_NM IN
-		<foreach collection="list" item="keywords" open="(" separator="," close=")">
-            #{keywords}
+    parameterType="list"
+    resultType="string">
+    SELECT
+        THIRD_CATEGORY_CD AS thirdCategoryCd
+    FROM
+        TBL_CODE
+    WHERE
+    <foreach collection="list" item="keywords" open="(" separator=" OR " close=")">
+        THIRD_CATEGORY_NM LIKE '%' || #{keywords} || '%'
+    </foreach>
+	</select>
+	
+	<update id="updateCategoriesCntByCdList"
+	parameterType="list">
+	MERGE INTO TBL_SEARCH TARGET
+    USING (
+        <foreach collection="list" item="thirdCdList" separator="UNION ALL">
+            SELECT #{thirdCdList} AS THIRD_CATEGORY_CD FROM DUAL
         </foreach>
+    ) SOURCE
+    ON (TARGET.THIRD_CATEGORY_CD = SOURCE.THIRD_CATEGORY_CD)
+    WHEN MATCHED THEN
+        UPDATE SET TARGET.SRCH_CNT = TARGET.SRCH_CNT + 1
+    WHEN NOT MATCHED THEN
+        INSERT (THIRD_CATEGORY_CD, SRCH_CNT)
+        VALUES (SOURCE.THIRD_CATEGORY_CD, 1)
+	</update>
+	
+	<select id="viewRankKeywords"
+	resultType="rank">
+	SELECT
+	    THIRD_CATEGORY_CD AS thirdCategoryCd,
+	    NM AS thirdCategoryNm,
+	    SRCH_CNT AS srchCnt
+	FROM
+	    (SELECT
+	        THIRD_CATEGORY_CD,
+	        (SELECT THIRD_CATEGORY_NM FROM TBL_CODE C WHERE C.THIRD_CATEGORY_CD = S.THIRD_CATEGORY_CD) AS NM,
+	        SRCH_CNT
+	        FROM
+	            TBL_SEARCH S
+	        ORDER BY SRCH_CNT DESC)
+	WHERE ROWNUM &lt;11
 	</select>
 </mapper>

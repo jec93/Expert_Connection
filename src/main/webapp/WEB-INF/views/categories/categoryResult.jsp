@@ -146,7 +146,20 @@
 							<div id="category-container">
 								<% for(ExpertIntroduce i : expertList) {%>
 								<div class="info-container" onclick="viewSelectedExpert(<%=i.getMemberNo()%>);">
-									<div class="expert-profile"><img src="<%=i.getExpertFilePath() %>" style="width: 100%"></div>
+									<div class="expert-profile">
+									    <% 
+									        String profileName = i.getProfileName(); // 데이터베이스에서 가져온 값
+									        if (profileName == null || profileName.trim().isEmpty()) { 
+									    %>
+									        <img alt="기본이미지" src="/resources/profile/default.png" style="width: 100%">
+									    <% 
+									        } else { 
+									    %>
+									        <img alt="프로필이미지" src="<%= i.getProfilePath() %><%=i.getProfileName() %>" style="width: 100%">
+									    <% 
+									        } 
+									    %>
+									</div>
 									<div class="content-title">
 										<%=i.getIntroduceTitle() %>
 									</div>
@@ -177,7 +190,7 @@
         
         function otherCategories(thirdCode, thirdName, secondCode){
             $.ajax({
-                url: "/categories/changThirdCategories.exco",
+                url: "/categories/changeThirdCategories.exco",
                 type: "GET",
                 data: {
                     "thirdCode": thirdCode,
@@ -188,15 +201,21 @@
                     // 화면 업데이트 로직
                     const categoryContainer = document.getElementById("category-container"); // 업데이트할 HTML 요소 ID
                     const subHeader = document.getElementById("sub-header");
+                    console.log('확인 : '+response);
                     if (categoryContainer) {
                         categoryContainer.innerHTML = ""; // 기존 내용을 초기화
-
                         response.forEach(item => {
                             // 동적으로 HTML 추가
+                            let chkImg = item.profileName;
+                            if(!chkImg){
+                            	item.profileName = 'default.png';
+                            	item.profilePath = '/resources/profile/';
+                            }
+                            console.log(item);
                             const categoryDiv = document.createElement("div");
                             categoryDiv.classList.add("category-item");
                             categoryDiv.innerHTML = '<div class="info-container" onclick="viewSelectedExpert('+item.memberNo+');">'+
-								'<div class="expert-profile"><img src="'+item.expertFilePath+'" style="width: 100%"></div>'+
+								'<div class="expert-profile"><img src="'+item.profilePath+item.profileName+'" style="width: 100%"></div>'+
 								'<div class="content-title">'+ item.introduceTitle + '</div>'+
 								'<div>닉네임 :'+item.expertNickname+'</div>'+
 								'<div>좋아요 수 :'+ item.expertLike+'</div>'+
