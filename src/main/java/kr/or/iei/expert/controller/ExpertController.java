@@ -1,13 +1,14 @@
 package kr.or.iei.expert.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.iei.expert.model.service.ExpertService;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
@@ -46,9 +47,17 @@ public class ExpertController {
 		return "member/expertDetail";
 	}
 	
-	@GetMapping("/expertBotSearch.exco")
-	public String expertBotSearch() {
+	@GetMapping("/expertBotSearchFrm.exco")
+	public String expertBotSearchFrm() {
 		return "member/expertBotSearch";
+	}
+	
+	//챗봇 전문가 추천
+	@GetMapping("/expertBotSearch.exco")
+	@ResponseBody
+	public List<ExpertIntroduce> searchExperts(String categoryNm) {
+		List<ExpertIntroduce> experts = expertService.findExpertsByCategory(categoryNm);		
+	    return experts;
 	}
 	
 	

@@ -1,6 +1,7 @@
 package kr.or.iei.expert.model.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,9 @@ public class ExpertService {
 
 	public ExpertIntroduce viewExpertInfoByMemberNo(String memberNo) {
 		return expertDao.viewExpertInfoByMemberNo(memberNo);
+	}
+
+	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm) {
+		return expertDao.findExpertsByCategory(categoryNm);
 	}
 }

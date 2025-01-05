@@ -25,7 +25,7 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
            <nav class="nav">
                <ul class="recommend">
                   <li>
-                     <a href="#">전문가 추천</a>
+                     <a href="/expert/expertBotSearchFrm.exco">전문가 추천</a>
                   </li>
                   <li>
                   <% if(isNull){ %>

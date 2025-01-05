@@ -181,5 +181,31 @@
             #{keywords}
         </foreach>
 	</select>
+	
+	<select id="findExpertsByCategory" parameterType="string" resultType="expertIntro">
+        SELECT 
+		    em.receive_no AS receiveNo, 
+		    em.member_no AS memberNo, 
+		    COALESCE(e.member_nickname, k.member_nickname, n.member_nickname) AS expertNickName, 
+		    em.expert_file_name AS expertFile, 
+		    em.expert_file_path AS expertFilePath,
+		    em.permission_state AS permissionState, 
+		    em.expert_grade AS expertGrade,
+		    c.third_category_nm AS thirdCategoryNm
+		FROM 
+		    TBL_EXPERT_MANAGEMENT em
+		JOIN 
+		    TBL_WHOLE_MEMBER wm ON em.member_no = wm.member_no
+		LEFT JOIN 
+		    TBL_EXCO e ON wm.member_no = e.member_no
+		LEFT JOIN 
+		    TBL_KAKAO_EXCO k ON wm.member_no = k.member_no
+		LEFT JOIN 
+		    TBL_NAVER_EXCO n ON wm.member_no = n.member_no
+		JOIN 
+		    TBL_CODE c ON em.third_category_cd = c.third_category_cd
+		WHERE 
+		    c.third_category_nm = #{categoryNm}
+    </select>
 </mapper>
 
