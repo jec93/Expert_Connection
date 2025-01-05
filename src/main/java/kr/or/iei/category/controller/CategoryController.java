@@ -47,7 +47,7 @@ public class CategoryController {
     
     @GetMapping("/categoriesResult.exco")
     public String resultCategory(String thirdCode, String thirdName, String secondCode, Model model) {
-    	
+    	System.out.println(thirdCode+"와"+thirdName+"와"+secondCode);
     	model.addAttribute("thirdCode", thirdCode);
 	    model.addAttribute("thirdName", thirdName);
 	    model.addAttribute("secondCode", secondCode);
@@ -60,9 +60,9 @@ public class CategoryController {
     }
     
     //카테고리를 선택(클릭)하고 넘어온 전문가 출력페이지에서 다른 소분류를 누를때 새로운 결과창
-    @GetMapping(value = "/changThirdCategories", produces = "application/json; charset=utf-8")
+    @GetMapping(value = "/changeThirdCategories", produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ArrayList<ExpertIntroduce> changThirdCategories(String thirdCode, String thirdName, String secondCode, Model model) {
+    public ArrayList<ExpertIntroduce> changeThirdCategories(String thirdCode, String thirdName, String secondCode, Model model) {
     	ArrayList<ExpertIntroduce> response = categoryService.viewExpertListByThirdCd(thirdCode);
     	model.addAttribute("expertList",response);
     	return response;
@@ -75,7 +75,7 @@ public class CategoryController {
     		model.addAttribute("title", "정보");
     		model.addAttribute("msg", "검색 결과 없음.");
     		model.addAttribute("icon", "info");
-    		model.addAttribute("loc", "/categoryFrm.exco");
+    		model.addAttribute("loc", "/categories/categoryFrm.exco");
     		return "common/msg";
     	}
     	model.addAttribute("keyword",keyword);

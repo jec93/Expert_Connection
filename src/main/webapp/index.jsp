@@ -15,11 +15,47 @@
 
 		<main class="content">
 			<section class="section">
-				<h1>Expert Connection 페이지 로드 테스트</h1>
+				<div>요즘 인기있는 전문가</div>
+				<div id="show-expert"></div>
+				
+				<div>요즘 인기있는 서비스</div>
+				<div id="show-categories"></div>
 			</section>
 		</main>
 
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
+	<script>
+		$(document).ready(function(){
+			$.ajax({
+				url:'/common/indexData.exco',
+				method:'Get',
+				success:function(data){
+					
+					let expRank = data.expertList;
+					let keyRank = data.rankKeywords;
+					console.log(expRank);
+					console.log(keyRank);
+					let expertHtml = "";
+					expRank.forEach(item=>{
+						expertHtml +='<div>'+item.introduceTitle+'</div>';
+						expertHtml +='<div>닉네임 : '+item.expertNickname+'</div>';
+						expertHtml +='<div>주소 : '+item.expertAddr+'</div>';
+						expertHtml +='<div>'+item.introduceContent+'</div>';
+						expertHtml +='<div>좋아요 : '+item.expertLike+'</div>';
+					});
+					$('#show-expert').html(expertHtml);
+					
+					
+					let keyHtml = "";
+					keyRank.forEach(item=>{
+						keyHtml += '<div>검색 횟수 : '+item.srchCnt+'</div>'
+						keyHtml += '<div>장르 : '+item.thirdCategoryNm+'</div>'
+					});
+					$('#show-categories').html(keyHtml);
+				}
+			});
+		})
+	</script>
 </body>
 </html>

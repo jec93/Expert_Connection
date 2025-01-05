@@ -25,6 +25,7 @@
 		<typeAlias type="kr.or.iei.expert.model.vo.ExpertIntroduce" alias="expertIntro"/>
 		<typeAlias type="kr.or.iei.payment.model.vo.Orders" alias="orders"/>
 		<typeAlias type="kr.or.iei.payment.model.vo.Payment" alias="payment"/>
+		<typeAlias type="kr.or.iei.category.model.vo.RankKeywords" alias="rank"/>
 	</typeAliases>
 </configuration>
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import kr.or.iei.category.model.vo.RankKeywords;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.member.model.vo.Expert;
 
@@ -51,5 +52,18 @@ public class CategoryDao {
 		return sqlSession.selectList("category.thirdCdListByThirdNmList",keywords);
 	}
 	
-	
+	public void updateCategoriesCntByCdList(List<String> thirdCdList) {
+		// TODO Auto-generated method stub
+		sqlSession.update("category.updateCategoriesCntByCdList",thirdCdList);
+	}
+
+	public List<RankKeywords> viewRankKeywords() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("category.viewRankKeywords");
+	}
+
+	public List<ExpertIntroduce> viewBestExpertList() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("expertManagement.viewBestExpertList");
+	}
 }
