@@ -2,12 +2,15 @@ package kr.or.iei.admin.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import kr.or.iei.admin.model.dao.AdminDao;
+import kr.or.iei.admin.model.vo.AccessRestriction;
 import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
@@ -43,7 +46,7 @@ public class AdminService {
       //신고 리스트
       ArrayList<Report> list = (ArrayList<Report>) adminDao.selectAllReportList(map);
       
-      System.out.println("ADMINSERVICE 01 : " + list);
+      //System.out.println("ADMINSERVICE 01 : " + list);
       
       //전체 신고 갯수
       int totCnt = adminDao.selectAllReportCount();
@@ -86,7 +89,6 @@ public class AdminService {
          pageNavi += pageNo + "</a></li>";
          
          pageNo++;
-         
          if(pageNo > totPage) {
             break;
          }
@@ -103,7 +105,6 @@ public class AdminService {
       
       ReportPageData pd = new ReportPageData(list, pageNavi);
       
-      System.out.println("AdminService : " + list);
       return pd;
    }
 
@@ -273,4 +274,144 @@ public class AdminService {
 		Report report = adminDao.checkReport(reportNo);
 		return report;
 	}
+
+	//관리자페이지 -> 신고처리결과 D->Y로 업데이트하기
+	public int updateReportResultbyReportNo(String reportNo) {
+		int report = adminDao.updateReportResultToY(reportNo);
+		return report;
+	}
+	
+	//관리자페이지 -> 접근제한 테이블에 넣어주기 7일
+	public int firstAccessRestriction(String reportNo, String memberNo) {
+		//int updateAccessRestrict = adminDao.updateRestrictionCount(memberNo);
+		
+		int accessRestrict = adminDao.firstReportNo(reportNo);
+		return accessRestrict;
+	}
+
+	//관리자페이지 -> 접근제한 테이블에 넣어주기 15일
+	public int secondAccessRestriction(String reportNo, String memberNo) {
+		//int updateAccessRestrict = adminDao.updateRestrictionCount(memberNo);
+		
+		int accessRestrict = adminDao.secondReportNo(reportNo);
+		return accessRestrict;
+	}
+	
+	//관리자페이지 -> 접근제한 테이블에 넣어주기 100년
+	public int thirdAccessRestriction(String reportNo, String memberNo) {
+		//int updateAccessRestrict = adminDao.updateRestrictionCount(memberNo);
+		
+		int accessRestrict = adminDao.thirdReportNo(reportNo);
+		return accessRestrict;
+	}
+
+	//관리자페이지 -> 신고대상 게시글 삭제
+	public int deleteBoardByBoardNo(String boardNo) {
+		int delBoard = adminDao.deleteBoard(boardNo);
+		return delBoard;
+	}
+	
+	//관리자페이지 -> 신고대상 댓글 삭제
+	public int deleteCommentByCommentNo(String commentNo) {
+		int delComment = adminDao.deleteCommentByCommentNo(commentNo); 
+		return delComment;
+	}
+
+	//관리자 페이지 -> 접근제한 테이블에 넣기 전 대상(회원)이 이미 정지상태인지 확인
+	public int checkAccess(String memberNo, String reportNo) {
+		System.out.println("접근제한 memberNo : " + memberNo);
+		System.out.println("접근제한 reportNo : " + reportNo);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberNo", memberNo);
+		map.put("reportNo", reportNo);	
+		
+		int check = adminDao.checkAccess(map);
+		return check;
+	}
+
+	//관리자페이지 -> 신고처리결과 D->N로 업데이트하기
+	public int updateReportResult(String reportNo) {
+		int report = adminDao.updateReportResultToN(reportNo);
+		return report;
+	}
+
+	//관리자페이지 -> 신고처리내역 목록 불러오기
+	public ReportPageData selectAllReportResultList(Integer reqPage, String searchName) {
+		int viewReportCnt = 10;
+	      
+	    int end = reqPage * viewReportCnt;
+	    int start = end - viewReportCnt + 1;
+	      
+	    HashMap<String, Integer> map = new HashMap<String, Integer>();
+	    map.put("start", start);
+	    map.put("end", end);
+	  
+	    //신고 리스트
+	    ArrayList<Report> list = (ArrayList<Report>) adminDao.selectAllReportResultList(map);
+	  
+	    //System.out.println("ADMINSERVICE 01 : " + list);
+	  
+	   //전체 처리한 신고 갯수
+	   int totCnt = adminDao.selectAllReportResultCount();
+	  
+	   //전체 페이지 갯수
+	   int totPage = 0;
+	   if(totCnt % viewReportCnt > 0) {
+	      totPage = totCnt / viewReportCnt + 1;
+	   } else {
+	      totPage = totCnt / viewReportCnt;
+	   }
+	  
+	   //페이지 네비게이션 사이즈      (1,2,3,4,5 or 6,7,8,9,10)
+	   int pageNaviSize = 5;
+	  
+	   //페이지 네비게이션 시작번호 설정 (1,2,3,4,5 == 1 or 6,7,8,9,10 == 6)
+	   int pageNo = ((reqPage-1) / pageNaviSize) * pageNaviSize + 1;
+	  
+	   //페이지 네비게이션 HTML
+	   String pageNavi = "<ul class = 'pagination circle-style'>";
+	  
+	   //이전버튼
+	   //시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
+	   if(pageNo != 1) {
+		   pageNavi += "<li>";
+		   pageNavi += "<a class='page-item' href='/admin/reportResult.exco?reqPage=" + (pageNo - 1) + "&searchName="+searchName+"'>";
+		   pageNavi += "<span class='material-icons'> < </span></a>";
+		   pageNavi += "</li>";
+	  }
+	  
+	  //페이지 네비게이션
+	  for(int i=0; i<pageNaviSize; i++) {
+		  pageNavi += "<li>";
+	 
+		  if(pageNo == reqPage) {
+			  pageNavi += "<a class='page-item active-page' href='/admin/reportResult.exco?reqPage="+pageNo+"&searchName="+searchName+"'>";
+		  } else {
+			  pageNavi += "<a class='page-item' href='/admin/reportResult.exco?reqPage="+ pageNo+ "&searchName="+searchName+"'>";
+		  }
+		  pageNavi += pageNo + "</a></li>";
+		     
+		  pageNo++;
+		     
+		  if(pageNo > totPage) {
+		       break;
+		  }
+	  }
+	  
+	  //다음버튼
+	  if(pageNo <= totPage) {
+	     pageNavi += "<li>";
+		 pageNavi += "<a class = 'page-item' href='/admin/reportResult.exco?reqPage=" + pageNo + "&searchName="+searchName+"'>";
+		 pageNavi += "<span class='material-icons'> > </span></a>";
+		 pageNavi += "</li>";
+	  }
+	  pageNavi += "</ul>";
+	  
+	  ReportPageData pd = new ReportPageData(list, pageNavi);
+	  
+	  //System.out.println("AdminService : " + list);
+	  return pd;
+	}
+
 }
