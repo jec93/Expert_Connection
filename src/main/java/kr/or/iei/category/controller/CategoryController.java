@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -17,6 +18,7 @@ import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -46,8 +48,7 @@ public class CategoryController {
     }
     
     @GetMapping("/categoriesResult.exco")
-    public String resultCategory(String thirdCode, String thirdName, String secondCode, Model model) {
-    	System.out.println(thirdCode+"와"+thirdName+"와"+secondCode);
+    public String resultCategory(String thirdCode, String secondCode, String thirdName, Model model) {
     	model.addAttribute("thirdCode", thirdCode);
 	    model.addAttribute("thirdName", thirdName);
 	    model.addAttribute("secondCode", secondCode);
@@ -83,6 +84,20 @@ public class CategoryController {
     	return"/categories/srchResult";
     }
     
+    @GetMapping("/searchSubCategoriesList.exco")
+    public String searchSubCategoriesList(@RequestParam("thirdCategoryCDList") List<String> thirdCategoryCDList, String firstCategoryNm, Model model) {
+    	ArrayList<ExpertIntroduce> srchList = categoryService.searchExpertsByThirdCdList(thirdCategoryCDList);
+    	if(srchList==null) {
+    		model.addAttribute("title", "정보");
+    		model.addAttribute("msg", "검색 결과 없음.");
+    		model.addAttribute("icon", "info");
+    		model.addAttribute("loc", "/categories/categoryFrm.exco");
+    		return "common/msg";
+    	}
+    	model.addAttribute("keyword",firstCategoryNm);
+    	model.addAttribute("srchList",srchList);
+    	return"/categories/srchResult";
+    }
     
     //임시 로그인 학원컴터기준 admin 정보
     @GetMapping("/autoLogin.exco")

@@ -14,7 +14,7 @@ boolean isLogin = loginChk != null; %>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png" />
 <style>
 .boardContent {
-	height: 200px;
+	min-height: 200px;
 }
 
 #mdfComment {
@@ -306,7 +306,7 @@ boolean isLogin = loginChk != null; %>
 				}
 			}).then(function(isConfirm) {
 				if (isConfirm) {
-					location.href = '/board/delete.exco?&boardType='+boardType;
+					location.href = '/board/delete.exco?&boardType='+boardType+'&boardNo='+boardNo;
 				}
 			});
 		}

@@ -66,4 +66,9 @@ public class CategoryDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList("expertManagement.viewBestExpertList");
 	}
+
+	public String matchSecondCodeByThirdCode(String thirdCode) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("category.matchSecondCodeByThirdCode",thirdCode);
+	}
 }

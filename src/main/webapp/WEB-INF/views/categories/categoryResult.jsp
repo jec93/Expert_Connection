@@ -75,7 +75,7 @@
 	display: flex;
 	flex-wrap: wrap;
 }
-}
+
 .content-title{
 	font-size: 20px;
 	font-weight: bold;
@@ -211,7 +211,6 @@
                             	item.profileName = 'default.png';
                             	item.profilePath = '/resources/profile/';
                             }
-                            console.log(item);
                             const categoryDiv = document.createElement("div");
                             categoryDiv.classList.add("category-item");
                             categoryDiv.innerHTML = '<div class="info-container" onclick="viewSelectedExpert('+item.memberNo+');">'+

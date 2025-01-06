@@ -238,5 +238,17 @@ public class ChatController {
 	            
 	  return roomId;
 	 }
-
+	
+	@GetMapping("/checkChatRoom.exco")
+	@ResponseBody
+	public String chekcChatRoom(HttpSession session,String sellerNo) {
+		Member loginMember = (Member) session.getAttribute("loginMember");
+		// 기존 채팅방이 있는지 확인
+	    String checkResponse = chatService.findExistingRoom(loginMember.getMemberNo(), sellerNo);
+	    System.out.println(checkResponse);
+	    if (checkResponse != null) {
+	        return checkResponse; // 기존 채팅방 ID 반환
+	    }
+	    return "0";
+	}
 }

@@ -92,4 +92,13 @@ public class CategoryService {
 		return data;
 	}
 
+	public ArrayList<ExpertIntroduce> searchExpertsByThirdCdList(List<String> thirdCategoryCDList) {
+		// TODO Auto-generated method stub
+		return (ArrayList<ExpertIntroduce>)categoryDao.srchExpertsByKeyList(thirdCategoryCDList);
+	}
+
+	public String matchSecondCodeByThirdCode(String thirdCode) {
+		// TODO Auto-generated method stub
+		return categoryDao.matchSecondCodeByThirdCode(thirdCode);
+	}
 }
