@@ -8,28 +8,28 @@ import org.springframework.stereotype.Service;
 
 import kr.or.iei.expert.model.dao.ExpertDao;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
-import kr.or.iei.expert.model.vo.ExpertManagement;
 
 @Service("expertService")
 public class ExpertService {
 
 	@Autowired
 	private ExpertDao expertDao;
-	
-	public ArrayList<ExpertManagement> getExpertList(){
-		return (ArrayList<ExpertManagement>) expertDao.getExpertList();
-	}
-
-	//전문가 상세페이지 정보 가져오기
-	public ExpertManagement getExpertDetail(String receiveNo) {
-		return expertDao.getExpertDetail(receiveNo);
-	}
 
 	public ExpertIntroduce viewExpertInfoByMemberNo(String memberNo) {
 		return expertDao.viewExpertInfoByMemberNo(memberNo);
 	}
 
-	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm) {
-		return expertDao.findExpertsByCategory(categoryNm);
+	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm, String addr) {
+		return expertDao.findExpertsByCategory(categoryNm, addr);
+	}
+
+	public boolean updateExpertContent(String memberNo, String title, String content) {
+		 int result = expertDao.updateExpertContent(memberNo, title, content);
+	     return result > 0;
+	}
+
+	public boolean updatePortfolio(ExpertIntroduce portfolio) {
+		int result = expertDao.updatePortfolio(portfolio);
+	    return result > 0;
 	}
 }

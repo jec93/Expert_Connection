@@ -1,53 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="expertManagement">
-
-	<select id="selectExpertList"
-	resultType="expertManagement">
-		SELECT
-			e.receive_no as receiveNo,
-			e.member_no as memberNo,
-			e.expert_file as expertFile,
-			e.permission_state as permissionState, 
-		    e.expert_grade as expertGrade,
-		    c.third_category_nm as thirdCategoryNm
-		FROM TBL_EXPERT_MANAGEMENT e
-		JOIN TBL_CODE c ON e.third_category_cd = c.third_category_cd
-	</select>
-
-	<select id="getExpertDetail"
-	parameterType="string"
-	resultType="expertManagement">
-	    SELECT 
-	        e.receive_no AS receiveNo,
-	        e.member_no AS memberNo,
-	        COALESCE(ex.member_nickname, kak.member_nickname, nav.member_nickname) AS memberNickname,
-	        COALESCE(ex.member_Addr, kak.member_Addr, nav.member_Addr) AS memberAddr,
-	        e.expert_file AS expertFile,
-	        e.permission_state AS permissionState,
-	        e.expert_grade AS expertGrade,
-	        c.third_category_nm AS thirdCategoryNm
-	    FROM 
-	        TBL_EXPERT_MANAGEMENT e
-	    LEFT JOIN 
-	        TBL_EXCO ex
-	    ON 
-	        e.member_no = ex.member_no
-	    LEFT JOIN 
-	        TBL_KAKAO_EXCO kak
-	    ON 
-	        e.member_no = kak.member_no
-	    LEFT JOIN 
-	        TBL_NAVER_EXCO nav
-	    ON 
-	        e.member_no = nav.member_no
-	    JOIN 
-	        TBL_CODE c
-	    ON 
-	        e.third_category_cd = c.third_category_cd
-	    WHERE 
-	        e.receive_no = #{receiveNo}
-	</select>
 	
 	<!-- 소분류 코드로 전문가 정보 리스트 검색 -->
 	<select id="viewExpertListByThirdCd"
@@ -199,30 +152,43 @@
 	</select>
 	
 
-	<select id="findExpertsByCategory" parameterType="string" resultType="expertIntro">
-        SELECT 
-		    em.receive_no AS receiveNo, 
-		    em.member_no AS memberNo, 
-		    COALESCE(e.member_nickname, k.member_nickname, n.member_nickname) AS expertNickName, 
-		    em.expert_file_name AS expertFile, 
-		    em.expert_file_path AS expertFilePath,
-		    em.permission_state AS permissionState, 
-		    em.expert_grade AS expertGrade,
-		    c.third_category_nm AS thirdCategoryNm
-		FROM 
-		    TBL_EXPERT_MANAGEMENT em
-		JOIN 
-		    TBL_WHOLE_MEMBER wm ON em.member_no = wm.member_no
-		LEFT JOIN 
-		    TBL_EXCO e ON wm.member_no = e.member_no
-		LEFT JOIN 
-		    TBL_KAKAO_EXCO k ON wm.member_no = k.member_no
-		LEFT JOIN 
-		    TBL_NAVER_EXCO n ON wm.member_no = n.member_no
-		JOIN 
-		    TBL_CODE c ON em.third_category_cd = c.third_category_cd
-		WHERE 
-		    c.third_category_nm = #{categoryNm}
+	<!-- 챗봇 카테고리 + 지역 으로 검색 -->
+	<select id="findExpertsByCategory" parameterType="map" resultType="expertIntro">
+		SELECT
+			E.MEMBER_NO AS memberNo,
+		    E.MEMBER_ID AS expertId,
+		    E.MEMBER_PW AS expertPw,
+		    E.MEMBER_NICKNAME AS expertNickname,
+		    E.MEMBER_PHONE AS expertPhone,
+		    E.MEMBER_ADDR AS expertAddr,
+		    E.MEMBER_GENDER AS expertGender,
+		    E.MEMBER_EMAIL AS expertEmail,
+		    W.MEMBER_TYPE AS memberType,
+		    E.ENROLL_DATE AS enrollDate,
+		    M.THIRD_CATEGORY_CD AS thirdCategoryCd,
+	        C.THIRD_CATEGORY_NM AS thirdCategoryNm,
+		    M.EXPERT_GRADE AS expertGrade,
+		    M.EXPERT_FILE_NAME AS expertFileName,
+		    M.EXPERT_FILE_PATH AS expertFilePath,
+		    I.INTRODUCE_TITLE AS introduceTitle,
+		    I.INTRODUCE_CONTENT AS introduceContent,
+		    I.EXPERT_LIKE AS expertLike,
+	    	I.EXPERT_DISLIKE AS expertDislike,
+	    	P.PROFILE_PATH AS profilePath,
+	        P.PROFILE_NAME AS profileName
+	        FROM TBL_EXCO E
+		LEFT JOIN TBL_EXPERT_MANAGEMENT M
+		ON E.MEMBER_NO = M.MEMBER_NO
+		LEFT JOIN TBL_WHOLE_MEMBER W
+		ON E.MEMBER_NO = W.MEMBER_NO
+		LEFT JOIN TBL_EXPERT_INTRODUCE I
+		ON I.MEMBER_NO = E.MEMBER_NO
+		LEFT JOIN TBL_PROFILE_IMAGE P
+	    ON E.MEMBER_NO = P.MEMBER_NO
+	    LEFT JOIN TBL_CODE C
+	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
+	        WHERE C.THIRD_CATEGORY_NM = #{categoryNm} and E.MEMBER_ADDR LIKE '%' || #{addr} || '%'
+	
     </select>
 
 	<select id="viewBestExpertList"
@@ -282,5 +248,20 @@
 	    ORDER BY I.EXPERT_LIKE DESC NULLS LAST)
 	    WHERE ROWNUM &lt; 6
 	</select>
+	
+	<!-- 전문가 상세페이지 정보 탭 업데이트 -->
+	<update id="updateExpertContent">
+        UPDATE TBL_EXPERT_INTRODUCE
+        SET INTRODUCE_TITLE = #{title}, INTRODUCE_CONTENT = #{content}
+        WHERE MEMBER_NO = #{memberNo}
+    </update>
+    
+    <!-- 전문가 상세페이지 포트폴리오 탭 업데이트 -->
+    <update id="updatePortfolio" parameterType="expertIntro">
+	    UPDATE TBL_EXPERT_management
+	    SET expert_file_name = #{expertFileName},
+	        expert_file_path = #{expertFilePath}
+	    WHERE member_no = #{memberNo}
+	</update>
 </mapper>
 

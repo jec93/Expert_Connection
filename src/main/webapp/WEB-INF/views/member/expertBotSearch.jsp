@@ -115,13 +115,20 @@ main.content {
 				<div class="chat-header">챗봇</div>
 				<div class="chat-window" id="chatWindow">
 					<div class="chat-bubble bot">안녕하세요! 어떤 전문가를 찾으시나요? 원하는 분야를
-						입력해주세요.</div>
+						입력해주세요 (예: 피아노)</div>
 				</div>
 				<div class="chat-footer">
 					<input type="text" id="chatInput" class="chat-input"
 						placeholder="답변을 입력하세요...">
 					<button id="sendBtn" class="send-btn">▶</button>
 				</div>
+				
+				<!-- 전송용 폼 -->
+                <form id="expertSearchForm" action="/expert/expertBotSearch.exco" method="get" style="display:none;">
+                    <input type="hidden" name="categoryNm" id="categoryNm">
+                    <input type="hidden" name="addr" id="addr">
+                    <input type="submit">
+                </form>
 			</div>
 
 		</main>
@@ -136,20 +143,27 @@ main.content {
         let step = 0; // 질문 단계
         let userData = {
             categoryName: '',
-            region: '',
+            addr: '',
             age: '',
             gender: ''
         };
 
         const botResponses = [
-            "소분류 이름을 입력해주세요 (예: 멘탈 관리)",
+            "소분류 이름을 입력해주세요 (예: 피아노)",
             "원하는 지역을 입력해주세요 (예: 서울)",
-            "당신의 나이를 입력해주세요",
-            "당신의 성별을 입력해주세요 (예: 남성, 여성)",
+            "당신의 나이를 입력해주세요 (예: 26살)",
+            "당신의 성별을 입력해주세요 (예: 남자, 여자)",
             "모든 정보가 입력되었습니다. 전문가를 검색합니다..."
         ];
 
-        sendBtn.addEventListener("click", () => {
+        sendBtn.addEventListener("click", handleUserInput);
+        chatInput.addEventListener("keyup", (event) => {
+            if (event.key === "Enter") {
+                handleUserInput();
+            }
+        });
+        
+        function handleUserInput() {
             const userInput = chatInput.value.trim();
             if (!userInput) return;
 
@@ -161,7 +175,7 @@ main.content {
                 userData.categoryName = userInput;
                 nextStep();
             } else if (step === 1) {
-                userData.region = userInput;
+                userData.addr = userInput;
                 nextStep();
             } else if (step === 2) {
                 userData.age = userInput;
@@ -170,17 +184,17 @@ main.content {
                 userData.gender = userInput;
                 nextStep();
                 // 데이터 전송
-                sendDataToServer();
+                 submitForm(); // 폼 제출
             }
-        });
+        }
 
         function addChatBubble(text, sender) {
         	const bubble = document.createElement("div");
             bubble.classList.add("chat-bubble"); 
             bubble.classList.add(sender);
             bubble.textContent = text;
-            chatWindow.appendChild(bubble);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            document.getElementById("chatWindow").appendChild(bubble);
+            document.getElementById("chatWindow").scrollTop = document.getElementById("chatWindow").scrollHeight;
         }
 
         function nextStep() {
@@ -191,35 +205,11 @@ main.content {
             chatInput.value = "";
         }
 
-        function sendDataToServer() {
-        	const categoryNm = userData.categoryName; // 사용자가 입력한 카테고리 이름
-
-            $.ajax({
-                url: '/expert/expertBotSearch.exco',
-                type: 'GET',
-                data: { categoryNm: categoryNm }, // 서버로 전송할 데이터
-                success: function(data) {
-                    // 서버 응답 처리
-                    if (data && data.length > 0) {
-                    	data.forEach(function(experts) {
-                            // 문자열 연결 방식으로 데이터 구성
-                            var chatMessage = 
-                                "이름: " + experts.expertNickname + 
-                                ", 등급: " + experts.expertGrade + 
-                                ", 분야: " + experts.thirdCategoryNm;
-
-                            // 챗봇 버블에 추가
-                            addChatBubble(chatMessage, "bot");
-                        });
-                    } else {
-                        addChatBubble("해당 조건에 맞는 전문가를 찾을 수 없습니다.", "bot");
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                    addChatBubble("오류가 발생했습니다. 다시 시도해주세요.", "bot");
-                }
-            });
+        function submitForm() {
+            // 폼의 입력 필드에 사용자 데이터를 설정
+            document.getElementById("categoryNm").value = userData.categoryName;
+            document.getElementById("addr").value = userData.addr;
+            document.getElementById("expertSearchForm").submit();
         }
     </script>
 </body>
