@@ -121,7 +121,20 @@
 							<div id="category-container">
 								<% for(ExpertIntroduce i : srchList) {%>
 								<div class="info-container" onclick="viewSelectedExpert(<%=i.getMemberNo()%>);">
-									<div class="expert-profile"><img src="<%=i.getExpertFilePath() %>" style="width: 100%"></div>
+									<div class="expert-profile">
+									<% 
+								        String profileName = i.getProfileName(); // 데이터베이스에서 가져온 값
+								        if (profileName == null || profileName.trim().isEmpty()) { 
+								    %>
+								        <img alt="기본이미지" src="/resources/profile/default.png" style="width: 100%">
+								    <% 
+								        } else { 
+								    %>
+								        <img alt="프로필이미지" src="<%= i.getProfilePath() %><%=i.getProfileName() %>" style="width: 100%">
+								    <% 
+								        } 
+								    %>
+									</div>
 									<div class="content-title">
 										<%=i.getIntroduceTitle() %>
 									</div>

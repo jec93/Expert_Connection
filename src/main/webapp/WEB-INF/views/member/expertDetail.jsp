@@ -265,101 +265,124 @@ body {
 
 	<script>
 	//채팅 버튼 눌렀을 때 해당 전문가랑 채팅방 생성
-	 function createOneRoom(sellerNo, sellerName) { // 전문가 상세페이지의 전문가 번호
-    $.ajax({
-        url: '/payment/chatOrder.exco', // 주문번호 생성 요청 URL
-        type: 'GET',
-        data: {
-            sellerNo: sellerNo,
-            sellerName: sellerName
-        },
-        dataType: 'json', // JSON 형식의 데이터 수신
-        success: function (orderData) {
-            if (orderData && orderData.orderNo) {
-                let prodName = orderData.sellerName+"님과 매칭서비스";
-                let customerName = orderData.customerName;
-                let customerEmail = orderData.customerEmail;
-                let totalAmount = orderData.totalAmount;
-                let customerNo = orderData.customerNo;
-                // 아임포트 결제 요청
-                IMP.request_pay({
-                    pg: "kcp.AO09C", // 상점 ID
-                    pay_method: "card", // 결제 구분
-                    merchant_uid: orderData.orderNo, // 서버에서 받은 주문번호
-                    name: prodName, // 상품 이름
-                    amount: totalAmount, // 총 금액
-                    buyer_email: customerEmail, // 구매자 메일
-                    buyer_name: customerName // 구매자 이름
-                }, function (resInfo) {
-                    if (resInfo.success) {
-                        // 결제 성공 시 서버에 결제 결과 전송 (주문정보+결제 성공 결과)
-                        let orderPayload = {
-                            impUid: resInfo.imp_uid, // 결제 API사 고유번호
-                            orderNo: resInfo.merchant_uid, // 주문번호
-                            tid: resInfo.pg_tid, // PG사 결제 고유번호
-                            authDate: resInfo.paid_at, // 결제 승인 시간
-                            prodName: prodName, // 상품명
-                            totalAmount: totalAmount, // 총 금액
-                            customerEmail: customerEmail, // 구매자 이메일
-                            customerName: customerName, // 구매자 이름
-                            customerNo : customerNo
-                        };
+	function createOneRoom(sellerNo, sellerName) { // 전문가 상세페이지의 전문가 번호
+	    // 1. 채팅방 존재 여부 확인
+	    $.ajax({
+	        url: '/chat/checkChatRoom.exco', // 채팅방 존재 여부 확인 요청 URL
+	        type: 'GET',
+	        data: { sellerNo: sellerNo },
+	        dataType: 'json', // JSON 형식의 데이터 수신
+	        success: function (checkResponse) {
+	            if (checkResponse=="0") {
+	            	//채팅방이 없으면 결제 요청 및 채팅방 생성
+	                proceedToCreateChatRoom(sellerNo, sellerName);
+	            } else {
+	                // 채팅방이 이미 존재하면 바로 이동
+	                alert('이미 채팅방이 존재합니다.');
+	                window.location.href = "/chat/getChatList.exco?roomId=" + checkResponse;
+	            }
+	        },
+	        error: function () {
+	            alert('채팅방 확인 중 오류가 발생했습니다.');
+	        }
+	    });
+	}
 
-                        $.ajax({
-                            url: '/payment/chatPay.exco',
-                            type: 'post',
-                            contentType: 'application/json', // JSON 데이터 전송
-                            data: JSON.stringify(orderPayload), // 주문 정보와 결제 정보를 JSON으로 변환
-                            success: function (res) {
-                                if (res == '1') {
-                                    alert('결제 및 주문 저장 성공');
-                                    const roomName = "1:1 Chat with " + sellerName; //경래씨 하려던 전문가이름과 채팅
-                                    
-                                    $.ajax({
-                                        url: '/chat/goChat.exco',
-                                        method: 'GET',
-                                        data: {
-                                            roomName: roomName,
-                                            members: sellerNo //상대방 ID만 전달
-                                        },
-                                        success: function(roomId) {
-                                            /* // 생성된 채팅방으로 이동
-                                            window.opener.location.href="/chat/getChatList.exco?roomId=" + roomId; //새창 열어서 이동
-                                            self.close(); //기존 팝업창 닫기 */
-                                            window.location.href = "/chat/getChatList.exco?roomId=" + roomId;  //바로 이동 
-                                        },
-                                        error: function() {
-                                            alert('1:1 채팅방 생성에 실패했습니다.');
-                                        }
-                                    });
-                                } else {
-                                    alert('주문 저장 실패');
-                                }
-                            },
-                            error: function () {
-                                alert('서버와 통신 오류');
-                            }
-                        });
-                    } else {
-                        // 결제 실패 처리
-                        alert('결제에 실패하였습니다. 에러 내용 :' + resInfo.error_msg);
-                    }
-                });
-            } else {
-                alert('주문번호 생성에 실패했습니다.');
-            }
-        },
-        error: function () {
-            alert('서버 통신 중 오류가 발생했습니다.');
-        }
-    });
-}
-
-   
-$(function () {
-    // 아임포트 가맹점 식별 코드 설정
-    IMP.init("imp87933196");
-});
+	// 채팅방이 없을 때 실행되는 함수
+	function proceedToCreateChatRoom(sellerNo, sellerName) {
+	    $.ajax({
+	        url: '/payment/chatOrder.exco', // 주문번호 생성 요청 URL
+	        type: 'GET',
+	        data: {
+	            sellerNo: sellerNo,
+	            sellerName: sellerName
+	        },
+	        dataType: 'json', // JSON 형식의 데이터 수신
+	        success: function (orderData) {
+	            if (orderData && orderData.orderNo) {
+	                let prodName = orderData.sellerName + "님과 매칭서비스";
+	                let customerName = orderData.customerName;
+	                let customerEmail = orderData.customerEmail;
+	                let totalAmount = orderData.totalAmount;
+	                let customerNo = orderData.customerNo;
+	
+	                // 아임포트 결제 요청
+	                IMP.request_pay({
+	                    pg: "kcp.AO09C", // 상점 ID
+	                    pay_method: "card", // 결제 구분
+	                    merchant_uid: orderData.orderNo, // 서버에서 받은 주문번호
+	                    name: prodName, // 상품 이름
+	                    amount: totalAmount, // 총 금액
+	                    buyer_email: customerEmail, // 구매자 메일
+	                    buyer_name: customerName // 구매자 이름
+	                }, function (resInfo) {
+	                    if (resInfo.success) {
+	                        // 결제 성공 시 서버에 결제 결과 전송
+	                        let orderPayload = {
+	                            impUid: resInfo.imp_uid,
+	                            orderNo: resInfo.merchant_uid,
+	                            tid: resInfo.pg_tid,
+	                            authDate: resInfo.paid_at,
+	                            prodName: prodName,
+	                            totalAmount: totalAmount,
+	                            customerEmail: customerEmail,
+	                            customerName: customerName,
+	                            customerNo: customerNo
+	                        };
+	
+	                        $.ajax({
+	                            url: '/payment/chatPay.exco',
+	                            type: 'post',
+	                            contentType: 'application/json',
+	                            data: JSON.stringify(orderPayload),
+	                            success: function (res) {
+	                                if (res == '1') {
+	                                    alert('결제 및 주문 저장 성공');
+	                                    const roomName = "1:1 Chat with " + sellerName;
+	
+	                                    // 채팅방 생성 요청
+	                                    $.ajax({
+	                                        url: '/chat/goChat.exco',
+	                                        method: 'GET',
+	                                        data: {
+	                                            roomName: roomName,
+	                                            members: sellerNo
+	                                        },
+	                                        success: function (roomId) {
+	                                            window.location.href = "/chat/getChatList.exco?roomId=" + roomId;
+	                                        },
+	                                        error: function () {
+	                                            alert('1:1 채팅방 생성에 실패했습니다.');
+	                                        }
+	                                    });
+	                                } else {
+	                                    alert('주문 저장 실패');
+	                                }
+	                            },
+	                            error: function () {
+	                                alert('서버와 통신 오류');
+	                            }
+	                        });
+	                    } else {
+	                        // 결제 실패 처리
+	                        alert('결제에 실패하였습니다. 에러 내용 :' + resInfo.error_msg);
+	                    }
+	                });
+	            } else {
+	                alert('주문번호 생성에 실패했습니다.');
+	            }
+	        },
+	        error: function () {
+	            alert('서버 통신 중 오류가 발생했습니다.');
+	        }
+	    });
+	}
+	
+	// 초기화
+	$(function () {
+	    // 아임포트 가맹점 식별 코드 설정
+	    IMP.init("imp87933196");
+	});
 	// 해당 탭(정보, 포트폴리오)으로 이동
 	function showTab(tabId) {
 	    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));

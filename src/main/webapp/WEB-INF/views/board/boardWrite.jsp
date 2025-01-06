@@ -7,6 +7,12 @@
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
+<style>
+.note-editor {
+    width: 100%; /* 원하는 width 값 */
+    margin: 0 auto; /* 가운데 정렬을 원할 경우 */
+  }
+</style>
 </head>
 <body>
 	<div class="wrap">
@@ -22,7 +28,7 @@
 					<table class="tbl">
 						<tr>
 							<th style="width: 20%;">제목</th>
-							<td style="width: 80%;">
+							<td colspan="3" style="width: 80%;">
 								<div class="input-item">
 									<input type="text" name="boardTitle">
 								</div>
@@ -44,8 +50,7 @@
 						</tr>
 						<tr>
 							<td colspan="3"></td>
-							<td colspan="1"
-								style="text-align: right; display: flex; justify-content: flex-end;">
+							<td colspan="1" style="text-align: right; display: flex; justify-content: flex-end;">
 							</td>
 						</tr>
 					</table>
@@ -61,7 +66,6 @@
 	<script>
 		$('#boardContent').summernote({
 			height: 500,
-			width: 1000,
 			lang: "ko-KR",
 			disableResize: true,
 			disableResizeEditor: true,

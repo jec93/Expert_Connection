@@ -46,6 +46,8 @@
     FROM
         TBL_CODE
     WHERE
+		FIRST_CATEGORY_CD LIKE 'A%'
+    AND
     <foreach collection="list" item="keywords" open="(" separator=" OR " close=")">
         THIRD_CATEGORY_NM LIKE '%' || #{keywords} || '%'
     </foreach>
@@ -72,15 +74,26 @@
 	SELECT
 	    THIRD_CATEGORY_CD AS thirdCategoryCd,
 	    NM AS thirdCategoryNm,
+        SC AS secondCategoryCd,
 	    SRCH_CNT AS srchCnt
 	FROM
 	    (SELECT
 	        THIRD_CATEGORY_CD,
 	        (SELECT THIRD_CATEGORY_NM FROM TBL_CODE C WHERE C.THIRD_CATEGORY_CD = S.THIRD_CATEGORY_CD) AS NM,
+            (SELECT SECOND_CATEGORY_CD FROM TBL_CODE C WHERE C.THIRD_CATEGORY_CD = S.THIRD_CATEGORY_CD) AS SC,
 	        SRCH_CNT
 	        FROM
 	            TBL_SEARCH S
 	        ORDER BY SRCH_CNT DESC)
 	WHERE ROWNUM &lt;11
+	</select>
+	
+	<select id="matchSecondCodeByThirdCode"
+	parameterType="string"
+	resultType="string">
+	SELECT
+		SECOND_CATEGORY_CD
+	FROM TBL_CODE
+	WHERE THIRD_CATEGORY_CD = #{string}
 	</select>
 </mapper>

@@ -4,16 +4,28 @@ public class RankKeywords {
 	private int srchCnt;
 	private String thirdCategoryCd;
 	private String thirdCategoryNm;
+	private String secondCategoryCd;
 	public RankKeywords() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public RankKeywords(int srchCnt, String thirdCategoryCd, String thirdCategoryNm) {
+	
+	public RankKeywords(int srchCnt, String thirdCategoryCd, String thirdCategoryNm, String secondCategoryCd) {
 		super();
 		this.srchCnt = srchCnt;
 		this.thirdCategoryCd = thirdCategoryCd;
 		this.thirdCategoryNm = thirdCategoryNm;
+		this.secondCategoryCd = secondCategoryCd;
 	}
+
+	public String getSecondCategoryCd() {
+		return secondCategoryCd;
+	}
+
+	public void setSecondCategoryCd(String secondCategoryCd) {
+		this.secondCategoryCd = secondCategoryCd;
+	}
+
 	public int getSrchCnt() {
 		return srchCnt;
 	}
