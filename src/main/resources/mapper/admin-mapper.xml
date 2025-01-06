@@ -25,6 +25,7 @@
 	               ( 
 		               SELECT R.*
 		               FROM TBL_REPORT R
+		               WHERE REPORT_RESULT = 'D'
 		               ORDER BY R.REPORT_DATE DESC
 	               ) R
 		      ) R
@@ -55,6 +56,64 @@
 			resultType="_int">
 	SELECT COUNT(*)
 	FROM TBL_REPORT
+	WHERE REPORT_RESULT = 'D'
+	</select>
+	
+	<!-- 신고 처리결과 조회 -->
+	<select id="selectAllReportResultList"
+			parameterType = "hashmap"
+			resultType = "report">
+	SELECT REPORT_NO AS REPORTNO,
+			REPORT_TYPE AS REPORTTYPE,
+			REPORT_DATE AS REPORTDATE,
+	        REPORTERNICK.MEMBER_NICKNAME AS REPORTER,
+	        SUSPECTNICK.MEMBER_NICKNAME AS SUSPECT,
+			REPORT_RESULT AS REPORTRESULT,
+			TARGET_NO AS TARGETNO,
+			FIRST_CATEGORY_CD AS FIRSTCATEGORYCD,
+			FIRST_CATEGORY_NM AS FIRSTCATEGORYNM,
+			SECOND_CATEGORY_CD AS SECONDCATEGORYCD,
+			SECOND_CATEGORY_NM AS SECONDCATEGORYNM,
+			THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+			THIRD_CATEGORY_NM AS THIRDCATEGORYNM
+	FROM (
+		      SELECT ROWNUM RNUM, R.* 
+		      FROM
+	               ( 
+		               SELECT R.*
+		               FROM TBL_REPORT R
+		               WHERE REPORT_RESULT != 'D'
+		               ORDER BY R.REPORT_DATE DESC
+	               ) R
+		      ) R
+	    LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+	            FROM (
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	            )W)REPORTERNICK
+	    ON R.REPORTER = REPORTERNICK.MEMBER_NO
+	    LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+	            FROM (
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	            )W)SUSPECTNICK
+    ON R.SUSPECT = SUSPECTNICK.MEMBER_NO
+    WHERE RNUM BETWEEN #{start} AND #{end}
+    ORDER BY R.REPORT_DATE DESC
+	</select>
+	
+	<!-- 신고처리내역 결과 갯수 조회 selectAllReportResultCount-->
+	<select id="selectAllReportResultCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_REPORT
+	WHERE REPORT_RESULT != 'D'
 	</select>
 	
 	<!-- 신고한 횟수, 신고받은 횟수, 접근제한 횟수 조회 -->
@@ -99,11 +158,26 @@
 	            FROM TBL_REPORT
 	            WHERE REPORT_RESULT = 'Y'
 	            GROUP BY SUSPECT
+	            UNION
+	            SELECT REPORTER AS MEMBER_NO, COUNT(*) AS ACCESS_RESTRICTION
+	            FROM TBL_REPORT
+	            WHERE REPORT_RESULT = 'N'
+	            GROUP BY REPORTER
 	           ) A
 	     ON E.MEMBER_NO = A.MEMBER_NO
     WHERE RNUM BETWEEN #{start} AND #{end}
 	ORDER BY W.MEMBER_NO
 	</select>
+	
+	<!-- 신고처리결과에 따른 접근제한횟수 올려주기 -->
+	<!-- 
+	<update id="updateRestrictionCount"
+			parameterType = "string">
+		UPDATE TBL_ACCESS_RESTRICTION
+		SET ACCESS_RESTRICTION = ACCESS_RESTRICTION + 1
+		WHERE MEMBER_NO = #{MEMBER_NO}
+	</update>
+	 -->
 	
 	<!-- 사용자 + 전문가 전체회원 수 조회 -->
 	<select id="selectWholeMemberCount"
@@ -184,5 +258,79 @@
 	        )W)SUSPECTNICK
     ON SUSPECT = SUSPECTNICK.MEMBER_NO
     WHERE REPORT_NO = #{reportNo}
+	</select>
+	
+	<!-- 관리자페이지 신고처리-->
+	<update id="updateReportToY"
+			parameterType="report">
+	UPDATE TBL_REPORT
+	   SET REPORT_RESULT = 'Y'
+	WHERE REPORT_NO = #{reportNo}
+	</update>
+	
+	<!-- 관리자페이지 허위신고 -->
+	<update id="updateReportToN"
+			parameterType="report">
+	UPDATE TBL_REPORT
+	   SET REPORT_RESULT = 'N'
+	WHERE REPORT_NO = #{reportNo}
+	</update>
+	
+	<!-- 관리자페이지 접근제한 7일 -->
+	<insert id="firstReportNo"
+			parameterType="report">
+	INSERT INTO TBL_ACCESS_RESTRICTION VALUES(#{reportNo}, SYSDATE, SYSDATE+7)		
+	</insert>
+	
+	<!-- 관리자페이지 접근제한 15일 -->
+	<insert id="secondReportNo"
+			parameterType="report">
+	INSERT INTO TBL_ACCESS_RESTRICTION VALUES(#{reportNo}, SYSDATE, SYSDATE+15)		
+	</insert>
+	
+	<!-- 관리자페이지 접근제한 영구사용정지 -->
+	<insert id="thirdReportNo"
+			parameterType="report">
+	INSERT INTO TBL_ACCESS_RESTRICTION VALUES(#{reportNo}, SYSDATE, SYSDATE+36500)		
+	</insert>
+	
+	<!-- 관리자페이지 신고 게시글 삭제 -->
+	<delete id="deleteBoard"
+			parameterType="string">
+	DELETE TBL_BOARD
+	WHERE BOARD_NO = #{boardNo}
+	</delete>
+	
+	<!-- 관리자페이지 신고 댓글 삭제 -->
+	<delete id="deleteComment"
+			parameterType="string">
+	DELETE TBL_COMMENT
+	WHERE COMMENT_NO = #{commentNo}
+	</delete>
+	
+	<!-- 관리자페이지 접근제한 전 이력 조회 -->
+	<select id="checkAccess"
+			parameterType="map"
+			resultType="_int">
+	SELECT COUNT(*) 
+  	FROM (
+            SELECT REPORT_NO AS REPORTNO,
+                    MEMBER_NO AS MEMBERNO,
+                    REST_START_DATE AS RESTSTARTDATE,
+                    REST_END_DATE AS RESTENDDATE
+            FROM TBL_ACCESS_RESTRICTION
+            LEFT JOIN (
+                        SELECT REPORT_NO AS REPORTNO, SUSPECT AS MEMBER_NO
+                        FROM TBL_REPORT
+                        WHERE REPORT_NO = #{reportNo}
+                        UNION
+                        SELECT REPORT_NO AS REPORTNO, REPORTER AS MEMBER_NO
+                        FROM TBL_REPORT
+                        WHERE REPORT_NO = #{reportNo}
+                       )
+                  ON REPORTNO = REPORTNO
+           )
+	WHERE MEMBERNO = #{memberNo}
+	AND SYSDATE BETWEEN RESTSTARTDATE AND RESTENDDATE
 	</select>
 </mapper>

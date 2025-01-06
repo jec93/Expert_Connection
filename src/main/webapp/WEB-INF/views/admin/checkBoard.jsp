@@ -25,10 +25,13 @@
 <body>
 	<h3 id="check-board-title">
 	<c:choose>
-		<c:when test="${board.boardType eq 0}">사용자 게시판</c:when>
-		<c:when test="${board.boardType eq 1}">전문가 게시판</c:when>
-		<c:when test="${board.boardType eq 2}">전문가 노하우</c:when>
-		<c:when test="${board.boardType eq 3}">그룹레슨</c:when>
+		<c:when test="${board.boardType eq '0'}">사용자 게시판</c:when>
+		<c:when test="${board.boardType eq '1'}">전문가 게시판</c:when>
+		<c:when test="${board.boardType eq '2'}">전문가 노하우</c:when>
+		<c:when test="${board.boardType eq '3'}">그룹레슨</c:when>
+		<c:when test="${board.boardType eq '4'}">공지사항</c:when>
+		<c:when test="${board.boardType eq '5'}">자주묻는질문</c:when>
+		<c:when test="${board.boardType eq '6'}">1:1문의</c:when>
 	</c:choose>
 	</h3>
 	<table class="tbl check-board">

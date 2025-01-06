@@ -26,6 +26,7 @@
 		<typeAlias type="kr.or.iei.payment.model.vo.Orders" alias="orders"/>
 		<typeAlias type="kr.or.iei.payment.model.vo.Payment" alias="payment"/>
 		<typeAlias type="kr.or.iei.category.model.vo.RankKeywords" alias="rank"/>
+		<typeAlias type="kr.or.iei.admin.model.vo.AccessRestriction" alias="accessRestriction"/>
 	</typeAliases>
 </configuration>
 

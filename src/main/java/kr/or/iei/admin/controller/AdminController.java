@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.or.iei.admin.model.service.AdminService;
+import kr.or.iei.admin.model.vo.AccessRestriction;
 import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
@@ -183,5 +184,139 @@ public class AdminController {
 			model.addAttribute("board", board);
 			return "admin/checkComment";
 		}
+	}
+	
+	//관리자페이지 - 신고확정 : 신고받은 회원 로그인제한+신고대상 삭제
+	@GetMapping("trueReport.exco")
+	public String trueReport(String reportNo, String suspect, int reportType, String targetNo, Model model) {
+		
+		//신고테이블에서 신고처리결과 D->Y로 변경
+		int report = adminService.updateReportResultbyReportNo(reportNo);
+		
+		//System.out.println("report : " + report);
+		
+		//신고대상 삭제
+		//신고대상이 게시글인 경우
+		if (report > 0 && reportType == 0) {
+			String boardNo = targetNo;
+			int board = adminService.deleteBoardByBoardNo(boardNo);
+			
+		} else if (report > 0 && reportType == 1){	//신고대상이 댓글인경우
+			String commentNo = targetNo;
+			int comment = adminService.deleteBoardByBoardNo(commentNo);
+		}
+		
+		//접근제한 테이블에 넣기 전, insert 대상 회원이 이미 정지 상태인지 체크
+		String memberNo = suspect;
+		
+		int chkAccess = adminService.checkAccess(memberNo, reportNo);
+		
+		if(chkAccess == 0) {
+			//접근제한 테이블에 넣어주기 7일
+			int acres = adminService.firstAccessRestriction(reportNo, memberNo);
+			
+			if(acres > 0) {
+				model.addAttribute("title","신고수리 완료");
+				model.addAttribute("msg", "신고대상을 삭제하고, 신고대상을 작성한 사용자의 로그인을 7일간 제한합니다.");
+				model.addAttribute("icon","success");
+				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
+			}
+		} else if (chkAccess == 1) {
+			//접근제한 테이블에 넣어주기 15일
+			int acres = adminService.secondAccessRestriction(reportNo, memberNo);
+			
+			if(acres > 0) {
+				model.addAttribute("title","신고수리 완료");
+				model.addAttribute("msg", "신고대상을 삭제하고, 신고대상을 작성한 사용자의 로그인을 15일 간 제한합니다.");
+				model.addAttribute("icon","success");
+				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
+			}
+		} else if (chkAccess == 2) {
+			//접근제한 테이블에 넣어주기 100년
+			int acres = adminService.thirdAccessRestriction(reportNo, memberNo);
+			
+			if(acres > 0) {
+				model.addAttribute("title","신고수리 완료");
+				model.addAttribute("msg", "신고대상을 삭제하고, 신고대상을 작성한 사용자의 로그인을 영구제한합니다.");
+				model.addAttribute("icon","success");
+				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
+			}
+		}
+		
+		return "admin/memberManage";
+	}
+	
+	//관리자페이지 - 허위신고 : 신고한 회원 로그인제한
+	@GetMapping("fakeReport.exco")
+	public String fakeReport(String reportNo, String reporter, Model model) {
+	
+		//신고테이블에서 신고처리결과 D->N로 변경
+		int report = adminService.updateReportResult(reportNo);
+		//System.out.println("허위신고 report : " + report);
+		
+		if (report > 0) {
+		//접근제한 테이블에 넣기 전, insert 대상 회원이 이미 정지 상태인지 체크
+		String memberNo = reporter;
+		
+		int chkAccess = adminService.checkAccess(memberNo, reportNo);
+		
+		//System.out.println("허위신고 chkAccess : " + chkAccess);
+		
+		if(chkAccess == 0) {
+			//접근제한 테이블에 넣어주기 7일
+			int acres = adminService.firstAccessRestriction(reportNo, memberNo);
+			
+			if(acres > 0) {
+				model.addAttribute("title","허위신고 처리 완료");
+				model.addAttribute("msg", "허위신고자의 로그인을 7일간 제한합니다.");
+				model.addAttribute("icon","success");
+				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
+			}
+		} else if (chkAccess == 1) {
+			//접근제한 테이블에 넣어주기 15일
+			int acres = adminService.secondAccessRestriction(reportNo, memberNo);
+			
+			if(acres > 0) {
+				model.addAttribute("title","허위신고 처리 완료");
+				model.addAttribute("msg", "신고대상을 삭제하고, 신고대상의 로그인을 15일 간 제한합니다.");
+				model.addAttribute("icon","success");
+				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
+			}
+		} else if (chkAccess == 2) {
+			//접근제한 테이블에 넣어주기 100년
+			int acres = adminService.thirdAccessRestriction(reportNo, memberNo);
+			
+			if(acres > 0) {
+				model.addAttribute("title","허위신고 처리 완료");
+				model.addAttribute("msg", "신고대상을 삭제하고, 신고대상의 로그인을 영구제한합니다.");
+				model.addAttribute("icon","success");
+				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
+			}
+		}
+		
+	}
+		return "admin/memberManage";
+	}
+	
+	//관리자페이지 -> 신고처리내역 목록 불러오기
+	@GetMapping("reportResult.exco")
+	public String reportResultManage(Integer reqPage, String searchName, Model model) {
+
+		ReportPageData pd = null;
+		if (searchName.equals("done")) {
+			pd = adminService.selectAllReportResultList(reqPage, searchName);
+		} else if (searchName.equals("null")) {
+			pd = adminService.selectAllReportResultList(reqPage, searchName);
+		} else {
+			pd = adminService.selectAllReportResultList(reqPage, searchName);
+		}
+
+		model.addAttribute("reportList", pd.getList());
+		model.addAttribute("pageNavi", pd.getPageNavi());
+		model.addAttribute("searchName", searchName);
+
+		System.out.println(pd.getList());
+
+		return "admin/memberManage";
 	}
 }
