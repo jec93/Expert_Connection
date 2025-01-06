@@ -13,7 +13,7 @@ public class ExpertIntroduce {
 	private String enrollDate;
 	private String thirdCategoryCd;
 	private String expertGrade;
-	private String expertFile_name;
+	private String expertFileName;
 	private String expertFilePath;
 	private String introduceTitle;
 	private String introduceContent;
@@ -30,7 +30,7 @@ public class ExpertIntroduce {
 
 	public ExpertIntroduce(String memberNo, String expertId, String expertPw, String expertNickname, String expertPhone,
 			String expertAddr, String expertGender, String expertEmail, String memberType, String enrollDate,
-			String thirdCategoryCd, String expertGrade, String expertFile_name, String expertFilePath,
+			String thirdCategoryCd, String expertGrade, String expertFileName, String expertFilePath,
 			String introduceTitle, String introduceContent, String expertLike, String expertDislike,
 			String thirdCategoryNm, String profilePath, String profileName) {
 		super();
@@ -46,7 +46,7 @@ public class ExpertIntroduce {
 		this.enrollDate = enrollDate;
 		this.thirdCategoryCd = thirdCategoryCd;
 		this.expertGrade = expertGrade;
-		this.expertFile_name = expertFile_name;
+		this.expertFileName = expertFileName;
 		this.expertFilePath = expertFilePath;
 		this.introduceTitle = introduceTitle;
 		this.introduceContent = introduceContent;
@@ -54,22 +54,6 @@ public class ExpertIntroduce {
 		this.expertDislike = expertDislike;
 		this.thirdCategoryNm = thirdCategoryNm;
 		this.profilePath = profilePath;
-		this.profileName = profileName;
-	}
-
-	public String getProfilePath() {
-		return profilePath;
-	}
-
-	public void setProfilePath(String profilePath) {
-		this.profilePath = profilePath;
-	}
-
-	public String getProfileName() {
-		return profileName;
-	}
-
-	public void setProfileName(String profileName) {
 		this.profileName = profileName;
 	}
 
@@ -169,12 +153,12 @@ public class ExpertIntroduce {
 		this.expertGrade = expertGrade;
 	}
 
-	public String getExpertFile_name() {
-		return expertFile_name;
+	public String getExpertFileName() {
+		return expertFileName;
 	}
 
-	public void setExpertFile_name(String expertFile_name) {
-		this.expertFile_name = expertFile_name;
+	public void setExpertFileName(String expertFileName) {
+		this.expertFileName = expertFileName;
 	}
 
 	public String getExpertFilePath() {
@@ -225,17 +209,32 @@ public class ExpertIntroduce {
 		this.thirdCategoryNm = thirdCategoryNm;
 	}
 
+	public String getProfilePath() {
+		return profilePath;
+	}
+
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
+	}
+
 	@Override
 	public String toString() {
 		return "ExpertIntroduce [memberNo=" + memberNo + ", expertId=" + expertId + ", expertPw=" + expertPw
 				+ ", expertNickname=" + expertNickname + ", expertPhone=" + expertPhone + ", expertAddr=" + expertAddr
 				+ ", expertGender=" + expertGender + ", expertEmail=" + expertEmail + ", memberType=" + memberType
 				+ ", enrollDate=" + enrollDate + ", thirdCategoryCd=" + thirdCategoryCd + ", expertGrade=" + expertGrade
-				+ ", expertFile_name=" + expertFile_name + ", expertFilePath=" + expertFilePath + ", introduceTitle="
+				+ ", expertFileName=" + expertFileName + ", expertFilePath=" + expertFilePath + ", introduceTitle="
 				+ introduceTitle + ", introduceContent=" + introduceContent + ", expertLike=" + expertLike
 				+ ", expertDislike=" + expertDislike + ", thirdCategoryNm=" + thirdCategoryNm + ", profilePath="
 				+ profilePath + ", profileName=" + profileName + "]";
 	}
-	
 	
 }

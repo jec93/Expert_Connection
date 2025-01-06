@@ -1,5 +1,6 @@
 package kr.or.iei.expert.model.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,22 +19,29 @@ public class ExpertDao {
 	@Autowired
 	@Qualifier("sqlSessionTemplate")
 	private SqlSessionTemplate sqlSession;
-	
-	public List<ExpertManagement> getExpertList() {
-		return sqlSession.selectList("expertManagement.selectExpertList");
-	}
-
-	public ExpertManagement getExpertDetail(String receiveNo) {
-		return sqlSession.selectOne("expertManagement.getExpertDetail", receiveNo);
-	}
 
 	public ExpertIntroduce viewExpertInfoByMemberNo(String memberNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("expertManagement.viewExpertInfoByMemberNo", memberNo);
 	}
 
-	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm) {
-		return sqlSession.selectList("expertManagement.findExpertsByCategory", categoryNm);
+	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm, String addr) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("categoryNm", categoryNm);
+		params.put("addr", addr);
+		return sqlSession.selectList("expertManagement.findExpertsByCategory", params);
+	}
+
+	public int updateExpertContent(String memberNo, String title, String content) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("memberNo", memberNo);
+        params.put("title", title);
+        params.put("content", content);
+        return sqlSession.update("expertManagement.updateExpertContent", params);
+	}
+
+	public int updatePortfolio(ExpertIntroduce portfolio) {
+		return sqlSession.update("expertManagement.updatePortfolio", portfolio);
 	}
 
 }
