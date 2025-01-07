@@ -51,28 +51,19 @@
 	
  <!-- 회원가입 - 전문가 -->  
  <insert id="insertExpert" parameterType="member">
-  		  insert into tbl_exco
-  		  (member_no,
-  		  member_id,
-  	 	  member_pw,
-  	 	  member_nickname,
-  	 	  member_phone,
-  	 	  member_addr,
-  	 	  member_gender,
-  	 	  member_email,
-  	 	  enroll_date
-  	      )
- 		  values (
-  		  #{memberNo},
-  		  #{memberId},
-  		  #{memberPw},
-  		  #{memberNickname},
-  		  #{memberPhone},
-  		  #{memberAddr},
-  		  #{memberGender},
-  		  #{memberEmail},
-    	  sysdate
- 			 )
+  		 insert
+         exco.member_no AS memberNo,
+         exco.member_id AS memberId,
+         exco.member_pw AS memberPw,
+         exco.member_nickname AS memberNickname,
+         exco.member_phone AS memberPhone,
+         exco.member_addr AS memberAddr,
+         exco.member_gender AS memberGender,
+         exco.member_email AS memberEmail,
+         exco.enroll_date AS enrollDate,
+		 FROM tbl_exco exco
+		 JOIN tbl_expert_management m
+		   ON exco.member_no = m.member_no		
   </insert>
   <!-- 회원가입 - 일반회원 -->
   <insert id="insertWholeMember" parameterType="member">

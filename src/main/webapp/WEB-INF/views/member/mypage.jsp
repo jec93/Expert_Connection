@@ -183,8 +183,7 @@ input[name="tab-item"] {
          <div class="mypage-memberProfile">
             <div class="memberInfo-brife">
                 <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button" >
-           		 <img src="${loginMember.profileImage != null ? loginMember.profileImage.profilePath + loginMember.profileImage.profileName : '/resources/logo/expert_connection_favicon.png'}" 
-             alt="프로필 사진" class="profile-img">
+           		<img src="${loginMember.profilePath + loginMember.profileName}" >
             <span>프로필 사진</span>
             </a>
             </div>
