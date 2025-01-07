@@ -44,7 +44,7 @@ public class EmailService {
 		String toMail = email;
 		String title = "Expert Connection 회원 가입 인증 이메일 입니다."; // 이메일 제목 
 		String content = 
-				"Expert Connection를 방문해주셔서 감사합니다." + 	//html 형식으로 작성 ! 
+				"Expert Connection을 방문해주셔서 감사합니다." + 	//html 형식으로 작성 ! 
                 "<br><br>" + 
 		
                 "인증 번호는 " + authNumber + "입니다." + 

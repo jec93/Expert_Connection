@@ -270,7 +270,7 @@ public class MemberController {
 	    
 	    // 프로필 사진 경로 설정
 	    if (loginMember != null) {
-	        String profilePath = "/profile/uploadProfile/";
+	        String profilePath = "/resources/profile/";
 	        model.addAttribute("profilePath", profilePath);
 	    }
 	    
@@ -299,7 +299,7 @@ public class MemberController {
 	    }
 
 	    // 업로드 디렉토리 설정
-	    String uploadDir = request.getSession().getServletContext().getRealPath("/profile/uploadProfile/");
+	    String uploadDir = request.getSession().getServletContext().getRealPath("/resources/profile/");
 	    File dir = new File(uploadDir);
 	    if (!dir.exists() && !dir.mkdirs()) {
 	        System.out.println("Error: 디렉토리를 생성하지 못했습니다.");
@@ -314,7 +314,7 @@ public class MemberController {
             System.out.println("파일 저장 성공: " + saveFile.getAbsolutePath());
 
             // 프로필 사진 경로를 데이터베이스에 업데이트
-            String profilePath = "/profile/uploadProfile/";
+            String profilePath = "/resources/profile/";
             boolean isUpdated = memberService.updateProfileImage(memberNo, profilePath, profileName);
             if (isUpdated) {
                 redirectAttributes.addFlashAttribute("success", true);
