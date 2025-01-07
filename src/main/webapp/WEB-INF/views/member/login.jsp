@@ -151,8 +151,7 @@ input[type="text"] {
 <div class="login-img1"><a href="/"><img class="login-img" src="/resources/logo/expert_connection_logo_h_01.png" alt="logo image"></a></div>
 	<main class="content login-container">
 		<section class="section login-wrap">
-				<form action="login.exco" method="post" autocomplete="off"
-					onsubmit="return loginValidate()">
+				<form action="login.exco" method="post" autocomplete="off"">
 					<div class="login-input-title">
 							<label for="loginId">아이디</label>
 					</div>
@@ -176,36 +175,31 @@ input[type="text"] {
 					<div class="member-link-box">
 						<a href="javascript:void(0)" onclick="showIdSearchPopup()" class="search">아이디 찾기</a> | 
 						<a href="javascript:void(0)" onclick="showPwSearchPopup()" class="search">비밀번호 찾기</a> | 
-						<a href="/member/joinFrm.exco" class="search">회원가입</a>
+						<a href="/member/joinSelectFrm.exco" class="search">회원가입</a>
 					</div>
-					<div class="login-img2"><a href="/"><img class="kakao-login-img" src="/resources/images/kakao_login.png" alt="kakao-login image"></a></div>
+					<div class="login-img2"><a href="https://kauth.kakao.com/oauth/authorize?client_id=97ed8b02d15c6ed0755b30d28b222b89&redirect_uri=http://localhost:80/callback&response_type=code">
+					<img class="kakao-login-img" src="/resources/images/kakao_login.png" alt="kakao-login image"></a></div>
 				</form>
+				<c:if test="${not empty loginFailMessage}">
+			        <script>
+			            alert("${loginFailMessage}");
+			        </script>
+			    </c:if>
 		</section>
 	</main>
 	<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	<script>
-	//로그인 버튼 클릭 시, 동작 함수(submit 이전에) 
-	function loginValidate() {
-		if ($('#loginId').val().length < 1) {
-			alert("아이디를 입력하세요.");
-			$('#loginId').focus();
-			return false;
-		}
-		if ($('#loginPw').val().length < 1) {
-			alert("비밀번호를 입력하세요.");
-			return false;
-		}
-	}
+	
 	function showIdSearchPopup() {
 		 
 		  var popupURL = "/member/searchIdFrm.exco";
-		  var popupProperties = "width=700,height=600,scrollbars=yes";
+		  var popupProperties = "width=530,height=410,scrollbars=yes";
 		  
 		  window.open(popupURL, "Popup", popupProperties);
 		}
 	function showPwSearchPopup() {		 
 		  var popupURL = "/member/searchPwFrm.exco";
-		  var popupProperties = "width=700,height=600,scrollbars=yes";
+		  var popupProperties = "width=530,height=410,scrollbars=yes";
 		  
 		  window.open(popupURL, "Popup", popupProperties);
 		}

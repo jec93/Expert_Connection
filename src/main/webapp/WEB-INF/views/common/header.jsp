@@ -51,7 +51,7 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
                           <a href="/member/loginFrm.exco"><img id="icon_login" src="/resources/images/icon_login.png">로그인</a>
                       </li>
                        <li class="signup_box">
-                          <a href="/member/joinFrm.exco"><img id="icon_signup" src="/resources/images/icon_signup_01.png">회원가입</a>
+                          <a href="/member/joinSelectFrm.exco"><img id="icon_signup" src="/resources/images/icon_signup_01.png">회원가입</a>
                        </li>
                        <li>
                        	<a href="/categories/autoLogin.exco">자동로그인</a>

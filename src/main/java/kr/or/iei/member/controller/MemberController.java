@@ -2,10 +2,12 @@ package kr.or.iei.member.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.or.iei.member.model.service.EmailService;
 import kr.or.iei.member.model.service.MemberService;
@@ -38,19 +42,20 @@ public class MemberController {
 	
 	//로그인
 	@PostMapping("login.exco")
-	public String memberLogin(Member member, HttpSession session) {
+	public ModelAndView memberLogin(Member member, HttpSession session) {
 		Member loginMember = memberService.memberLogin(member);
 
 		if(loginMember != null) {
-			session.setAttribute("loginMember", loginMember);
-			return "redirect:/";
+			 session.setAttribute("loginMember", loginMember);
+		     return new ModelAndView("redirect:/"); 
 		}else {
-			return "member/loginFail";
+			ModelAndView mav = new ModelAndView("member/login"); // 실패 시 로그인 페이지 반환
+	        mav.addObject("loginFailMessage", "로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.");
+	        return mav;
 		}
 
 	}
 	//카카오 로그인	
-	
 	
 	//로그아웃
 	@GetMapping("logout.exco")
@@ -64,10 +69,20 @@ public class MemberController {
 	public String loginFrm() {
 		return "member/login";
 	}
-	//회원가입 페이지로 이동
+	//회원가입 선택페이지로 이동
+	@GetMapping("joinSelectFrm.exco")
+	public String joinSelectFrm() {
+		return "member/joinSelect";
+	}
+	//일반회원 가입 페이지로 이동
 	@GetMapping("joinFrm.exco")
 	public String joinFrm() {
 		return "member/join";
+	}
+	//전문가회원 가입 페이지로 이동
+	@GetMapping("joinExpertFrm.exco")
+	public String joinExpertFrm() {
+		return "member/joinExpert";
 	}
 	//이메일 인증
 	@GetMapping("mailCheck.exco")
@@ -76,19 +91,33 @@ public class MemberController {
 		return emailService.joinEmail(email);
 	}
 	
-	//회원가입
+	//회원가입 - 일반회원
 	@PostMapping("join.exco")
 	public String join(Member member) {
-		ArrayList<Member> memberList = new ArrayList<Member>();
-		
-		int result = memberService.join(member, memberList);
-		
-		if(result > 0) {
-			return "redirect:/";
-		}else {
-			return "member/joinFail";
-		}
+	    ArrayList<Member> memberList = new ArrayList<Member>();
+
+	    int result = memberService.join(member, memberList);
+
+	    if (result > 0) {
+	        return "member/login";
+	    } else {
+	        return "member/join"; // join.jsp로 이동
+	    }
 	}
+	//회원가입 - 전문가
+	@PostMapping("joinExpert.exco")
+	public String joinExpert(Member member) {
+	    ArrayList<Member> memberList = new ArrayList<Member>();
+
+	    int result = memberService.joinExpert(member, memberList);
+
+	    if (result > 0) {
+	        return "member/login";
+	    } else {
+	        return "member/join"; // join.jsp로 이동
+	    }
+	}
+
 	//아이디 중복체크
 	@GetMapping("idDuplChk.exco")
 	@ResponseBody
@@ -111,7 +140,7 @@ public class MemberController {
 	//마이페이지로 이동
 	@GetMapping("mypageFrm.exco")
 	public String mypageFrm() {
-		return "member/mypage_p";
+		return "member/mypage";
 	}
 	//회원정보수정 페이지로 이동
 	@GetMapping("updateFrm.exco")
@@ -136,10 +165,10 @@ public class MemberController {
 			
 			session.setAttribute("loginMember", loginMember);
 			
-			return "redirect:/";
-		}else {
+		    return "member/mypage";
+		}else {;
 			return "member/updateFail";
-		}
+		}   
 	}
 	//회원탈퇴 페이지로 이동
 	@GetMapping("deleteFrm.exco")
@@ -151,7 +180,7 @@ public class MemberController {
     @PostMapping("delete.exco")
     public String deleteMember(@RequestParam("memberNo") String memberNo, 
                                @RequestParam("memberPw") String memberPw, 
-                               HttpSession session, Model model) {
+                               HttpSession session) {
 
         Member loginMember = (Member) session.getAttribute("loginMember");
 
@@ -163,11 +192,9 @@ public class MemberController {
                 session.invalidate();
                 return "redirect:/"; 
             } else {
-                model.addAttribute("message", "회원 탈퇴에 실패했습니다.");
                 return "member/deleteFail";
             }
         } else {
-            model.addAttribute("message", "비밀번호가 맞지 않습니다.");
             return "member/deleteFail";
         }
     }
@@ -243,32 +270,73 @@ public class MemberController {
 	    
 	    // 프로필 사진 경로 설정
 	    if (loginMember != null) {
-	        String profileImagePath = "/resources/images/profile/" + loginMember.getProfileImage();
-	        model.addAttribute("profileImagePath", profileImagePath);
+	        String profilePath = "/profile/uploadProfile/";
+	        model.addAttribute("profilePath", profilePath);
 	    }
 	    
 	    return "member/profile";
 	}
+
 	
 	//프로필사진 업데이트
-	@PostMapping("profileUpdateFrm.exco")
-	public String uploadProfileImage(@RequestParam("file") MultipartFile file) {
-	    String uploadDir = "/resources/profile";
+	@PostMapping("profileUpdate.exco")
+	public String uploadProfileImage(
+	        @RequestParam(value = "file", required = false) MultipartFile file,
+	        @RequestParam(value = "memberNo", required = true) String memberNo,
+	        HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
+	   
+	    // memberNo 확인
+	    if (memberNo == null || memberNo.isEmpty()) {
+	        System.out.println("Error: memberNo가 전달되지 않았습니다.");
+	        return "redirect:/errorPage1"; // 에러 페이지로 이동
+	    }
+
+	    // file 확인
+	    if (file == null || file.isEmpty()) {
+	        System.out.println("Error: 파일이 업로드되지 않았습니다.");
+	        return "redirect:/errorPage2"; // 에러 페이지로 이동
+	    }
+
+	    // 업로드 디렉토리 설정
+	    String uploadDir = request.getSession().getServletContext().getRealPath("/profile/uploadProfile/");
 	    File dir = new File(uploadDir);
-	    if (!dir.exists()) {
-	        dir.mkdirs();
+	    if (!dir.exists() && !dir.mkdirs()) {
+	        System.out.println("Error: 디렉토리를 생성하지 못했습니다.");
+	        return "redirect:/errorPage3"; // 에러 페이지로 이동
 	    }
 
-	    try {
-	        File saveFile = new File(dir, file.getOriginalFilename());
-	        file.transferTo(saveFile);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+	 // 파일 저장 시도
+        try {
+            String profileName = file.getOriginalFilename();
+            File saveFile = new File(dir, profileName);
+            file.transferTo(saveFile);
+            System.out.println("파일 저장 성공: " + saveFile.getAbsolutePath());
 
-	    return "redirect:/profile";
+            // 프로필 사진 경로를 데이터베이스에 업데이트
+            String profilePath = "/profile/uploadProfile/";
+            boolean isUpdated = memberService.updateProfileImage(memberNo, profilePath, profileName);
+            if (isUpdated) {
+                redirectAttributes.addFlashAttribute("success", true);
+            } else {
+                redirectAttributes.addFlashAttribute("success", false);
+                redirectAttributes.addFlashAttribute("message", "프로필 이미지 업데이트 실패");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("success", false);
+            redirectAttributes.addFlashAttribute("message", "파일 저장 중 오류 발생");
+        }
+
+        // 프로필 사진 업데이트 성공 후 리다이렉트
+        return "redirect:/";
+    }
+	
+	//프로필사진 업데이트 팝업으로 이동
+	@GetMapping("profileUpdateFrm.exco")
+	public String profileUpdateFrm() {
+		return "member/profileUpdateFrm";
 	}
-
 }
 	
 
