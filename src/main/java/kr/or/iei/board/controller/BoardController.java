@@ -254,7 +254,7 @@ public class BoardController {
 	    model.addAttribute("pageNavi", pd.getPageNavi());
 	    model.addAttribute("boardType", boardType);
 
-	    return "member/mypage_p";
+	    return "member/mypage";
 	}
 	
     @GetMapping("insertComment.exco")
