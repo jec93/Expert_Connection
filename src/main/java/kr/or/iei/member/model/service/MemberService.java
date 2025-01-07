@@ -1,6 +1,7 @@
 package kr.or.iei.member.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import kr.or.iei.member.model.dao.MemberDao;
 import kr.or.iei.member.model.vo.Member;
 
 @Service("service")
+@Transactional
 public class MemberService {
 
 	@Autowired                                 
@@ -23,7 +25,7 @@ public class MemberService {
 		return memberDao.memberLogin(member);
 	}
     
-	//회원가입
+	//회원가입 - 일반회원
 	@Transactional
 	public int join(Member member, ArrayList<Member> memberList) {
 		
@@ -50,6 +52,33 @@ public class MemberService {
 		return result;
 	}
 	
+	//회원가입 - 전문가
+	@Transactional
+	public int joinExpert(Member member, ArrayList<Member> memberList) {
+		
+		String memberNo = memberDao.selectMemberNo();
+		member.setMemberNo(memberNo);
+		
+		int result = memberDao.joinWholeExpert(member);
+		
+		 if (result > 0) {
+		        result = memberDao.join(member);
+		        if (result <= 0) {
+		            throw new RuntimeException();
+		        }
+
+		        for (Member member1 : memberList) {
+		            member1.setMemberNo(memberNo);
+		            result = memberDao.joinExpert(member1);
+
+		            if (result <= 0) {
+		                throw new RuntimeException();
+		            }
+		        }
+		 }
+		return result;
+	}
+
 	//아이디 중복체크
 	public int idDuplChk(String memberId) {
 		return memberDao.idDuplChk(memberId);
@@ -103,5 +132,21 @@ public class MemberService {
         String hashedPassword = temporaryPassword;
         memberDao.updateMemberPassword(memberId, hashedPassword);
     }
+    
+    //프로필사진 업데이트
+	public boolean updateProfileImage(String memberNo, String profilePath,String profileName) {
+		HashMap<String, String> parameterMap = new HashMap<String, String>();
+		parameterMap.put("memberNo", memberNo);
+		parameterMap.put("profilePath", profilePath);
+		parameterMap.put("fileName", profileName);
+		
+		//해당 memberNo에 데이터가 있는지 확인
+		boolean isUpdated = memberDao.updateProfileImage(parameterMap);
 
+	    // 데이터가 없다면 INSERT 쿼리 실행
+	    if (!isUpdated) {
+	        return memberDao.insertProfileImage(parameterMap);
+	    }
+		return memberDao.updateProfileImage(parameterMap);
+	}
 }

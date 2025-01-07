@@ -11,7 +11,6 @@
 	<typeAliases>
 		<typeAlias type="kr.or.iei.member.model.vo.Member" alias="member"/>
 		<typeAlias type="kr.or.iei.board.model.vo.Board" alias="board"/>
-		<typeAlias type="kr.or.iei.member.model.vo.Expert" alias="expert"/>
 		<typeAlias type="kr.or.iei.board.model.vo.BoardFile" alias="boardFile"/>
 		<typeAlias type="kr.or.iei.board.model.vo.BoardComment" alias="boardComment"/>
 		<typeAlias type="kr.or.iei.chat.model.vo.Room" alias="room"/>
