@@ -1,3 +1,4 @@
+<%@page import="kr.or.iei.member.model.vo.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -28,16 +29,16 @@
    transition: background-color 0.3s ease;
    margin: 10px;
    border : 1px solid black;
-   margin-left : 320px;
+   margin-left : 220px;
    margin-top : -90px;
 }
 .memberNickname{
-   margin-left : 480px;
+   margin-left : 380px;
    margin-top : -100px;
    
 }
 .memberEmail{
-   margin-left : 480px;
+   margin-left : 380px;
 }
 
 .profile-img {
@@ -49,21 +50,16 @@
     left: 0;
 }
 .update-container{
- padding-left: 500px;
+ padding-left: 200px;
 
 }
 .update{
- padding-left: 950px;
+ padding-left: 650px;
  margin-bottom : 100px;
  display : flex;
  margin-top: -55px;
 }
-.update-nickname{
- padding-left: 200px;
-}
-.memberInfo-brife{
- padding-left: 200px;
-}
+
 .tab-item {
 	width: calc(100%/ 3);
 	height: 50px;
@@ -110,157 +106,143 @@ input[name="tab-item"] {
 </style>
 </head>
 <body>
-<jsp:include page="/WEB-INF/views/common/header.jsp" />
-
-<c:choose>
-    <c:when test="${loginMember != null && (loginMember.memberType == 1 || loginMember.memberType == 2 || loginMember.memberType == 3)}">
-<div class="mypage">
-      <div class="mypage">
-         <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
-
-         <div class="mypage-memberProfile">
-            <div class="memberInfo-brife">
-                <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button" >
-               <img src="${loginMember.profilePath + loginMember.profileName}" >
-           		 <!-- <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img">-->
-            </a>
-            </div>
-            <div class="update-nickname">
-               <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
-               <span class="memberEmail">${loginMember.memberEmail}</span>
-            </div>
-            <div class="update">
-    			<a href="/member/updateFrm.exco" id="memberInfo-update">정보수정</a>
-				<a href="/member/deleteFrm.exco" id="memberInfo-update">회원탈퇴</a>
-            </div>
-            <div class="update-container">
-         
-         
-          <div class="mypage-first-group">
-					<h3 class="mypage-group-title">서비스 이용내역</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">사용내역💰</a></li>
-							<li><a id="mypage_link" href="#">찜한 전문가</a></li>
-							<li><a id="mypage_link" href="#">리뷰</a></li>
-						</ul>
-		</div>
-      
-         
-         <div class="mypage-group">
-					<h3 class="mypage-group-title">커뮤니티</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">작성한 게시글 확인</a></li>
-							<li><a id="mypage_link" href="#">작성한 댓글 확인</a></li>
-						</ul>
-		</div>
-         
-         <div class="mypage-group">
-					<h3 class="mypage-group-title">채팅</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">채팅 내역</a></li>
-						</ul>
-		</div>
-      
-         <div class="mypage-last-group">
-					<h3 class="mypage-group-title">가이드</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a></li>
-							<li><a id="mypage_link" href="/cs/introduceMember.exco">사이트 이용 가이드</a></li>
-						</ul>
-		</div>
-      </div>
-   </div>
-   </div>
-   </div>
-       </c:when>
-       <c:when test="${loginMember != null && (loginMember.memberType == 4 || loginMember.memberType == 5 || loginMember.memberType == 6)}">
-<div class="mypage">
-      <div class="content">
-        <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
-
-         <div class="mypage-memberProfile">
-            <div class="memberInfo-brife">
-                <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button" >
-           		<img src="${loginMember.profilePath + loginMember.profileName}" >
-           		 <!-- <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img">-->
-            <span>프로필 사진</span>
-            </a>
-            </div>
-            <div class="update-nickname">
-               <h3 class="memberNickname">${loginMember.memberNickname} 전문가님</h3>
-               <span class="memberEmail">${loginMember.memberEmail}</span>
-            </div>
-            <div class="update">
-    			<a href="/member/updateFrm.exco" id="memberInfo-update">정보수정</a>
-				<a href="/member/deleteFrm.exco" id="memberInfo-update">회원탈퇴</a>
-            </div>
-            <div class="update-container">
-         
-         
-         <div class="mypage-first-group">
-					<h3 class="mypage-group-title">서비스 이용내역</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">사용내역💰</a></li>
-						</ul>
+<div class="wrap">
+ <jsp:include page="/WEB-INF/views/common/header.jsp" />
+  <main class="content">
+   <section class="section mypage-wrap">
+	<c:choose>
+	   <c:when test="${loginMember != null && (loginMember.memberType == 1 || loginMember.memberType == 2 || loginMember.memberType == 3)}">
+	    <div class="mypage">
+	      <div class="content">
+	        <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
+	         <div class="mypage-memberProfile">
+	            <div class="memberInfo-brife">
+	               <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button" >
+	               <img src="${loginMember.profilePath + loginMember.profileName}" >
+	           		 <!-- <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img">-->
+	               </a>
+	            </div>
+	            <div class="update-nickname">
+	               <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
+	               <span class="memberEmail">${loginMember.memberEmail}</span>
+	            </div>
+	            <div class="update">
+	    			<a href="/member/updateFrm.exco" id="memberInfo-update">정보수정</a>
+					<a href="/member/deleteFrm.exco" id="memberInfo-update">회원탈퇴</a>
+	            </div>
+	            <div class="update-container">      
+	            <div class="mypage-first-group">
+						<h3 class="mypage-group-title">서비스 이용내역</h3>
+							<ul class="mypage_link_box">
+								<li><a id="mypage_link" href="#">사용내역💰</a></li>
+								<li><a id="mypage_link" href="#">찜한 전문가</a></li>
+								<li><a id="mypage_link" href="#">리뷰</a></li>
+							</ul>
+			    </div>     
+	            <div class="mypage-group">
+				  <h3 class="mypage-group-title">커뮤니티</h3>
+					<ul class="mypage_link_box">
+						<li><a id="mypage_link" href="/member/writtenBoardFrm.exco">작성한 게시글 확인</a></li>
+						<li><a id="mypage_link" href="/member/writtenCommentFrm.exco">작성한 댓글 확인</a></li>
+				   </ul>
+			    </div>
+	            <div class="mypage-group">
+				  <h3 class="mypage-group-title">채팅</h3>
+					 <ul class="mypage_link_box">
+						<li><a id="mypage_link" href="#">채팅 내역</a></li>
+					 </ul>
+			    </div>
+	            <div class="mypage-last-group">
+				  <h3 class="mypage-group-title">가이드</h3>
+					  <ul class="mypage_link_box">
+						 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
+						 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
+						 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a></li>
+						 <li><a id="mypage_link" href="/cs/introduceMember.exco">사이트 이용 가이드</a></li>
+					  </ul>
 				</div>
-				
-				<div class="mypage-group">
-					<h3 class="mypage-group-title">채팅</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">채팅 내역</a></li>
-							<li><a id="mypage_link" href="#">자동응답 설정</a></li>
-						</ul>
-				</div>
-				
-				<div class="mypage-group">
-					<h3 class="mypage-group-title">커뮤니티</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">작성한 게시글 확인</a></li>
-							<li><a id="mypage_link" href="#">작성한 댓글 확인</a></li>
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=1&boardTypeNm=1">전문가 게시판</a></li>
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=2&boardTypeNm=2">전문가 노하우</a></li>
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=3&boardTypeNm=3">그룹레슨</a></li>
-						</ul>
-				</div>
-				
+	   	  	  </div>
+	 	  	</div>
+	 	  </div>
+	   </div>
+    </c:when>
+	   <c:when test="${loginMember != null && (loginMember.memberType == 4 || loginMember.memberType == 5 || loginMember.memberType == 6)}">
+	<div class="mypage">
+	      <div class="content">
+	        <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
+	         <div class="mypage-memberProfile">
+	            <div class="memberInfo-brife">
+	                <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button" >
+	           		<img src="${loginMember.profilePath + loginMember.profileName}" >
+	           		 <!-- <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img">-->
+	                </a>
+	            </div>
+	            <div class="update-nickname">
+	               <h3 class="memberNickname">${loginMember.memberNickname} 전문가님</h3>
+	               <span class="memberEmail">${loginMember.memberEmail}</span>
+	            </div>
+	            <div class="update">
+	    			<a href="/member/updateFrm.exco" id="memberInfo-update">정보수정</a>
+					<a href="/member/deleteFrm.exco" id="memberInfo-update">회원탈퇴</a>
+	            </div>
+	            <div class="update-container"> 
+	               <div class="mypage-first-group">
+						<h3 class="mypage-group-title">서비스 이용내역</h3>
+							<ul class="mypage_link_box">
+								<li><a id="mypage_link" href="#">사용내역💰</a></li>
+							</ul>
+				   </div>
 					<div class="mypage-group">
-					<h3 class="mypage-group-title">PR</h3>
-						<ul class="mypage_link_box">
-							<li> <label class="tab-item" for="information" onclick="switchTab('portfolio-content', this)">포트폴리오</label> 
-							     <input id="portfolio" type="radio" name="tab-item" /></li>
-							<li><label class="tab-item" for="menu" onclick="switchTab('introduce-content', this)" id="introduce">소개</label> 
-						        <input id="introduce" type="radio" name="tab-item" /></li>
-							<li><label class="tab-item" for="review" onclick="switchTab('qualifications-content', this)" id="qualifications">자격증</label> 
-					        	<input id="qualifications" type="radio" name="tab-item" /></li>			      
-						</ul>
-				</div>
-				  <div class="PR-detail-content">
-					        	<div class="tab-content" id="portfolio-content">포트폴리오</div>			
+		               <h3 class="mypage-group-title">채팅</h3>
+		                  <ul class="mypage_link_box">
+		                     <li><a id="mypage_link" href="/chat/getRoomList.exco">채팅 내역</a></li>
+		                     <li><a id="mypage_link" href="/autoRes/autoResFrm.exco">자동응답 설정</a></li>
+		                  </ul>
+		            </div>
+					<div class="mypage-group">
+					   <h3 class="mypage-group-title">커뮤니티</h3>
+						  <ul class="mypage_link_box">
+							 <li><a id="mypage_link" href="#">작성한 게시글 확인</a></li>
+							 <li><a id="mypage_link" href="#">작성한 댓글 확인</a></li>
+							 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=1&boardTypeNm=1">전문가 게시판</a></li>
+							 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=2&boardTypeNm=2">전문가 노하우</a></li>
+							 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=3&boardTypeNm=3">그룹레슨</a></li>
+						  </ul>
+					</div>
+					<div class="mypage-group">
+						<h3 class="mypage-group-title">PR</h3>
+							<ul class="mypage_link_box">
+								<li> <label class="tab-item" for="information" onclick="switchTab('portfolio-content', this)">포트폴리오</label> 
+								     <input id="portfolio" type="radio" name="tab-item" /></li>
+								<li><label class="tab-item" for="menu" onclick="switchTab('introduce-content', this)" id="introduce">소개</label> 
+							        <input id="introduce" type="radio" name="tab-item" /></li>
+								<li><label class="tab-item" for="review" onclick="switchTab('qualifications-content', this)" id="qualifications">자격증</label> 
+						        	<input id="qualifications" type="radio" name="tab-item" /></li>			      
+							</ul>
+					</div>
+					   <div class="PR-detail-content">
+						        <div class="tab-content" id="portfolio-content">포트폴리오</div>			
 								<div class="tab-content" id="introduce-content">소개</div>						
 								<div class="tab-content" id="qualifications-content">자격증</div>
-				  </div>
-				
-				
-				<div class="mypage-last-group">
-					<h3 class="mypage-group-title">가이드</h3>
-						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
-							<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a></li>
-							<li><a id="mypage_link" href="/cs/introduceExpert.exco">사이트 이용 가이드</a></li>
-						</ul>
-				</div>
-      </div>
-   </div>
-   </div>
-   </div>
-       </c:when>
-       <c:when test="${loginMember != null && (loginMember.memberType == 0)}">
-	<div class="mypage">
+					   </div>		
+					<div class="mypage-last-group">
+						<h3 class="mypage-group-title">가이드</h3>
+							<ul class="mypage_link_box">
+								<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
+								<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
+								<li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6" class="mypage_link">1:1 문의</a></li>
+								<li><a id="mypage_link" href="/cs/introduceExpert.exco">사이트 이용 가이드</a></li>
+							</ul>
+				   </div>
+	           </div>
+	        </div>
+	     </div>
+	   </div>
+	       </c:when>
+	      <%-- 관리자 마이페이지 --%>
+			<c:when test="${not empty loginMember && (loginMember.memberType == 0)}">
+			<div class="mypage">
 				<input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
-
 				<div class="mypage-adminProfile">
 					<div class="memberInfo-brife">
 						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile"><span>프로필 사진</span></a>
@@ -277,7 +259,7 @@ input[name="tab-item"] {
 							<h4 class="mypage-group-title">회원관리</h4>
 							<div class="adminPage_link_box">
 							<ul class="adminPage_link_box">
-								<li><a id="adminPage_link" href="#">신고내역 관리</a></li>
+								<li><a id="adminPage_link" href="/admin/memberReportManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
 								<li><a id="adminPage_link" href="#">전문가 승인 검토</a></li>
 							</ul>
 							</div>
@@ -315,15 +297,18 @@ input[name="tab-item"] {
 	                     </tr>
                      </c:forEach>
                   </table>
-               <div id="pageNavi">${pageNavi}</div>
-					</div>
+                 <div id="pageNavi">${pageNavi}</div>
+				 </div>
 				</div>
-			</div>
-       </c:when>
-    <c:otherwise>
-    </c:otherwise>
-</c:choose>
-<jsp:include page="/WEB-INF/views/common/footer.jsp" />
+			  </div>
+			</c:when>
+	    <c:otherwise>
+	   </c:otherwise>
+	 </c:choose>
+	</section>
+   </main>
+  <jsp:include page="/WEB-INF/views/common/footer.jsp" />
+</div>
 <script>
 function showProfilePopup() {
     
