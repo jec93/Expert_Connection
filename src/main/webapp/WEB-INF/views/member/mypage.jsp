@@ -209,8 +209,8 @@ input[name="tab-item"] {
 				<div class="mypage-group">
 					<h3 class="mypage-group-title">채팅</h3>
 						<ul class="mypage_link_box">
-							<li><a id="mypage_link" href="#">채팅 내역</a></li>
-							<li><a id="mypage_link" href="#">자동응답 설정</a></li>
+							<li><a id="mypage_link" href="/chat/getRoomList.exco">채팅 내역</a></li>
+							<li><a id="mypage_link" href="/autoRes/autoResFrm.exco">자동응답 설정</a></li>
 						</ul>
 				</div>
 				
