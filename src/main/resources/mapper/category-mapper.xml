@@ -96,4 +96,85 @@
 	FROM TBL_CODE
 	WHERE THIRD_CATEGORY_CD = #{string}
 	</select>
+	
+	<update id="updateCategoryBymdfInfo"
+	parameterType="map">
+	<choose>
+        <when test="key == 1">
+            UPDATE TBL_CODE
+            SET FIRST_CATEGORY_NM = #{mdfName}
+            WHERE FIRST_CATEGORY_CD = #{code}
+        </when>
+        <when test="key == 2">
+            UPDATE TBL_CODE
+            SET SECOND_CATEGORY_NM = #{mdfName}
+            WHERE SECOND_CATEGORY_CD = #{code}
+        </when>
+        <when test="key == 3">
+            UPDATE TBL_CODE
+            SET THIRD_CATEGORY_NM = #{mdfName}
+            WHERE THIRD_CATEGORY_CD = #{code}
+        </when>
+    </choose>
+	</update>
+	
+	<delete id="deleteCategory"
+	parameterType="string">
+	DELETE
+		TBL_CODE
+	WHERE
+		THIRD_CATEGORY_CD = #{string}
+	</delete>
+	
+	<delete id="deleteExpertManageByThird"
+	parameterType="string">
+	DELETE
+		TBL_EXPERT_MANAGEMENT
+	WHERE
+		THIRD_CATEGORY_CD = #{string}
+	</delete>
+	
+	<select id="viewFiSeCategory"
+	parameterType="string"
+	resultType="category">
+	SELECT
+		FIRST_CATEGORY_CD AS firstCategoryCd,
+		FIRST_CATEGORY_NM AS firstCategoryNm,
+		SECOND_CATEGORY_CD AS secondCategoryCd,
+		SECOND_CATEGORY_NM AS secondCategoryNm,
+		THIRD_CATEGORY_CD AS thirdCategoryCd,
+		THIRD_CATEGORY_NM AS thirdCategoryNm
+	FROM
+		TBL_CODE
+	WHERE
+		SECOND_CATEGORY_CD = #{secondCd}
+	</select>
+	
+	<insert id="insertCategory"
+	parameterType="map">
+	<choose>
+        <when test="key == 3">
+        INSERT
+			INTO
+		TBL_CODE
+		(
+			FIRST_CATEGORY_CD,
+			FIRST_CATEGORY_NM,
+			SECOND_CATEGORY_CD,
+			SECOND_CATEGORY_NM,
+			THIRD_CATEGORY_CD,
+			THIRD_CATEGORY_NM
+		)
+		VALUES
+		(
+			#{firstCd},
+			(SELECT DISTINCT FIRST_CATEGORY_NM FROM TBL_CODE WHERE FIRST_CATEGORY_CD=#{firstCd}),
+			#{secondCd},
+			(SELECT DISTINCT SECOND_CATEGORY_NM FROM TBL_CODE WHERE SECOND_CATEGORY_CD=#{secondCd}),
+			#{thirdCd},
+			#{categoryNm}
+		)
+        </when>
+    </choose>
+	</insert>
 </mapper>

@@ -312,7 +312,6 @@ boolean isLogin = loginChk != null; %>
 		}
 		
 		function reportBoard(boardNo, boardType, reportType) {
-			console.log('시작boardNo:'+boardNo);
 			  swal({
 			    title: "신고하기",
 			    text: `중단 검토 후 게재가 중단됩니다.

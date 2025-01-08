@@ -1,5 +1,7 @@
 package kr.or.iei.category.model.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import kr.or.iei.category.model.vo.Category;
 import kr.or.iei.category.model.vo.RankKeywords;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.member.model.vo.Expert;
@@ -70,5 +73,30 @@ public class CategoryDao {
 	public String matchSecondCodeByThirdCode(String thirdCode) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("category.matchSecondCodeByThirdCode",thirdCode);
+	}
+
+	public int updateCategoryBymdfInfo(HashMap<String, String> mdfDataMap) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("category.updateCategoryBymdfInfo",mdfDataMap);
+	}
+
+	public int deleteCategory(String thirdCode) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("category.deleteCategory",thirdCode);
+	}
+
+	public void deleteExpertManageByThird(String thirdCode) {
+		// TODO Auto-generated method stub
+		sqlSession.delete("category.deleteExpertManageByThird",thirdCode);
+	}
+
+	public int insertCategory(HashMap<String, String> cateMap) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("category.insertCategory",cateMap);
+	}
+
+	public List<Category> viewFiSeCategory(String secondCd) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("category.viewFiSeCategory",secondCd);
 	}
 }

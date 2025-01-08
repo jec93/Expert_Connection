@@ -88,34 +88,6 @@
 		<main class="content">
 			<section class="section board-list-wrap">
 				<div class="list-body">
-					<div class="side-list">
-	                  <c:choose>
-	                  <c:when test="${boardType eq 0 or boardType eq 1 or boardType eq 2 or boardType eq 3}">
-	                  <ul class="side-menu-title">
-	                     <li>커뮤니티</li>
-	                  </ul>
-	                  <ul class="side-menu">
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=0&boardTypeNm=0">사용자 게시판</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=1&boardTypeNm=1">전문가 게시판</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=2&boardTypeNm=2">전문가 노하우</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=3&boardTypeNm=3">그룹레슨</a></li>
-	                  </ul>
-	                  </c:when>
-	                  <c:otherwise>
-	                  <ul class="side-menu-title">
-	                     <li><a href="/cs/CS.exco">고객센터</a></li>
-	                  </ul>
-	                  <ul class="side-menu">
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6">1:1문의</a></li>
-	                     <li><a href="/cs/siteTermsOfUse.exco">이용약관</a></li>
-	                     <li><a href="/cs/personalInfoPolicy.exco">개인정보처리방침</a></li>
-	                     <li><a href="/cs/siteIntro.exco">사이트소개</a></li>
-	                  </ul>
-	                  </c:otherwise>
-	                  </c:choose>
-	               </div>
 				    <div class="list-content">
 						<div class="menu-container">
 							<div id="sub-header"><%=request.getParameter("thirdName") %></div>
