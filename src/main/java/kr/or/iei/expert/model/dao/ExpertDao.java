@@ -25,9 +25,9 @@ public class ExpertDao {
 		return sqlSession.selectOne("expertManagement.viewExpertInfoByMemberNo", memberNo);
 	}
 
-	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm, String addr) {
+	public List<ExpertIntroduce> findExpertsByCategory(List<ExpertIntroduce> srchList, String addr) {
 		Map<String, Object> params = new HashMap<>();
-		params.put("categoryNm", categoryNm);
+		params.put("categoryNmList", srchList);
 		params.put("addr", addr);
 		return sqlSession.selectList("expertManagement.findExpertsByCategory", params);
 	}
