@@ -15,7 +15,7 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
 		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
-		<property name="username" value="expertConnection"/>
+		<property name="username" value="exco"/>
 		<property name="password" value="1234"/>
 	</bean>
 	
@@ -40,19 +40,19 @@
 	</bean>
 	
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-    <property name="host" value="smtp.gmail.com" />
-    <property name="port" value="587" />
-    <property name="username" value="expertconnection250114@gmail.com" />
-    <property name="password" value="vexc aihf ykuh uoia" />
-    <property name="javaMailProperties">
-        <props>
-            <prop key="mail.smtp.auth">true</prop>
-            <prop key="mail.smtp.starttls.enable">true</prop>
-            <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
-        </props>
-    </property>
-    
-</bean>
+	    <property name="host" value="smtp.gmail.com" />
+	    <property name="port" value="587" />
+	    <property name="username" value="expertconnection250114@gmail.com" />
+	    <property name="password" value="vexc aihf ykuh uoia" />
+	    <property name="javaMailProperties">
+	        <props>
+	            <prop key="mail.smtp.auth">true</prop>
+	            <prop key="mail.smtp.starttls.enable">true</prop>
+	            <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+	        </props>
+	    </property>
+	</bean>
+	
 	<tx:annotation-driven/>
 	
 	<websocket:handlers>
@@ -61,4 +61,5 @@
 			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"></bean>
 		</websocket:handshake-interceptors>
 	</websocket:handlers>
+	
 </beans>
