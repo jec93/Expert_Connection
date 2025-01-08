@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
+import kr.or.iei.category.model.service.CategoryService;
 import kr.or.iei.expert.model.service.ExpertService;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.member.model.vo.Member;
@@ -39,6 +42,10 @@ public class ExpertController {
 
 	@Autowired
     private ExpertService expertService;
+	
+	@Autowired
+	@Qualifier("categoryService")
+	CategoryService categoryService;
 	
 	//회원 번호로 전문가 소개 페이지 불러오기
 	@GetMapping("/viewExpertInfoByMemberNo.exco")
@@ -55,11 +62,26 @@ public class ExpertController {
 	
 	//챗봇 전문가 추천
 	@GetMapping("/expertBotSearch.exco")
-	public String searchExperts(String categoryNm, String addr, Model model) {
-		List<ExpertIntroduce> experts = expertService.findExpertsByCategory(categoryNm, addr);	
-		model.addAttribute("experts", experts);
-		
-	    return "member/expertBotSearchTest";
+	public String searchExperts(String keyword, String addr, Model model) {
+		ArrayList<ExpertIntroduce> srchList = categoryService.searchExperts(keyword);
+    	if(srchList==null) {
+    		model.addAttribute("title", "정보");
+    		model.addAttribute("msg", "검색 결과 없음.");
+    		model.addAttribute("icon", "info");
+    		model.addAttribute("loc", "/expert/expertBotSearchFrm.exco");
+    		return "common/msg";
+    	}
+    	
+    	ArrayList<ExpertIntroduce> filteredList = new ArrayList<ExpertIntroduce>();
+    	for(ExpertIntroduce i : srchList){
+    		if(i.getExpertAddr().equals(addr)) {
+    			filteredList.add(i);
+    		}
+    	}
+    	
+    	model.addAttribute("keyword",keyword);
+    	model.addAttribute("srchList",filteredList);
+    	return"/categories/srchResult";
 	}
 	
 	//전문가 상세페이지 정보 업데이트
