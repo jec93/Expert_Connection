@@ -99,21 +99,13 @@ public class CategoryController {
     	return"/categories/srchResult";
     }
     
-    //임시 로그인 학원컴터기준 admin 정보
-    @GetMapping("/autoLogin.exco")
-    public String autoLogin(HttpSession session) {
-    	Member loginMember = new Member();
-    	loginMember.setMemberNo("1");
-    	loginMember.setMemberId("admin");
-    	loginMember.setMemberPw("1234");
-    	loginMember.setMemberNickname("관리자");
-    	loginMember.setMemberPhone("010-1234-1234");
-    	loginMember.setMemberAddr("대한민국");
-    	loginMember.setMemberGender("0");
-    	loginMember.setMemberType("0");
-    	loginMember.setMemberEmail("admin@kh.com");
-    	loginMember.setEnrollDate("24/12/23");
-    	session.setAttribute("loginMember", loginMember);
-    	return"redirect:/";
+    @GetMapping("/categoriesManage.exco")
+    public String categoriesManage(Model model) {
+    	// 애플리케이션 범위에서 데이터를 가져옴
+        Map<String, Object> categories = (Map<String, Object>) servletContext.getAttribute("categories");
+
+        // 데이터를 모델에 추가하여 JSP에 전달
+        model.addAttribute("categories", categories);
+    	return "admin/categoriesManage";
     }
 }

@@ -142,7 +142,7 @@
 
 	<script>
 	//웹소켓 연결
-	const socket = new WebSocket("ws://localhost/chat/doChat.exco") // IP 변경
+	const socket = new WebSocket("ws://192.168.10.52/chat/doChat.exco") // IP 변경
 	
 	socket.onmessage = function(event) {
 	    const data = JSON.parse(event.data);

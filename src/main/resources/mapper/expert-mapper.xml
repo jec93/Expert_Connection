@@ -25,8 +25,8 @@
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
     	I.EXPERT_DISLIKE AS expertDislike,
-    	P.PROFILE_PATH AS profilePath,
-        P.PROFILE_NAME AS profileName
+    	E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
     FROM TBL_EXCO E
    	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -34,8 +34,6 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
-	LEFT JOIN TBL_PROFILE_IMAGE P
-    ON E.MEMBER_NO = P.MEMBER_NO
 	WHERE M.THIRD_CATEGORY_CD = #{thirdCode}
 	</select>
 	
@@ -62,8 +60,8 @@
 	    I.EXPERT_LIKE AS expertLike,
 	    I.EXPERT_DISLIKE AS expertDislike,
 	    C.THIRD_CATEGORY_NM AS thirdCategoryNm,
-	    P.PROFILE_PATH AS profilePath,
-        P.PROFILE_NAME AS profileName
+	    E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
 	FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	    ON E.MEMBER_NO = M.MEMBER_NO
@@ -73,8 +71,6 @@
 	    ON I.MEMBER_NO = E.MEMBER_NO
 	LEFT JOIN TBL_CODE C
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
-	LEFT JOIN TBL_PROFILE_IMAGE P
-        ON E.MEMBER_NO = P.MEMBER_NO
 	WHERE TRIM(E.MEMBER_NO) = #{thirdCode}
 	</select>
 	
@@ -99,8 +95,8 @@
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
     	I.EXPERT_DISLIKE AS expertDislike,
-    	P.PROFILE_PATH AS profilePath,
-        P.PROFILE_NAME AS profileName
+    	E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
 	FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -108,8 +104,6 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
-	LEFT JOIN TBL_PROFILE_IMAGE P
-    ON E.MEMBER_NO = P.MEMBER_NO
 	</select>
 	
 	<select id="srchExpertsByKeyList"
@@ -134,8 +128,8 @@
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
     	I.EXPERT_DISLIKE AS expertDislike,
-    	P.PROFILE_PATH AS profilePath,
-        P.PROFILE_NAME AS profileName
+    	E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
         FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -143,8 +137,6 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
-	LEFT JOIN TBL_PROFILE_IMAGE P
-    ON E.MEMBER_NO = P.MEMBER_NO
         WHERE THIRD_CATEGORY_CD IN
         <foreach collection="list" item="keywords" open="(" separator="," close=")">
             #{keywords}
@@ -174,8 +166,8 @@
 		    I.INTRODUCE_CONTENT AS introduceContent,
 		    I.EXPERT_LIKE AS expertLike,
 	    	I.EXPERT_DISLIKE AS expertDislike,
-	    	P.PROFILE_PATH AS profilePath,
-	        P.PROFILE_NAME AS profileName
+	    	E.PROFILE_PATH AS profilePath,
+	        E.PROFILE_NAME AS profileName
 	        FROM TBL_EXCO E
 		LEFT JOIN TBL_EXPERT_MANAGEMENT M
 		ON E.MEMBER_NO = M.MEMBER_NO
@@ -183,8 +175,6 @@
 		ON E.MEMBER_NO = W.MEMBER_NO
 		LEFT JOIN TBL_EXPERT_INTRODUCE I
 		ON I.MEMBER_NO = E.MEMBER_NO
-		LEFT JOIN TBL_PROFILE_IMAGE P
-	    ON E.MEMBER_NO = P.MEMBER_NO
 	    LEFT JOIN TBL_CODE C
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
 	        WHERE C.THIRD_CATEGORY_NM = #{categoryNm} and E.MEMBER_ADDR LIKE '%' || #{addr} || '%'
@@ -234,8 +224,8 @@
 	        I.INTRODUCE_CONTENT,
 	        I.EXPERT_LIKE,
 	        I.EXPERT_DISLIKE,
-	        P.PROFILE_PATH,
-	        P.PROFILE_NAME
+	        E.PROFILE_PATH,
+	        E.PROFILE_NAME
 		FROM TBL_EXCO E
 		LEFT JOIN TBL_EXPERT_MANAGEMENT M
 		ON E.MEMBER_NO = M.MEMBER_NO
@@ -243,8 +233,6 @@
 		ON E.MEMBER_NO = W.MEMBER_NO
 		LEFT JOIN TBL_EXPERT_INTRODUCE I
 		ON I.MEMBER_NO = E.MEMBER_NO
-		LEFT JOIN TBL_PROFILE_IMAGE P
-	    ON E.MEMBER_NO = P.MEMBER_NO
 	    ORDER BY I.EXPERT_LIKE DESC NULLS LAST)
 	    WHERE ROWNUM &lt; 6
 	</select>
@@ -257,12 +245,10 @@
     </update>
     
     <!-- 전문가 상세페이지 포트폴리오 탭 업데이트 -->
-    <update id="updatePortfolio" parameterType="map">
-	    UPDATE TBL_EXPERT_MANAGEMENT
-	    SET 
-	        expert_file_name = #{expertFileName},
-	        expert_file_path = NVL(#{expertFilePath}, expert_file_path) 
+    <update id="updatePortfolio" parameterType="expertIntro">
+	    UPDATE TBL_EXPERT_management
+	    SET expert_file_name = #{expertFileName},
+	        expert_file_path = #{expertFilePath}
 	    WHERE member_no = #{memberNo}
 	</update>
 </mapper>
-

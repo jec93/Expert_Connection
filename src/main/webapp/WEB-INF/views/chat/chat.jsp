@@ -395,7 +395,7 @@ a.leaveRoom:hover {
 
         let fn = {
             init : function () {
-                ws = new WebSocket("ws://localhost/chat/doChat.exco"); // 해당 PC IP로 변경할 것.
+                ws = new WebSocket("ws://192.168.10.52/chat/doChat.exco"); // 해당 PC IP로 변경할 것.
                 ws.onopen = function() {
                     var msg = { type: "connect", memberNo: memberNo };
                     ws.send(JSON.stringify(msg));
