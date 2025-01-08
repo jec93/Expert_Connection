@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.iei.admin.model.service.AdminService;
 import kr.or.iei.admin.model.vo.AccessRestriction;
@@ -319,4 +322,59 @@ public class AdminController {
 
 		return "admin/memberManage";
 	}
+	
+	@GetMapping("updateCategoryBymdfInfo.exco")
+	public String updateCategoryBymdfInfo(String key, String code, String mdfName, Model model) {
+	    System.out.println("Key: " + key);
+	    System.out.println("Code: " + code);
+	    System.out.println("MdfName: " + mdfName);
+	    
+	    // 업데이트 수행
+	    int result = adminService.updateCategoryBymdfInfo(key, code, mdfName);
+	    
+	    if(result>0) {
+	    	model.addAttribute("icon","success");
+		    model.addAttribute("title","카테고리 수정완료");
+		    model.addAttribute("loc","/categories/categoriesManage.exco");
+	    }else {
+	    	model.addAttribute("icon","error");
+		    model.addAttribute("title","카테고리 수정실패");
+		    model.addAttribute("loc","/categories/categoriesManage.exco");
+	    }
+	    return "common/msg";
+	}
+	
+	@GetMapping("deleteCategory.exco")
+	public String deleteCategory(String thirdCode,Model model) {
+		int result = adminService.deleteCategory(thirdCode);
+		if(result>0) {
+			model.addAttribute("icon","success");
+			model.addAttribute("title","카테고리 삭제완료");
+			model.addAttribute("loc","/categories/categoriesManage.exco");
+		}else {
+			model.addAttribute("icon","error");
+			model.addAttribute("title","카테고리 삭제실패");
+			model.addAttribute("loc","/categories/categoriesManage.exco");
+		}
+		return "common/msg";
+	}
+	
+	@GetMapping("insertCategory.exco")
+	public String insertCategory(String key, String firstCd,String secondCd, String categoryNm, Model model) {
+		int result = adminService.insertCategory(key, firstCd, secondCd, categoryNm);
+		if(result>0) {
+			model.addAttribute("icon","success");
+			model.addAttribute("title","카테고리 추가완료");
+			model.addAttribute("loc","/categories/categoriesManage.exco");
+		}else {
+			model.addAttribute("icon","error");
+			model.addAttribute("title","카테고리 추가실패");
+			model.addAttribute("loc","/categories/categoriesManage.exco");
+		}
+		return "common/msg";
+	}
+	
+	/*
+	 * @GetMapping("deleteCategory.exco") public String
+	 */
 }

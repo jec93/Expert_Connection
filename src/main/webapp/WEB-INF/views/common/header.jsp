@@ -53,9 +53,6 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
                        <li class="signup_box">
                           <a href="/member/joinSelectFrm.exco"><img id="icon_signup" src="/resources/images/icon_signup_01.png">회원가입</a>
                        </li>
-                       <li>
-                       	<a href="/categories/autoLogin.exco">자동로그인</a>
-                       </li>
                </c:when>
                <c:otherwise>
                         <li class="chat_box">

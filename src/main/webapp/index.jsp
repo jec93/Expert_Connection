@@ -67,7 +67,7 @@
       list-style: none;
       padding: 0;
       margin: 0;
-      display: block;
+      display: none;
       max-height: 200px;
       overflow-y: auto;
    }
@@ -91,6 +91,7 @@
 		overflow: hidden;
 		min-width: 250px; /* 각 전문가 박스 고정 크기 */
     	flex-shrink: 0; /* 크기 축소 방지 */
+    	cursor: pointer;
 	}
 	.info-srch-container{
 		width : 100px;
@@ -101,6 +102,7 @@
 		overflow: hidden;
 		min-width: 100px; /* 각 전문가 박스 고정 크기 */
     	flex-shrink: 0; /* 크기 축소 방지 */
+    	cursor: pointer;
 	}
 	/* 전체 영역 설정 */
 	.expert-carousel {
@@ -174,6 +176,7 @@
 		flex-wrap : wrap;
 	    margin: 2px;
 	    gap : 15px;
+	    cursor: pointer;
 	}
 	.display-firstCate {
 	width : 80px;
@@ -436,21 +439,87 @@
           }
           
           function scrollExpert(direction) {
-       	    const carouselContent = document.getElementById("show-expert"); // 콘텐츠 영역 가져오기
-       	    const scrollAmount = 300; // 한 번에 스크롤할 픽셀 양 (조정 가능)
-       	    carouselContent.scrollBy({
-       	        left: direction * scrollAmount, // 방향에 따라 스크롤 (왼쪽: -1, 오른쪽: 1)
-       	        behavior: "smooth", // 부드러운 스크롤
-       	    });
-       	  }
+        	    const carouselContent = document.getElementById("show-expert"); // 콘텐츠 영역 가져오기
+        	    const scrollAmount = 600; // 한 번에 스크롤할 픽셀 양 (조정 가능)
+        	    const maxScrollLeft = carouselContent.scrollWidth - carouselContent.clientWidth; // 최대 스크롤 가능한 거리
+
+        	    // 현재 스크롤 위치 확인
+        	    const currentScrollLeft = carouselContent.scrollLeft;
+
+        	    if (direction === 1) {
+        	        // 오른쪽 버튼 눌렀을 때
+        	        if (currentScrollLeft >= maxScrollLeft - 5) { 
+        	            // 맨 끝에 도달했을 경우 (오차 5px 허용)
+        	            carouselContent.scrollTo({
+        	                left: 0,
+        	                behavior: "smooth",
+        	            });
+        	        } else {
+        	            // 아직 끝이 아니면 일반 스크롤
+        	            carouselContent.scrollBy({
+        	                left: scrollAmount,
+        	                behavior: "smooth",
+        	            });
+        	        }
+        	    } else if (direction === -1) {
+        	        // 왼쪽 버튼 눌렀을 때
+        	        if (currentScrollLeft <= 5) { 
+        	            // 맨 처음에 도달했을 경우 (오차 5px 허용)
+        	            carouselContent.scrollTo({
+        	                left: maxScrollLeft,
+        	                behavior: "smooth",
+        	            });
+        	        } else {
+        	            // 아직 처음이 아니면 일반 스크롤
+        	            carouselContent.scrollBy({
+        	                left: -scrollAmount,
+        	                behavior: "smooth",
+        	            });
+        	        }
+        	    }
+        	}
+
+          
           function scrollSrch(direction) {
        	    const carouselContent = document.getElementById("show-categories"); // 콘텐츠 영역 가져오기
        	    const scrollAmount = 300; // 한 번에 스크롤할 픽셀 양 (조정 가능)
-       	    carouselContent.scrollBy({
-       	        left: direction * scrollAmount, // 방향에 따라 스크롤 (왼쪽: -1, 오른쪽: 1)
-       	        behavior: "smooth", // 부드러운 스크롤
-       	    });
-       	  }
+       	 	const maxScrollLeft = carouselContent.scrollWidth - carouselContent.clientWidth; // 최대 스크롤 가능한 거리
+       	 	
+       		// 현재 스크롤 위치 확인
+    	    const currentScrollLeft = carouselContent.scrollLeft;
+       	 	
+    	    if (direction === 1) {
+    	        // 오른쪽 버튼 눌렀을 때
+    	        if (currentScrollLeft >= maxScrollLeft - 5) { 
+    	            // 맨 끝에 도달했을 경우 (오차 5px 허용)
+    	            carouselContent.scrollTo({
+    	                left: 0,
+    	                behavior: "smooth",
+    	            });
+    	        } else {
+    	            // 아직 끝이 아니면 일반 스크롤
+    	            carouselContent.scrollBy({
+    	                left: scrollAmount,
+    	                behavior: "smooth",
+    	            });
+    	        }
+    	    } else if (direction === -1) {
+    	        // 왼쪽 버튼 눌렀을 때
+    	        if (currentScrollLeft <= 5) { 
+    	            // 맨 처음에 도달했을 경우 (오차 5px 허용)
+    	            carouselContent.scrollTo({
+    	                left: maxScrollLeft,
+    	                behavior: "smooth",
+    	            });
+    	        } else {
+    	            // 아직 처음이 아니면 일반 스크롤
+    	            carouselContent.scrollBy({
+    	                left: -scrollAmount,
+    	                behavior: "smooth",
+    	            });
+    	        }
+    	    }
+    	}
 	</script>
 </body>
 </html>

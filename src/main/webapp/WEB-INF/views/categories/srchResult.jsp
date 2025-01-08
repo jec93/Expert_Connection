@@ -8,6 +8,7 @@
 <%
 	ArrayList<ExpertIntroduce> srchList = (ArrayList<ExpertIntroduce>) request.getAttribute("srchList");
 	String keyword = (String) request.getAttribute("keyword");
+	Map<String, Object> categories = (Map<String, Object>) application.getAttribute("categories");
 %>
 <!DOCTYPE html>
 <html>
@@ -28,7 +29,7 @@
 }
 
 .list-content{
-	display: inline-block;
+	display: flex;
 }
 
 #sub-header {
@@ -78,6 +79,25 @@
 	font-size: 20px;
 	font-weight: bold;
 }
+.firstCategory-container {
+	    display : flex;
+		flex-wrap : wrap;
+	    margin: 2px;
+	    gap : 15px;
+	    cursor: pointer;
+	}
+.display-firstCate {
+	width : 80px;
+	border-radius : 20px;
+	display : grid;
+	justify-items: center;
+	padding : 5px 5px 15px 5px;
+	line-height: 10px;
+	background-color : var(--gray8);
+    color: var(--main1);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1);
+  	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	}
 </style>
 </head>
 <body>
@@ -86,35 +106,122 @@
 		<main class="content">
 			<section class="section board-list-wrap">
 				<div class="list-body">
-					<div class="side-list">
-	                  <c:choose>
-	                  <c:when test="${boardType eq 0 or boardType eq 1 or boardType eq 2 or boardType eq 3}">
-	                  <ul class="side-menu-title">
-	                     <li>커뮤니티</li>
-	                  </ul>
-	                  <ul class="side-menu">
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=0&boardTypeNm=0">사용자 게시판</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=1&boardTypeNm=1">전문가 게시판</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=2&boardTypeNm=2">전문가 노하우</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=3&boardTypeNm=3">그룹레슨</a></li>
-	                  </ul>
-	                  </c:when>
-	                  <c:otherwise>
-	                  <ul class="side-menu-title">
-	                     <li><a href="/cs/CS.exco">고객센터</a></li>
-	                  </ul>
-	                  <ul class="side-menu">
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ</a></li>
-	                     <li><a href="/board/list.exco?reqPage=1&boardType=6&boardTypeNm=6">1:1문의</a></li>
-	                     <li><a href="/cs/siteTermsOfUse.exco">이용약관</a></li>
-	                     <li><a href="/cs/personalInfoPolicy.exco">개인정보처리방침</a></li>
-	                     <li><a href="/cs/siteIntro.exco">사이트소개</a></li>
-	                  </ul>
-	                  </c:otherwise>
-	                  </c:choose>
-	               </div>
-				    <div class="list-content">
+				<div class="list-content">
+				<%
+		                // 모델에서 전달된 데이터를 사용
+		
+		                if (categories != null) {
+		                    List<Map<String, Object>> firstCategories = (List<Map<String, Object>>) categories.get("firstCategories");
+				             %>
+				             <div class="siteIntro-body"> 							
+							 <div class="siteIntro-category">
+							 <div class="side-list">
+				             <%
+		             			for (Map<String, Object> category : firstCategories) {
+			             			switch ((String) category.get("FIRSTCATEGORYCD")) {
+			             		    case "A0001":
+			             		    	%>
+			             		    	<div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             		    		<div class="display-firstCate">
+												<img id="category_icon" src="/resources/images/img_hobby.png"><br>
+												취미
+			             			   		</div>
+										</div>
+										<%
+			             		        break;
+			             		    case "A0002":
+			             		    	 %>
+			             		    	 <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             		    	 	<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_move.png"><br>
+												이사
+			             			   		</div>
+			             		    	 </div>
+			             		        <%
+			             		        break;
+			             		   case "A0003":
+			             			    %>
+			             			    <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             			    	<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_outsourcing.png"><br>
+												외주
+			             			   		</div>
+			             		    	</div>
+			             			    <%
+			             		    	break;
+			             		   case "A0004":
+			             			   %>
+			             			   <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             			   		<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_event.png"><br>
+												이벤트
+			             			   		</div>
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0005":
+			             			  %>
+			             			   <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             			   		<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_beuaty.png"><br>
+												뷰티
+			             			   		</div>
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0006":
+			             			  %>
+			             			   <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             			   		<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_job.png"><br>
+												취업
+			             			   		</div>
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0007":
+			             			  %>
+			             			   <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             			   		<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_lesson.png"><br>
+												과외
+			             			   		</div>
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0008":
+			             			  %>
+			             			   <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             			   		<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_vehicle.png"><br>
+												차량
+			             			   		</div>
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0009":
+			             			  %>
+			             			   <div class="firstCategory-container" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+			             			   		<div class="display-firstCate">
+				             		    	 	<img id="category_icon" src="/resources/images/img_finance_law.png"><br>
+												금융/법률
+			             			   		</div>
+			             		    	</div>
+			             			   <%
+			             			   break;
+			             			}
+		             		}
+				          %>
+		             	</div>
+		             </div>
+		             <%
+		                } else {
+		            %>
+		                <h3>카테고리 데이터를 로드할 수 없습니다</h3>
+		            <%
+		                }
+		            %>
+				    	</div>
 						<div class="menu-container">
 							<div id="sub-header"><%=keyword %>검색 결과</div>
 							<div id="tird-category-title" class="main-category">
@@ -158,9 +265,21 @@
 		</main>
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
-	<script>
+	<script>	
         function viewSelectedExpert(memberNo){
         	location.href = '/expert/viewExpertInfoByMemberNo.exco?&memberNo='+memberNo;
+        }
+        
+        const categories = <%= new com.google.gson.Gson().toJson(categories) %>;
+        const suggestData = categories.subCategories;
+        const sampleSuggestions = suggestData.map(item => item.THIRDCATEGORYNM);
+        
+        function srchThirdCategories(FIRSTCATEGORYCD,FIRSTCATEGORYNM) {
+        	// 주어진 FIRSTCATEGORYCD 값과 같은 데이터를 필터링하고 THIRDCATEGORYCD 값만 추출
+            const thirdCategoryCDList = suggestData
+                .filter(item => item.FIRSTCATEGORYCD === FIRSTCATEGORYCD) // 조건에 맞는 항목 필터링
+                .map(item => item.THIRDCATEGORYCD); // THIRDCATEGORYCD 값만 추출
+            location.href = '/categories/searchSubCategoriesList.exco?&thirdCategoryCDList='+thirdCategoryCDList+'&firstCategoryNm='+FIRSTCATEGORYNM;   	
         }
     </script>
 </body>

@@ -18,6 +18,9 @@ import kr.or.iei.board.model.dao.BoardDao;
 import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.board.model.vo.BoardFile;
+import kr.or.iei.category.controller.CategoryInitializer;
+import kr.or.iei.category.model.dao.CategoryDao;
+import kr.or.iei.category.model.vo.Category;
 import kr.or.iei.member.model.vo.Member;
 
 @Service("adminService")
@@ -30,6 +33,14 @@ public class AdminService {
 	@Autowired
 	@Qualifier("boardDao")
 	private BoardDao boardDao;
+	
+	@Autowired
+	@Qualifier("categoryDao")
+	private CategoryDao categoryDao;
+	
+	@Autowired
+	@Qualifier("categoryInitial")
+	private CategoryInitializer categoryInitializer;
 	
 	//관리자페이지 - 신고내역 전체목록 조회
    public ReportPageData selectAllReportList(int reqPage, String searchName) {
@@ -414,4 +425,80 @@ public class AdminService {
 	  return pd;
 	}
 
+
+	public int updateCategoryBymdfInfo(String key, String code, String mdfName) {
+		// TODO Auto-generated method stub
+		HashMap<String, String> mdfDataMap = new HashMap<String, String>();
+		mdfDataMap.put("key", key);
+		mdfDataMap.put("code", code);
+		mdfDataMap.put("mdfName", mdfName);
+		int result = categoryDao.updateCategoryBymdfInfo(mdfDataMap);
+		if(result > 0) {
+			categoryInitializer.refreshCategories();
+		}
+		return result;
+	}
+
+
+	public int deleteCategory(String thirdCode) {
+		// TODO Auto-generated method stub
+		int result = categoryDao.deleteCategory(thirdCode);
+		if(result>0) {
+			categoryDao.deleteExpertManageByThird(thirdCode);
+			categoryInitializer.refreshCategories();
+		}
+
+		return result;
+	}
+
+
+	public int insertCategory(String key, String firstCd, String secondCd, String categoryNm) {
+		// TODO Auto-generated method stub
+		HashMap<String, String> cateMap = new HashMap<String, String>();
+		cateMap.put("key", key);
+		cateMap.put("firstCd", firstCd);
+		cateMap.put("secondCd", secondCd);
+		cateMap.put("categoryNm", categoryNm);
+		/*
+		 	key값(바꾸고자 하는게 대/중/소 중 무엇인지)
+			firstCode값(바꾸고자 하는 값이 대 일때 0, 중/소 일때 대분류의 코드)
+			secondCode값 (바꾸고자 하는 값이 대/소 일때 0, 소일때 중분류의 코드)
+			categoryNm값 (넣고자하는 카테고리의 이름)
+		 
+		    각 상황에 맞는 데이터를 제공해줄 기능이 필요하다 생각
+		 	대분류 추가시 대분류 코드를 가져와서 1증가
+		 	
+		 	중분류 추가시 대분류 코드/이름, 중분류코드 가져와서 1증가
+		 	
+		 	소분류 추가시 대/중 분류 코드와 이름, 소분류 코드 가져와서 1증가
+		 	(폐기~~~ 추후~~~~ 키값 3 고정만 들어옴) 
+		 * */
+		//늘리고자하는 소분류의 중분류(대분류는 포함됨)의 전체 정보를 가져옴
+		ArrayList<Category> categoryInfo = (ArrayList<Category>)categoryDao.viewFiSeCategory(secondCd);
+		
+		int tmp = 0;
+		String newThirdCd ="";
+		newThirdCd = categoryInfo.get(0).getThirdCategoryCd().substring(0,7);
+		System.out.println(newThirdCd);
+		for(Category c : categoryInfo) { //마지막 코드 확인
+			String substringCd = c.getThirdCategoryCd().substring(7);
+			System.out.println(substringCd);
+			int integerCd = Integer.parseInt(substringCd);
+			if(integerCd>tmp) {
+				tmp = integerCd;
+			}
+		}
+		String stringCd = String.format("%04d", tmp+1);
+		newThirdCd += stringCd;
+		cateMap.put("thirdCd", newThirdCd);
+		System.out.println(newThirdCd);
+		
+		int result = categoryDao.insertCategory(cateMap);
+		
+		if(result>0) {
+			//추가시 데이터 초기화
+			categoryInitializer.refreshCategories();
+		}
+		return result;
+	}
 }

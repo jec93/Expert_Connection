@@ -24,7 +24,9 @@
 	    I.INTRODUCE_TITLE AS introduceTitle,
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
-    	I.EXPERT_DISLIKE AS expertDislike
+    	I.EXPERT_DISLIKE AS expertDislike,
+    	E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
     FROM TBL_EXCO E
    	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -57,7 +59,9 @@
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
 	    I.EXPERT_DISLIKE AS expertDislike,
-	    C.THIRD_CATEGORY_NM AS thirdCategoryNm
+	    C.THIRD_CATEGORY_NM AS thirdCategoryNm,
+	    E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
 	FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	    ON E.MEMBER_NO = M.MEMBER_NO
@@ -90,7 +94,9 @@
 	    I.INTRODUCE_TITLE AS introduceTitle,
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
-    	I.EXPERT_DISLIKE AS expertDislike
+    	I.EXPERT_DISLIKE AS expertDislike,
+    	E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
 	FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -121,7 +127,9 @@
 	    I.INTRODUCE_TITLE AS introduceTitle,
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
-    	I.EXPERT_DISLIKE AS expertDislike
+    	I.EXPERT_DISLIKE AS expertDislike,
+    	E.PROFILE_PATH AS profilePath,
+        E.PROFILE_NAME AS profileName
         FROM TBL_EXCO E
 	LEFT JOIN TBL_EXPERT_MANAGEMENT M
 	ON E.MEMBER_NO = M.MEMBER_NO
@@ -157,7 +165,9 @@
 		    I.INTRODUCE_TITLE AS introduceTitle,
 		    I.INTRODUCE_CONTENT AS introduceContent,
 		    I.EXPERT_LIKE AS expertLike,
-	    	I.EXPERT_DISLIKE AS expertDislike
+	    	I.EXPERT_DISLIKE AS expertDislike,
+	    	E.PROFILE_PATH AS profilePath,
+	        E.PROFILE_NAME AS profileName
 	        FROM TBL_EXCO E
 		LEFT JOIN TBL_EXPERT_MANAGEMENT M
 		ON E.MEMBER_NO = M.MEMBER_NO
@@ -210,7 +220,9 @@
 	        I.INTRODUCE_TITLE AS,
 	        I.INTRODUCE_CONTENT,
 	        I.EXPERT_LIKE,
-	        I.EXPERT_DISLIKE
+	        I.EXPERT_DISLIKE,
+	        E.PROFILE_PATH,
+	        E.PROFILE_NAME
 		FROM TBL_EXCO E
 		LEFT JOIN TBL_EXPERT_MANAGEMENT M
 		ON E.MEMBER_NO = M.MEMBER_NO
@@ -230,12 +242,10 @@
     </update>
     
     <!-- 전문가 상세페이지 포트폴리오 탭 업데이트 -->
-    <update id="updatePortfolio" parameterType="map">
-	    UPDATE TBL_EXPERT_MANAGEMENT
-	    SET 
-	        expert_file_name = #{expertFileName},
-	        expert_file_path = NVL(#{expertFilePath}, expert_file_path) 
+    <update id="updatePortfolio" parameterType="expertIntro">
+	    UPDATE TBL_EXPERT_management
+	    SET expert_file_name = #{expertFileName},
+	        expert_file_path = #{expertFilePath}
 	    WHERE member_no = #{memberNo}
 	</update>
 </mapper>
-
