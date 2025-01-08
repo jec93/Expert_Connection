@@ -21,8 +21,8 @@ public class ExpertService {
 		return expertDao.viewExpertInfoByMemberNo(memberNo);
 	}
 
-	public List<ExpertIntroduce> findExpertsByCategory(List<ExpertIntroduce> srchList, String addr) {
-		return expertDao.findExpertsByCategory(srchList, addr);
+	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm, String addr) {
+		return expertDao.findExpertsByCategory(categoryNm, addr);
 	}
 
 	public boolean updateExpertContent(String memberNo, String title, String content) {
