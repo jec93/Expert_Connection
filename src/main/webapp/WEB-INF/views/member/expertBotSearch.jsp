@@ -126,7 +126,7 @@ main.content {
 				
 				<!-- 전송용 폼 -->
                 <form id="expertSearchForm" action="/expert/expertBotSearch.exco" method="get" style="display:none;">
-                    <input type="hidden" name="categoryNm" id="categoryNm">
+                    <input type="hidden" name="keyword" id="categoryNm">
                     <input type="hidden" name="addr" id="addr">
                     <input type="submit">
                 </form>
