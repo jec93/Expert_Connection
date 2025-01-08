@@ -39,7 +39,7 @@ main.content {
 }
 
 .chat-header {
-	background-color: #4caf50;
+	background-color: #34805C;
 	color: #fff;
 	padding: 15px 20px;
 	font-size: 18px;
@@ -68,12 +68,13 @@ main.content {
 }
 
 .chat-bubble.bot {
-	background-color: #f0f0f0;
+	background-color: #beeac5;
 	align-self: flex-start;
 }
 
 .chat-bubble.user {
-	background-color: #d1ffd6;
+	background-color: #34805C;
+	color: #ffffff;
 	align-self: flex-end;
 }
 

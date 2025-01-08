@@ -178,7 +178,6 @@
 	    LEFT JOIN TBL_CODE C
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
 	        WHERE C.THIRD_CATEGORY_NM = #{categoryNm} and E.MEMBER_ADDR LIKE '%' || #{addr} || '%'
-	
     </select>
 
 	<select id="viewBestExpertList"
@@ -201,9 +200,7 @@
 	    INTRODUCE_TITLE AS introduceTitle,
 	    INTRODUCE_CONTENT AS introduceContent,
 	    EXPERT_LIKE AS expertLike,
-	    EXPERT_DISLIKE AS expertDislike,
-	    PROFILE_PATH AS profilePath,
-	    PROFILE_NAME AS profileName
+	    EXPERT_DISLIKE AS expertDislike
 	FROM
 	    (SELECT
 	        E.MEMBER_NO,

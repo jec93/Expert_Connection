@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +15,7 @@
     margin: 0 auto;
     font-family: Arial, sans-serif;
     margin-bottom: 30px; /* 요소 간 간격 설정 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 채팅 목록 제목 스타일 */
@@ -112,11 +114,6 @@
 		<jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 		<main class="content">
-			<a href="/expert/expertList.exco">전문가리스트 (테스트)</a>
-			<a href="/expert/expertBotSearch.exco">챗봇 (테스트)</a>
-			
-
-
 			<!-- 채팅방 목록 -->
 			<div class="chat-header">채팅 목록</div>
 			<c:forEach var="room" items="${roomList}">

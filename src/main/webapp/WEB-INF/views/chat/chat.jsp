@@ -282,9 +282,89 @@ a.leaveRoom:hover {
     background-color: #e9ecef;
 }
 
-#autoResponsePopup ul li:hover {
-    background-color: #f7f7f7;
+/* 자동응답 팝업 스타일 */
+#autoResponsePopup {
+    display: none;
+    position: absolute;
+    bottom: 50px; /* 위치 조정 */
+    left: 0;
+    width: 220px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 10px;
+    font-size: 14px;
+    max-height: 250px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 내용이 많아지면 스크롤 추가 */
 }
+
+/* 자동응답 리스트 스타일 */
+#autoResponsePopup ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* 스크롤바 스타일 */
+#autoResponsePopup ul::-webkit-scrollbar {
+    width: 6px;
+}
+
+#autoResponsePopup ul::-webkit-scrollbar-thumb {
+    background: #82E3B6;
+    border-radius: 10px;
+}
+
+#autoResponsePopup ul::-webkit-scrollbar-track {
+    background: #f3f7f6;
+}
+
+/* 자동응답 리스트 항목 */
+.auto-response-item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    border-radius: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 마지막 항목은 하단 테두리 제거 */
+.auto-response-item:last-child {
+    border-bottom: none;
+}
+
+/* 마우스 오버 시 스타일 */
+.auto-response-item:hover {
+    background-color: #f1f1f1;
+    color: #34805C;
+}
+
+/* 팝업 닫기 버튼 */
+#autoResponseClose {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+#autoResponseClose:hover {
+    color: #34805C;
+}
+
+/* 팝업이 화면 아래쪽을 넘지 않도록 조정 */
+#autoResponseContainer {
+    position: relative;
+}
+
 </style>
 </head>
 <body>
@@ -320,8 +400,7 @@ a.leaveRoom:hover {
 							style="border: none; background: none; cursor: pointer; font-size: 18px;">
 							<svg xmlns="http://www.w3.org/2000/svg" height="24px"
 								viewBox="0 -960 960 960" width="24px" fill="#5f6368">
-								<path
-									d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" /></svg>
+								<path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" /></svg>
 						</button>
 					</div>
 
@@ -348,24 +427,26 @@ a.leaveRoom:hover {
 					<!-- 채팅 입력 영역 -->
 					<div id="chatInput">
 						<!-- 자동응답 아이콘과 팝업 -->
-					    <div id="autoResponseContainer" style="position: relative; margin-right: 10px;">
-					        <button id="autoResponseIcon" style="background: none; border: none; cursor: pointer;">
-					            <img src="/resources/images/icon_chat.png" alt="자동응답" style="width: 30px; height: 30px;">
-					        </button>
-					        <div id="autoResponsePopup" style="display: none; position: absolute; top: -250%; left: 0; width: 200px; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 1000;">
-					            <ul style="list-style: none; margin: 0; padding: 10px; max-height: 200px; overflow-y: auto;">
-					                <c:forEach var="response" items="${autoResList}">
-					                    <li class="auto-response-item" 
-									        data-response-content="${response.responseContent}" 
-									        data-expert-member-no="${response.expertMemberNo}"
-									        data-expert-nickname="${response.expertNickname}"
-									        style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;">
-									        ${response.triggerWord}
-									    </li>
-					                </c:forEach>
-					            </ul>
-					        </div>
-					    </div>
+						<c:if test="${sessionScope.loginMember.memberType ne 4 and sessionScope.loginMember.memberType ne 5 and sessionScope.loginMember.memberType ne 6 and not empty autoResList}"> 
+						    <div id="autoResponseContainer" style="position: relative; margin-right: 10px;">
+							    <button id="autoResponseIcon" style="background: none; border: none; cursor: pointer;">
+							        <img src="/resources/images/icon_chat.png" alt="자동응답" style="width: 30px; height: 30px;">
+							    </button>
+							    
+							    <div id="autoResponsePopup">
+							        <ul>
+							            <c:forEach var="response" items="${autoResList}">
+							                <li class="auto-response-item" 
+							                    data-response-content="${response.responseContent}" 
+							                    data-expert-member-no="${response.expertMemberNo}"
+							                    data-expert-nickname="${response.expertNickname}">
+							                    ${response.triggerWord}
+							                </li>
+							            </c:forEach>
+							        </ul>
+							    </div>
+							</div>
+						</c:if>
 						
 						<input type="text" id="chatMsg" placeholder="메시지를 입력하세요...">
 						<input type="file" id="fileInput" style="display: none;" onchange="fn.previewFile()"> <!-- 숨김 처리 -->
@@ -440,6 +521,8 @@ a.leaveRoom:hover {
                 ws.onclose = function() {
                     console.log("연결종료");
                 };
+                
+                $("#msgArea").scrollTop($("#msgArea")[0].scrollHeight);
             },
             
             //자동응답 SocketHandler로 전달
@@ -652,7 +735,6 @@ a.leaveRoom:hover {
             });
         });
 
-    	 
         document.getElementById("searchMsg").addEventListener("keyup", function (event) {
             if (event.key === "Enter") {
                 fn.searchMessages();

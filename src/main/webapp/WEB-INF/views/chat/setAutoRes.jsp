@@ -187,10 +187,11 @@ body {
 }
 
 .delete-response-btn {
-    border: none;
-    background: transparent;
-    font-size: 16px;
-    cursor: pointer;
+    background: none;
+	border: none;
+	font-size: 18px;
+	color: #999;
+	cursor: pointer;
 }
 
 </style>

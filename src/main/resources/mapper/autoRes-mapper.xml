@@ -86,7 +86,7 @@
 		) nickname_data
 		    ON TBL_WHOLE_MEMBER.member_no = nickname_data.member_no
 		WHERE
-		    TBL_CHAT_MEMBERS.room_id = #{roomId} -- 해당 채팅방
+		    TRIM(TBL_CHAT_MEMBERS.room_id) = #{roomId} -- 해당 채팅방
 		    AND TBL_WHOLE_MEMBER.member_type IN (4, 5, 6) -- 전문가
 		ORDER BY TBL_AUTO_RESPONSE.response_date DESC
     </select>
