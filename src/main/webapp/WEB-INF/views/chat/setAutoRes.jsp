@@ -185,6 +185,14 @@ body {
 .modal-content button:hover {
 	background-color: #276e4b;
 }
+
+.delete-response-btn {
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 </style>
 </head>
 <body>
@@ -211,7 +219,7 @@ body {
 								<li data-response-no="${response.responseNo}"
 									data-response-question="${response.triggerWord}"
 									data-response-answer="${response.responseContent}"><span>${response.triggerWord}</span>
-									<button class="delete-response-btn" data-response-no="${response.responseNo}">삭제</button>
+									<button class="delete-response-btn" data-response-no="${response.responseNo}">X</button>
 								</li>
 							</c:forEach>
 						</ul>
@@ -266,7 +274,6 @@ body {
 					},
 					success : function(data) {
 						if (!data.success) {
-							alert('자동응답 상태를 저장하지 못했습니다.');
 						}
 					},
 					error : function() {
@@ -284,6 +291,12 @@ body {
 
 			// 질문 클릭 시 편집 모달 열기
 			$('#response-list').on('click', 'li', function() {
+				
+				// 삭제 버튼 클릭 시는 상세창 안 뜨게 하기
+		        if ($(event.target).hasClass('delete-response-btn')) {
+		            return;
+		        }
+				
 				const question = $(this).data('response-question');
 				const answer = $(this).data('response-answer');
 
@@ -357,8 +370,6 @@ body {
 				success : function(data) {
 					if (data.success) {
 			            console.log('자동응답 상태가 성공적으로 저장되었습니다.');
-			        } else {
-			            alert('자동응답 상태를 저장하지 못했습니다: ' + data.message);
 			        }
 				},
 				error : function() {

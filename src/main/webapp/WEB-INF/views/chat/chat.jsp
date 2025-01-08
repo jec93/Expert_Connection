@@ -21,7 +21,8 @@ body {
 /* 채팅 화면 영역 스타일 */
 #chatContainer {
     display: flex;
-    width: 70%;
+    width: 90%;
+    height: 80vh; /* 화면 높이의 80%로 조정 */
     margin: 20px auto;
     background: #ffffff;
     border-radius: 8px;
@@ -41,7 +42,8 @@ body {
 /* 메시지 출력 영역 */
 #msgArea {
     border: 1px solid #34805C;
-    height: 350px;
+    height: calc(100% - 100px); /* 입력창 높이를 고려하여 조정 */
+    max-height: 75vh;
     overflow-y: auto;
     padding: 15px;
     background-color: #ffffff;
@@ -51,7 +53,9 @@ body {
 
 /* 참여 멤버 목록 스타일 */
 #memberSection {
-    flex: 1;
+    flex: 0.8;
+    height: 80vh;
+    max-height: 90vh;
     background-color: #f3f7f6;
     padding: 15px;
     overflow-y: auto;
@@ -144,10 +148,13 @@ body {
 
 /* 채팅 입력 영역 */
 #chatInput {
+	position: absolute;
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 15px;
+    width: 95%;
+    bottom: 24px;
 }
 
 #chatMsg {
@@ -343,7 +350,7 @@ a.leaveRoom:hover {
 						<!-- 자동응답 아이콘과 팝업 -->
 					    <div id="autoResponseContainer" style="position: relative; margin-right: 10px;">
 					        <button id="autoResponseIcon" style="background: none; border: none; cursor: pointer;">
-					            <img src="/path/to/response-icon.png" alt="자동응답" style="width: 30px; height: 30px;">
+					            <img src="/resources/images/icon_chat.png" alt="자동응답" style="width: 30px; height: 30px;">
 					        </button>
 					        <div id="autoResponsePopup" style="display: none; position: absolute; top: -250%; left: 0; width: 200px; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 1000;">
 					            <ul style="list-style: none; margin: 0; padding: 10px; max-height: 200px; overflow-y: auto;">

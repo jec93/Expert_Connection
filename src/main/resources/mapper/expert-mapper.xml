@@ -257,10 +257,11 @@
     </update>
     
     <!-- 전문가 상세페이지 포트폴리오 탭 업데이트 -->
-    <update id="updatePortfolio" parameterType="expertIntro">
-	    UPDATE TBL_EXPERT_management
-	    SET expert_file_name = #{expertFileName},
-	        expert_file_path = #{expertFilePath}
+    <update id="updatePortfolio" parameterType="map">
+	    UPDATE TBL_EXPERT_MANAGEMENT
+	    SET 
+	        expert_file_name = #{expertFileName},
+	        expert_file_path = NVL(#{expertFilePath}, expert_file_path) 
 	    WHERE member_no = #{memberNo}
 	</update>
 </mapper>

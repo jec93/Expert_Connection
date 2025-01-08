@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.ServletOutputStream;
@@ -63,29 +65,45 @@ public class ExpertController {
 	//전문가 상세페이지 정보 업데이트
 	@PostMapping("/expertUpdateContent.exco")
 	@ResponseBody
-	public String expertUpdateContent(String title, String content, HttpSession session) {
+	public Map<String, String> expertUpdateContent(String title, String content, HttpSession session) {
 		Member loginMember = (Member) session.getAttribute("loginMember");
+		
+		Map<String, String> response = new HashMap<>();
+		
 		if(loginMember == null) {
-			return "redirect:/";
+			response.put("status", "fail");
+	        response.put("message", "로그인이 필요합니다.");
+	        return response;
 		}
 		
 		// 전문가 본인인지 확인
         boolean isUpdated = expertService.updateExpertContent(loginMember.getMemberNo(), title, content);
 
-        return isUpdated ? "success" : "fail";
+        if (isUpdated) {
+            response.put("status", "success");
+        } else {
+            response.put("status", "fail");
+            response.put("message", "업데이트 실패");
+        }
+        
+        return response; // JSON 형식 응답
 	}
 	
 	//전문가 상세페이지 포트폴리오 파일 업로드
 	@PostMapping(value = "/expertUpdatePortfolio.exco", produces = "application/json; charset=utf-8")
 	@ResponseBody
-	public String expertUpdatePortfolio(HttpServletRequest request, MultipartFile file, String memberNo, String fileName, String filePath) {
+	public Map<String, String> expertUpdatePortfolio(HttpServletRequest request, MultipartFile file, String memberNo, String fileName, String filePath) {
+	    Map<String, String> response = new HashMap<>();
+		
 	    Member loginMember = (Member) request.getSession().getAttribute("loginMember");
+	    
 	    if (loginMember == null || !loginMember.getMemberNo().equals(memberNo)) {
-	        return new Gson().toJson("unauthorized"); // 로그인 정보가 없거나, 본인 계정이 아닌 경우 차단
+	        response.put("status", "unauthorized");
+	        return response;
 	    }
 
 	    String savePath = request.getSession().getServletContext().getRealPath("/resources/portfolio/");
-	    String uploadedFilePath = null;
+	    String uploadedFilePath = filePath;
 	    
 	    if (file != null && !file.isEmpty()) { // 파일이 업로드된 경우에만 처리
 	        String originalFilename = file.getOriginalFilename();
@@ -96,12 +114,14 @@ public class ExpertController {
 	        try {
 	            file.transferTo(saveFile);
 	            uploadedFilePath = "/resources/portfolio/" + newFileName;
+	            
 	        } catch (IOException e) {
 	            e.printStackTrace();
-	            return new Gson().toJson("upload_fail");
+	            response.put("status", "upload_fail");
+	            return response;
 	        }
 	    } else {
-	        uploadedFilePath = filePath; // 기존 파일을 유지할 경우
+	    	 response.put("fileUrl", filePath);
 	    }
 
 	    // DB에 저장할 객체 생성
@@ -113,44 +133,10 @@ public class ExpertController {
 	    // DB 업데이트 실행
 	    boolean isUpdated = expertService.updatePortfolio(portfolio);
 
-	    return new Gson().toJson(isUpdated ? "success" : "db_fail");
+	    response.put("status", isUpdated ? "success" : "db_fail");
+	    response.put("fileUrl", uploadedFilePath);
+	    response.put("fileName", fileName);
+	    return response;
 	}
 
-	
-	/*
-	 * //전문가 상세페이지 포트폴리오 파일 다운
-	 * 
-	 * @GetMapping(value = "/portfolioDownload.exco", produces =
-	 * "application/octet-stream;") public void fileDownload(HttpServletRequest
-	 * request, HttpServletResponse response, String memberNo) {
-	 * 
-	 * // DB에서 파일 정보 가져오기 ExpertIntroduce portfolio =
-	 * expertService.getPortfolioFile(memberNo);
-	 * 
-	 * if (portfolio == null) {
-	 * response.setStatus(HttpServletResponse.SC_NOT_FOUND); return; }
-	 * 
-	 * String fileName = portfolio.getExpertFileName(); String filePath =
-	 * portfolio.getExpertFilePath(); String root =
-	 * request.getSession().getServletContext().getRealPath("/resources/upload/");
-	 * 
-	 * BufferedInputStream bis = null; BufferedOutputStream bos = null;
-	 * 
-	 * try { File file = new File(root + filePath); if (!file.exists()) {
-	 * response.setStatus(HttpServletResponse.SC_NOT_FOUND); return; }
-	 * 
-	 * FileInputStream fis = new FileInputStream(file); bis = new
-	 * BufferedInputStream(fis); ServletOutputStream sos =
-	 * response.getOutputStream(); bos = new BufferedOutputStream(sos);
-	 * 
-	 * String resFilename = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-	 * response.setHeader("Content-Disposition", "attachment; filename=" +
-	 * resFilename);
-	 * 
-	 * int read; while ((read = bis.read()) != -1) { bos.write(read); }
-	 * 
-	 * } catch (IOException e) { e.printStackTrace(); } finally { try { if (bos !=
-	 * null) bos.close(); if (bis != null) bis.close(); } catch (IOException e) {
-	 * e.printStackTrace(); } } }
-	 */
 }

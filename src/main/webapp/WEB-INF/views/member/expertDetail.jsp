@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,9 +26,12 @@ body {
     flex-direction: column;
 }
 
+
 .profile-header {
-    text-align: left;
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    text-align: left; /* 텍스트 정렬 */
+    gap: 30px; /* 이미지와 텍스트 사이 여백 */
 }
 
 .profile-header .profile-img {
@@ -59,7 +63,7 @@ body {
 
 .profile-header .actions button {
     padding: 10px 20px;
-    background-color: #28a745;
+    background-color: #34805C;
     color: white;
     border: none;
     border-radius: 5px;
@@ -108,8 +112,8 @@ body {
 }
 
 .tabs button.active {
-    color: #007bff;
-    border-bottom-color: #007bff;
+    color: #34805C; /* 활성화된 탭의 글자 색 변경 */
+    border-bottom-color: #34805C; /* 활성화된 탭에 밑줄 추가 */
     font-weight: bold;
 }
 
@@ -144,7 +148,7 @@ body {
 }
 
 .update-btn, .save-btn {
-    background-color: #007bff;
+    background-color: #34805C;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -159,7 +163,7 @@ body {
 }
 
 .save-btn {
-    background-color: #28a745;
+    background-color: ##34805C;
     display: none;
 }
 
@@ -167,6 +171,52 @@ body {
     background-color: #218838;
 }
 
+/* 정보 및 포트폴리오 입력 박스 스타일 */
+#info-title-edit, #info-content-edit,
+#portfolio-edit, #portfolio-path-edit {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    transition: border-color 0.3s ease-in-out;
+    box-sizing: border-box;
+}
+
+/* 입력 상자 클릭 시 포커스 스타일 */
+#info-title-edit:focus, #info-content-edit:focus,
+#portfolio-edit:focus, #portfolio-path-edit:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    outline: none;
+}
+
+/* 포트폴리오 파일 선택 UI 스타일 */
+#portfolio-file {
+    display: block;
+    margin-top: 10px;
+}
+
+/* 미리보기 컨테이너 스타일 */
+#portfolio-preview {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* 파일 이름 표시 */
+#file-name-display {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 업데이트 버튼 간격 조정 */
+.update-btn, .save-btn {
+    margin-top: 15px;
+}
 
 </style>
 
@@ -178,41 +228,42 @@ body {
 
 		<div class="content">
 			<div class="profile-header">
-				<img class="profile-img" src="/resources/logo/expert_connection_favicon.png" alt="프로필 사진">
-				<h1 class="profile-header-title">
-				    ${expertDetail.expertNickname}
-				    <c:choose>
-				        <c:when test="${expertDetail.expertGrade == 0}">
-				            <img src="/resources/images/expert_type_01.png" alt="등급 0" class="grade-icon">
-				        </c:when>
-				        <c:when test="${expertDetail.expertGrade == 1}">
-				            <img src="/resources/images/expert_type_02.png" alt="등급 1" class="grade-icon">
-				        </c:when>
-				        <c:when test="${expertDetail.expertGrade == 2}">
-				            <img src="/resources/images/expert_type_03.png" alt="등급 2" class="grade-icon">
-				        </c:when>
-				    </c:choose>
-				</h1>
-				
-				<p> ${expertDetail.thirdCategoryNm} 전문가 | ${expertDetail.expertAddr}</p>
-				<p>전문가의 간단한 소개 내용이 여기에 들어갑니다.</p>
-				<div class="actions">
-					<button>찜</button>
-					<c:choose>
-						<c:when test="${not empty loginMember}">
-					        <button onclick="createOneRoom('${expertDetail.memberNo}','${expertDetail.expertNickname}')">채팅</button>
-					    </c:when>
-					</c:choose>
-				</div>
-			</div>
+		    <img class="profile-img" src="/resources/logo/expert_connection_favicon.png" alt="프로필 사진">
+		    <div class="profile-info">
+		        <h1 class="profile-header-title">
+		            ${expertDetail.expertNickname}
+		            <c:choose>
+		                <c:when test="${expertDetail.expertGrade == 0}">
+		                    <img src="/resources/images/expert_type_01.png" alt="등급 0" class="grade-icon">
+		                </c:when>
+		                <c:when test="${expertDetail.expertGrade == 1}">
+		                    <img src="/resources/images/expert_type_02.png" alt="등급 1" class="grade-icon">
+		                </c:when>
+		                <c:when test="${expertDetail.expertGrade == 2}">
+		                    <img src="/resources/images/expert_type_03.png" alt="등급 2" class="grade-icon">
+		                </c:when>
+		            </c:choose>
+		        </h1>
+		        <p>${expertDetail.thirdCategoryNm} 전문가 | ${expertDetail.expertAddr}</p>
+		        <p>${expertDetail.introduceTitle}</p>
+		        <div class="actions">
+		            <button>찜</button>
+		            <c:choose>
+		                <c:when test="${not empty loginMember}">
+		                    <button onclick="createOneRoom('${expertDetail.memberNo}','${expertDetail.expertNickname}')">채팅</button>
+		                </c:when>
+		            </c:choose>
+		        </div>
+		    </div>
+		</div>
+
+			
 			<div class="like-review">
 				<div class="like">
 					❤️ 좋아요 수: <span>${expertDetail.expertLike}</span>
 				</div>
-				<div class="review">
-					⭐ 리뷰: <span>4.8 / 5.0</span>
-				</div>
 			</div>
+			
 			<div class="tabs">
 				<button class="active" data-tab="info-tab" onclick="showTab('info-tab')">정보</button>
 				<button data-tab="portfolio-tab" onclick="showTab('portfolio-tab')">포트폴리오</button>
@@ -243,13 +294,38 @@ body {
 			    <p id="portfolio-content">${expertDetail.expertFileName}</p>
 			    <textarea id="portfolio-edit" style="display:none; width:100%;" rows="4">${expertDetail.expertFileName}</textarea>
 			    
-			    <p id="portfolio-path">${expertDetail.expertFilePath}</p>
+			    <p id="portfolio-path"></p>
    			    <input type="text" id="portfolio-path-edit" value="${expertDetail.expertFilePath}" style="display:none; width:100%;" />
 			
 				<!-- 파일 업로드 추가 -->
 				<input type="file" id="portfolio-file" style="display:none;" accept="image/*,.pdf,.ppt,.pptx" onchange="previewFile()"/>
 				<p id="file-name-display" style="display:none;"></p> <!-- 업로드한 파일명 표시 -->
 				<button id="file-upload-btn" style="display:none;" onclick="uploadFile()">파일 업로드</button> <!-- 파일 업로드 버튼 -->
+				
+				<!-- 포트폴리오 미리보기 -->
+				<div id="portfolio-preview">
+				    <c:choose>
+				        <c:when test="${not empty expertDetail.expertFilePath}">
+				            <c:choose>
+				                <c:when test='${fn:endsWith(expertDetail.expertFilePath, ".jpg") or fn:endsWith(expertDetail.expertFilePath, ".png") or fn:endsWith(expertDetail.expertFilePath, ".gif")}'>
+				                    <img id="preview-image" src="${expertDetail.expertFilePath}" alt="포트폴리오 이미지" style="max-width:100%; height:auto;">
+				                </c:when>
+				
+				                <c:when test='${fn:endsWith(expertDetail.expertFilePath, ".pdf")}'>
+				                	<iframe id="preview-pdf" src="${expertDetail.expertFilePath}" type="application/pdf" width="80%" height=700px></iframe>
+				                </c:when>
+				
+				                <c:otherwise>
+				                    <a id="preview-file" href="${expertDetail.expertFilePath}" download>파일 다운로드</a>
+				                </c:otherwise>
+				            </c:choose>
+				        </c:when>
+				        <c:otherwise>
+				            <p>업로드된 포트폴리오 파일이 없습니다.</p>
+				        </c:otherwise>
+				    </c:choose>
+				</div>
+				
 				
 			    <c:if test="${not empty loginMember and loginMember.memberNo == expertDetail.memberNo}">
 			        <button class="update-btn" id="portfolio-edit-btn" onclick="enableEdit('portfolio')">포트폴리오 업데이트</button>
@@ -383,13 +459,34 @@ body {
 	    // 아임포트 가맹점 식별 코드 설정
 	    IMP.init("imp87933196");
 	});
+	
+	
 	// 해당 탭(정보, 포트폴리오)으로 이동
 	function showTab(tabId) {
+		// 🔹 모든 탭 콘텐츠에서 active 클래스 제거
 	    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-	    document.getElementById(tabId).classList.add('active');
+
+	    // 🔹 선택한 탭 콘텐츠에 active 클래스 추가
+	    let selectedTabContent = document.getElementById(tabId);
+	    if (selectedTabContent) {
+	        selectedTabContent.classList.add('active');
+	    } else {
+	        console.error("탭 콘텐츠를 찾을 수 없습니다:", tabId);
+	        return;
+	    }
+
+	    // 🔹 모든 탭 버튼에서 active 클래스 제거
 	    document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
-	    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+
+	    // 🔹 클릭한 버튼에 active 클래스 추가
+	    var selectedButton = document.querySelector('.tabs button[data-tab="' + tabId + '"]');
+	    if (selectedButton) {
+	        selectedButton.classList.add('active');
+	    } else {
+	        console.error("탭 버튼을 찾을 수 없습니다: " + tabId);
+	    }
 	}
+
 	
 	
 	// 업데이트 버튼을 누르면 입력 필드를 활성화
@@ -422,25 +519,12 @@ body {
 	    document.getElementById(type + "-save-btn").style.display = "inline-block";
 	}
 	
-	//파일 업로드 미리보기
-	function previewFile() {
-	    let fileInput = document.getElementById("portfolio-file");
-	    let fileNameDisplay = document.getElementById("file-name-display");
-	    let uploadBtn = document.getElementById("file-upload-btn");
 
-	    if (fileInput.files.length > 0) {
-	        let file = fileInput.files[0];
-	        fileNameDisplay.innerText = "선택한 파일: " + file.name;
-	        fileNameDisplay.style.display = "block";
-	        uploadBtn.style.display = "inline-block";  // 파일 업로드 버튼 표시
-	    } else {
-	        fileNameDisplay.innerText = "";
-	        uploadBtn.style.display = "none";
-	    }
-	}
 
 	// 정보 업데이트 - 저장 버튼을 누르면 AJAX 요청을 통해 제목과 내용 동시 업데이트
 	function saveChanges(type) {
+     	console.log("saveChanges 실행됨, type:", type);
+		
 	    let formData = new FormData();
 	    let requestUrl = ""; // 요청할 URL 저장
 	
@@ -456,15 +540,20 @@ body {
 	        formData.append("fileName", document.getElementById("portfolio-edit").value);
 	        formData.append("filePath", document.getElementById("portfolio-path-edit").value);
 	        
-	    	// 🔹 파일도 함께 전송
+	    	// 파일도 함께 전송
 	        let fileInput = document.getElementById("portfolio-file");
 	        if (fileInput.files.length > 0) {
 	            formData.append("file", fileInput.files[0]);
 	        }
 	        
-	        requestUrl = "/expert/expertUpdatePortfolio.exco"; // 🔹 포트폴리오 업데이트 요청 URL
+	   	     // memberNo 추가 (로그인된 사용자)
+	        formData.append("memberNo", "${expertDetail.memberNo}");
+	   	     
+	        requestUrl = "/expert/expertUpdatePortfolio.exco"; // 포트폴리오 업데이트 요청 URL
 	    }
 	
+	    console.log("AJAX 요청 시작:", requestUrl);
+	    
 	    $.ajax({
 	        url: requestUrl, // 요청 URL을 type에 따라 설정
 	        type: 'POST',
@@ -473,7 +562,8 @@ body {
 	        contentType: false,
 	        success: function(response) {
 	            console.log("서버 응답:", response);
-	            if (response === "success") {
+	            
+	            if (response.status === "success") {
 	                if (type === "info") {
 	                    document.getElementById("info-title").innerText = formData.get("title");
 	                    document.getElementById("info-content").innerText = formData.get("content");
@@ -484,14 +574,29 @@ body {
 	                    document.getElementById("info-content-edit").style.display = "none";
 	                } 
 	                else if (type === "portfolio") {
-	                    document.getElementById("portfolio-content").innerText = formData.get("fileName");
-	                    document.getElementById("portfolio-path").innerText = formData.get("filePath");
+	                	console.log("response.fileUrl : ", response.fileUrl)
+	                	 // 새 이미지 URL 업데이트
+	                    document.getElementById("portfolio-path").innerText = response.fileUrl;
+	                    document.getElementById("portfolio-content").innerText = response.fileName;
+	                    document.getElementById("portfolio-path-edit").value = response.fileUrl;
 	
+	                    let previewContainer = document.getElementById("portfolio-preview");
+	                    let fileExt = response.fileUrl.split('.').pop().toLowerCase();
+
+	                    previewContainer.innerHTML = "";
+	                    
+	                    if (["jpg", "png", "gif"].includes(fileExt)) {
+	                    	previewContainer.innerHTML = "<img src=\"" + response.fileUrl + "\" style=\"max-width:100%; height:auto;\">";
+	                    } else if (fileExt === "pdf") {
+	                        previewContainer.innerHTML = "<iframe src=\"" + response.fileUrl + "\" type=\"application/pdf\" width=\"100%\" height=\"500px\"></iframe>";
+	                    } else {
+	                        previewContainer.innerHTML = "<a href=\"" + response.fileUrl + "\" download>파일 다운로드</a>";
+	                    }
+	                    
 	                    document.getElementById("portfolio-content").style.display = "block";
 	                    document.getElementById("portfolio-edit").style.display = "none";
 	                    document.getElementById("portfolio-path").style.display = "block";
 	                    document.getElementById("portfolio-path-edit").style.display = "none";
-	                    
 	                    document.getElementById("portfolio-file").style.display = "none";
 	                    document.getElementById("file-name-display").style.display = "none";
 	                }
@@ -500,9 +605,9 @@ body {
 	                document.getElementById(type + "-save-btn").style.display = "none";
 	
 	                alert("업데이트가 완료되었습니다!");
-	                location.reload(); // 페이지 새로고침 (업데이트된 내용 반영)
+	                
 	            } else {
-	                alert("업데이트 실패: " + response);
+	                alert("업데이트 실패: " + JSON.stringify(response));
 	            }
 	        },
 	        error: function(xhr, status, error) {
@@ -511,9 +616,61 @@ body {
 	        }
 	    });
 	}
+	
+	function previewFile() {
+	    let fileInput = document.getElementById("portfolio-file");
+	    let fileNameDisplay = document.getElementById("file-name-display");
+	    let previewContainer = document.getElementById("portfolio-preview");
 
+	    if (fileInput.files.length > 0) {
+	        let file = fileInput.files[0];
+	        let fileURL = URL.createObjectURL(file); // 선택한 파일의 임시 URL 생성
+	        
+	        fileNameDisplay.innerText = "선택한 파일: " + file.name;
+	        fileNameDisplay.style.display = "block";
 
+	        // 파일 확장자 체크
+	        let fileExt = file.name.split('.').pop().toLowerCase();
+	        
+	        // 미리보기 영역 초기화
+	        previewContainer.innerHTML = ""; 
 
+	        if (["jpg", "jpeg", "png", "gif"].includes(fileExt)) {
+	            // 이미지 미리보기
+	            let img = document.createElement("img");
+	            img.src = fileURL;
+	            img.style.maxWidth = "100%";
+	            img.style.height = "auto";
+	            previewContainer.appendChild(img);
+	        } else if (fileExt === "pdf") {
+	            // PDF 미리보기
+	            let embed = document.createElement("embed");
+	            embed.src = fileURL;
+	            embed.type = "application/pdf";
+	            embed.width = "100%";
+	            embed.height = "500px";
+	            previewContainer.appendChild(embed);
+	        } else if (["ppt", "pptx"].includes(fileExt)) {
+	            // PowerPoint 파일 다운로드 링크 제공
+	            let link = document.createElement("a");
+	            link.href = fileURL;
+	            link.innerText = "PPT 미리보기 지원되지 않음 - 다운로드 클릭";
+	            link.download = file.name;
+	            previewContainer.appendChild(link);
+	        } else {
+	            // 기타 파일 (미리보기가 지원되지 않는 파일은 다운로드 링크 제공)
+	            let link = document.createElement("a");
+	            link.href = fileURL;
+	            link.innerText = "파일 다운로드";
+	            link.download = file.name;
+	            previewContainer.appendChild(link);
+	        }
+	    } else {
+	        // 파일이 선택되지 않았을 경우 미리보기 영역을 초기화
+	        fileNameDisplay.innerText = "";
+	        previewContainer.innerHTML = "<p>업로드된 포트폴리오 파일이 없습니다.</p>";
+	    }
+	}
 	</script>
 </body>
 </html>

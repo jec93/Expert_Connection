@@ -1104,7 +1104,7 @@ section.section {
 	height : 50px;
 }
 
-/* 이용약관 */
+/* 이용약관, 개인정보처리방침 */
 #termsOfUse > span {
 	font-size : 14px;
 }
@@ -1115,11 +1115,16 @@ section.section {
 	margin-bottom : 10px;	
 }
 .terms-principle {
+	margin-top : 5px;
 	margin-bottom : 10px;
 }
 .usage-list {
 	font-size : 14px;
 	padding-left : 20px;
+	margin-bottom : 20px;
+}
+.usage-extraList {
+	font-size : 14px;
 	margin-bottom : 20px;
 }
 .usage-list > li , .usage-sublist  > li {
@@ -1135,10 +1140,60 @@ section.section {
 	margin-left : 20px;
 	list-style-type : disc;
 }
-/* .usage-sublist > li {
-	list-style-position : inside;
+.infoPolicy {
+	text-align : start;
+	font-size : 14px;
+	width : 50%;
+	margin : 10px 0px 20px 0px;
 }
- */
+.personalInfoList {
+	font-size : 14px;
+	margin : 10px 0px 20px 0px;
+	border-spacing: 0;
+    /* padding: 10px 20px; */
+}
+.personalInfoList th {
+	text-align: center;
+	background-color: rgba(52, 128, 92, 0.2);
+	border-bottom: 1px solid var(--line4);
+  	padding: 5px 20px;
+}
+.personalInfoList td {
+	text-align: left;
+  	border-bottom: 1px solid var(--line4);
+  	padding: 5px 20px;
+}
+.infoList {
+	width : 60%;
+}
+.policyList {
+	width : 60%;
+	font-size : 14px;
+	margin : 10px 0px 20px 0px;
+	border-spacing: 0;
+}
+.policyList th {
+	background-color: rgba(52, 128, 92, 0.2);
+	border-bottom: 1px solid var(--line4);
+	padding: 5px 20px;
+}
+.policyList td {
+	text-align: left;
+  	border-bottom: 1px solid var(--line4);
+  	padding: 5px 20px;
+}
+#piInstitution {
+	color : var(--main3);
+}
+#piInstitution:hover {
+	color : var(--main3);
+	font-weight : bold; 
+}
+.service_cont, #termsOfUse {
+	margin : 10px 20px;
+	padding : 20px;
+}
+
 /* mypage_p.jsp 마이페이지 */
 .mypage-wrap {
 	margin : 0 auto;
@@ -1170,8 +1225,8 @@ section.section {
 	display : flex;
 }
 #myProfile {
-	width: 100px;
-	height: 100px;
+	width: 120px;
+	height: 120px;
 	border-radius: 50%;
 	border : 1px solid var(--main1);
 	margin-right : 20px;
