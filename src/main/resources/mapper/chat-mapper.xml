@@ -42,7 +42,9 @@
 	LEFT JOIN (
 	    SELECT DISTINCT
 	        cm.room_id, 
-	        m.member_nickname AS nickname
+	        m.member_nickname AS nickname,
+            m.profile_name AS profileName,
+            m.profile_path AS profilePath
 	    FROM tbl_chat_members cm
 	    JOIN tbl_exco m ON cm.member_no = m.member_no
 	    WHERE cm.status = 'Y' AND cm.member_no != #{_parameter}
@@ -66,7 +68,9 @@
 	     WHERE z.room_id = a.room_id) AS roomName,
 	    a.chat_id AS chatId, 
 	    a.member_no AS memberNo, 
-	    m.member_nickname AS memberNickname, 
+	    m.member_nickname AS memberNickname,
+	    m.profile_path AS profilePath,
+	    m.profile_name AS profileName,
 	    a.msg_gb AS msgGb, 
 	    a.msg, 
 	    a.file_name AS fileName, 

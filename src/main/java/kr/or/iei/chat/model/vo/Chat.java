@@ -14,14 +14,17 @@ public class Chat {
 	
 	//조인
 	private String memberNickname;
-
+	private String profilePath;
+	private String profileName;
+	
 	public Chat() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public Chat(String roomId, String roomName, String chatId, String memberNo, String msgGb, String msg,
-			String fileName, String filePath, String msgDate, String memberNickname) {
+			String fileName, String filePath, String msgDate, String memberNickname, String profilePath,
+			String profileName) {
 		super();
 		this.roomId = roomId;
 		this.roomName = roomName;
@@ -33,6 +36,8 @@ public class Chat {
 		this.filePath = filePath;
 		this.msgDate = msgDate;
 		this.memberNickname = memberNickname;
+		this.profilePath = profilePath;
+		this.profileName = profileName;
 	}
 
 	public String getRoomId() {
@@ -113,6 +118,22 @@ public class Chat {
 
 	public void setMemberNickname(String memberNickname) {
 		this.memberNickname = memberNickname;
+	}
+
+	public String getProfilePath() {
+		return profilePath;
+	}
+
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
 	}
 	
 	

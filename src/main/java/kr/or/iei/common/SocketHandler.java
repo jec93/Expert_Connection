@@ -170,12 +170,21 @@ public class SocketHandler extends TextWebSocketHandler{
 			}
 		}
 	}
-	
-	
+
 	//연결 종료
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		System.out.println("연결 종료");
 		members.remove(session);
+		
+		// map에서도 해당 유저 세션 삭제
+	    Iterator<String> iter = map.keySet().iterator();
+	    while (iter.hasNext()) {
+	        String key = iter.next();
+	        if (map.get(key).equals(session)) {
+	            iter.remove();  // ✅ 해당 유저 세션 삭제
+	            break;
+	        }
+	    }
 	}
 }
