@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +10,7 @@
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 .circle-button {
    width: 120px;
@@ -118,8 +120,14 @@ input[name="tab-item"] {
 	         <div class="mypage-memberProfile">
 	            <div class="memberInfo-brife">
 	               <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button" >
-	               <img src="${loginMember.profilePath + loginMember.profileName}" >
-	           		 <!-- <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img">-->
+	               <c:choose>
+			           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+			               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+			           </c:when>
+			           <c:otherwise>
+			               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+			           </c:otherwise>
+			       </c:choose>
 	               </a>
 	            </div>
 	            <div class="update-nickname">
@@ -173,8 +181,14 @@ input[name="tab-item"] {
 	         <div class="mypage-memberProfile">
 	            <div class="memberInfo-brife">
 	                <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button" >
-	           		<img src="${loginMember.profilePath + loginMember.profileName}" >
-	           		 <!-- <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img">-->
+	           		 <c:choose>
+			           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+			               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+			           </c:when>
+			           <c:otherwise>
+			               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+			           </c:otherwise>
+			           </c:choose>
 	                </a>
 	            </div>
 	            <div class="update-nickname">
@@ -202,8 +216,8 @@ input[name="tab-item"] {
 					<div class="mypage-group">
 					   <h3 class="mypage-group-title">커뮤니티</h3>
 						  <ul class="mypage_link_box">
-							 <li><a id="mypage_link" href="#">작성한 게시글 확인</a></li>
-							 <li><a id="mypage_link" href="#">작성한 댓글 확인</a></li>
+							 <li><a id="mypage_link" href="/member/writtenBoardFrm.exco">작성한 게시글 확인</a></li>
+							 <li><a id="mypage_link" href="/member/writtenCommentFrm.exco">작성한 댓글 확인</a></li>
 							 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=1&boardTypeNm=1">전문가 게시판</a></li>
 							 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=2&boardTypeNm=2">전문가 노하우</a></li>
 							 <li><a id="mypage_link" href="/board/list.exco?reqPage=1&boardType=3&boardTypeNm=3">그룹레슨</a></li>
@@ -221,9 +235,24 @@ input[name="tab-item"] {
 							</ul>
 					</div>
 					   <div class="PR-detail-content">
-						        <div class="tab-content" id="portfolio-content">포트폴리오</div>			
-								<div class="tab-content" id="introduce-content">소개</div>						
-								<div class="tab-content" id="qualifications-content">자격증</div>
+						        <div class="tab-content" id="portfolio-content">포트폴리오
+						        	<form action="/member/savePortfolio.exco" method="post" enctype="multipart/form-data">${expert_file_path}${expert_file_name}
+								        <input type="file" name="portfolioFiles" id="portfolioFiles" multiple>
+								        <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
+								        <br>
+								        <button type="submit">저장</button>
+								    </form>
+						        </div>			
+								<div class="tab-content" id="introduce-content">소개
+									<form action="/member/saveIntroduce.exco" method="post">
+								        <textarea name="introduceText" id="introduceText" rows="10" cols="50" style="width: 500px; height: 200px; resize: none;"> ${introduceContent}</textarea>
+								        <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
+								        <br>
+								        <button type="submit">저장</button>
+								    </form>
+								</div>						
+								<div class="tab-content" id="qualifications-content">자격증
+								</div>
 					   </div>		
 					<div class="mypage-last-group">
 						<h3 class="mypage-group-title">가이드</h3>
@@ -336,6 +365,13 @@ function switchTab(contentId, tabElement) {
         newContent.classList.add('active'); // 선택된 콘텐츠 표시
     }
     tabElement.classList.add('active'); // 선택된 탭 강조
+}
+
+function profileUpd(profilePath) {
+	$(".profile-img").attr("src", profilePath);
+}
+window.onload = function(){
+	console.log('${loginMember}');
 }
 </script>
 </body>

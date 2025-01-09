@@ -74,18 +74,24 @@
 			<main class="content">
 				<section class="section profileUpdate-wrap">
 					<div class="profile-title">프로필사진 변경</div>
-					<form action="/member/profileUpdate.exco" method="post" enctype="multipart/form-data">
+					<form action="/member/profileUpdateAjax.exco" method="post" enctype="multipart/form-data">
 					 <input type="hidden" name="memberNo" value="${loginMember.memberNo}">
 						<div class="profileUpdate-input-wrap">
 							<div>
-							    <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button">
-							        <!-- profileImage 값이 null이 아니면 해당 이미지를 표시하고, null이면 기본 이미지를 표시 -->
-							        <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img"> 
+							    <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button">				  
+							       <c:choose>
+							           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+							               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+							           </c:when>
+							           <c:otherwise>
+							               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+							           </c:otherwise>
+							       </c:choose>
 							    </a>
 							</div>
 							<div class="profileUpdate-input-title">
 							    <label for="file" class="custom-file-label">사진 선택</label>
-							    <input type="file" name="file" id="file" style="display: none;" class="updatePic">
+							    <input type="file" name="file" id="file" style="display: none;" class="updatePic" onchange="fileChg(event)">
 							    <span id="fileName" class="file-name-text"></span>
 							    <button type="submit" class="profile-submit" id="submitBtn">프로필 사진 업로드</button>
 							</div>
@@ -107,7 +113,23 @@
 	            window.close();
 	        }
 	    };
+	    
+	    function fileChg(e){
+	    	var reader = new FileReader();
 
+	        reader.onload = function(event) {
+	        	
+	          var img = document.createElement("img");
+	          img.setAttribute("src", event.target.result);
+	          img.setAttribute("class", "profile-img");					  //기존 이미지와 클래스 동일하게 부여
+	          
+	          document.querySelector("a.circle-button").innerHTML = '';   //기존 이미지 제거
+	          document.querySelector("a.circle-button").appendChild(img); //업로드한 이미지 추가
+	        };
+
+	        reader.readAsDataURL(event.target.files[0]);
+	    }
+	  
 </script>
 </body>
 </html>

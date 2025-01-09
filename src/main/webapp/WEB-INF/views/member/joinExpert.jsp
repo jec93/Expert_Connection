@@ -125,13 +125,13 @@ button:hover {
         };
 </script>
 </head>
-
+<body>
 <div class="join-wrap">
 		<jsp:include page="/WEB-INF/views/common/header.jsp" />
 		<main class="content">
 			<section class="section join-wrap">
 				<div class="page-title">회원가입</div>
-				<form action="/member/joinExpert.exco" method="post" autocomplete="off"
+				<form action="/member/joinExpert.exco" method="post" autocomplete="off" enctype="multipart/form-data"
 					onsubmit="return joinValidate()">
 					<div class="join-input-wrap">
 						<div class="join-input-title">
@@ -328,7 +328,8 @@ button:hover {
 		"memberPw" : false,
 		"memberPwConfirm" : false,
 		"memberNickname" : false,
-		"memberPhone" : false		
+		"memberPhone" : false,		
+		"portfolio" : false,
 	}
 	
 	const memberId = $('#memberId'); 
@@ -509,6 +510,23 @@ button:hover {
 	function isAllTrue() {
 	    return Object.values(checkObj).every(value => value === true);
 	}
+	
+	function submitCom() {
+	    const portfolioInput = document.getElementById('portfolio');
+	    const fileName = document.getElementById('file-name');
+	    
+	    // 파일이 선택되지 않으면 경고 메시지 표시
+	    if (portfolioInput.files.length === 0) {
+	        alert("포트폴리오 파일을 선택해주세요.");
+	        checkObj.portfolio = false;
+	        return false;  // 파일이 선택되지 않으면 폼 제출을 막고 false 반환
+	    } else {
+	        // 파일이 선택되었다면 폼을 제출
+	        checkObj.portfolio = true;
+	        return true;  // 파일이 선택되면 폼을 정상적으로 제출
+	    }
+	}
+
 
 	// submit 버튼 클릭 시 실행되는 이벤트
 	$('#submitBtn').click(function(event) {
@@ -516,7 +534,6 @@ button:hover {
 	    // 모든 항목이 true인지 확인
 	    if (isAllTrue()) {
 	    	    alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
-	    	
 	    } else {
 	    }
 	});
@@ -599,8 +616,5 @@ button:hover {
         }).open();
     }
 	</script>
-</body>
-
-
 </body>
 </html>
