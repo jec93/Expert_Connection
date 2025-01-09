@@ -28,7 +28,7 @@
    transition: background-color 0.3s ease;
    margin: 10px;
    border : 1px solid black;
-   margin-left : 125px;
+   margin-left : 310px;
    margin-top : -40px;
 }
 .profile-img {
@@ -40,11 +40,11 @@
     left: 0;
 }
 .memberNickname{
-   margin-left : 280px;
+   margin-left : 470px;
    margin-top : -100px;
 }
 .written{
-   margin-left : 550px;
+   margin-left : 740px;
    margin-top : -30px;
 }
 .writtenComment{
@@ -58,13 +58,16 @@
 	margin-right : 5px;
 	text-align : center; 	
 }
-.writtenComment-comment{
-	border : 1px solid black;
-	width : 800px;
+.writtenComment-Comment{
+	width : 1100px;
 	height : 120px;
 	margin-top : 100px;
 	margin-left : 80px;
 	
+}
+.writtenComment-child{
+    box-sizing: content-box;
+    width: 100%;
 }
 
 </style>
@@ -74,55 +77,123 @@
 	<jsp:include page="/WEB-INF/views/common/header.jsp" />
 	  <main class="content">
 		<section class="section mypage-wrap">
+		  <c:choose>
+		   <c:when test="${loginMember != null && (loginMember.memberType == 1 || loginMember.memberType == 2 || loginMember.memberType == 3)}">
 		      <div class="mypage">
 		         <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
-		
 		         <div class="mypage-memberProfile">
 		            <div class="memberInfo-brife">
 		               <a href="javascript:void(0)" class="circle-button">
-		                <c:choose>
-					     <c:when test="${not empty loginMember}">
-					       <c:choose>
-					           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
-					               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
-					           </c:when>
-					           <c:otherwise>
-					               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
-					           </c:otherwise>
-					       </c:choose>
-					     </c:when>
-					      <c:otherwise>
-					       <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
-					      </c:otherwise>
-					    </c:choose>
+		                 <c:choose>
+				           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+				               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+				           </c:when>
+				           <c:otherwise>
+				               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+				           </c:otherwise>
+				        </c:choose>
 		               </a>
 		            </div>
 		            <div class="update-nickname">
-		               <h3 class="memberNickname">${loginMember.memberNickname} 님</h3>
+		               <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
 		            </div>
-		            <div class="written">
-	    			<a href="/member/writtenBoardFrm.exco" id="memberInfo-update">작성글</a>
-					<div class="writtenComment" >댓글</div>
-	             </div>
+		             <div class="written">
+		    			<a href="/member/writtenBoardFrm.exco" id="memberInfo-update">작성글</a>
+						<div class="writtenComment">댓글</div>
+	                </div>
 		         </div>
-		         <div class="writtenComment-comment">
-		         	 <c:forEach var="comment" items="${boardComment}">
-                    <li>
-                        <a href="/board/detail.exco?boardNo=${boardComment.CommentNo}">
-                        </a>
-                        <p>${loginMember.memberNickname} | ${boardComment.CommentDate}</p>
-                        <p>${boardComment.boardContent}  | 좋아요 : ${boardComment.CommentLike} 아쉬워요 :${boardComment.CommentDislike}</p>
-                    </li>
-                </c:forEach>
+		         <div class="writtenComment-Comment">
+                       <div class="writtenComment-child">
+						<table class="tbl">
+	                     <tr>
+	                        <th style="width:8%">번호</th>
+	                        <th style="width:30%">내용</th>
+	                        <th style="width:15%">좋아요</th>
+	                        <th style="width:15%">아쉬워요</th>
+	                        <th style="width:20%">작성일</th>
+	                     </tr>
+	                     <c:forEach var="comment" items="${commentsMap[loginMember.memberNo]}">
+	                     <tr>
+	                        <td>${comment.commentNo}</td>
+	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${comment.boardNo}&boardType=${comment.boardType}">
+							        ${comment.commentContent}
+							    </a>
+							</td>
+	                        <td>${comment.commentLike}</td>
+	                        <td>${comment.commentDislike}</td>
+	                        <td>${comment.commentDate}</td>
+	                     </tr>
+                    	 </c:forEach>
+                     <c:if test="${empty commentsMap[loginMember.memberNo]}">
+					    <tr>
+					        <td colspan="5">댓글이 없습니다.</td>
+					    </tr>
+					 </c:if>
+                  </table>
+                  <div id="pageNavi">${pageNavi}</div>
+				 </div>
+				</div>
+			  </div>
+			 </c:when>
+		   <c:when test="${loginMember != null && (loginMember.memberType == 4 || loginMember.memberType == 5 || loginMember.memberType == 6)}">
+		      <div class="mypage">
+		         <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
+		         <div class="mypage-memberProfile">
+		            <div class="memberInfo-brife">
+		               <a href="javascript:void(0)" class="circle-button">
+		                 <c:choose>
+				           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+				               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+				           </c:when>
+				           <c:otherwise>
+				               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+				           </c:otherwise>
+				        </c:choose>
+		               </a>
+		            </div>
+		            <div class="update-nickname">
+		               <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
+		            </div>
+		             <div class="written">
+		    			<a href="/member/writtenBoardFrm.exco" id="memberInfo-update">작성글</a>
+						<div class="writtenComment" >댓글</div>
+	                </div>
 		         </div>
-		          <div class="writtenComment-comment">
-		         	
-		         </div>
-		          <div class="writtenComment-comment">
-		         	
-		         </div>
-		      </div>
-		   </section>
+		         <div class="writtenComment-Comment">
+                       <div class="writtenComment-child">
+						<table class="tbl">
+	                     <tr>
+	                        <th style="width:8%">번호</th>
+	                        <th style="width:30%">내용</th>
+	                        <th style="width:15%">좋아요</th>
+	                        <th style="width:15%">아쉬워요</th>
+	                        <th style="width:20%">작성일</th>
+	                     </tr>
+	                     <c:forEach var="comment" items="${commentsMap[loginMember.memberNo]}">
+	                     <tr>
+	                        <td>${comment.commentNo}</td>
+	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${comment.boardNo}&boardType=${comment.boardType}">
+							        ${comment.commentContent}
+							    </a>
+							</td>
+	                        <td>${comment.commentLike}</td>
+	                        <td>${comment.commentDislike}</td>
+	                        <td>${comment.commentDate}</td>
+	                     </tr>
+                    	 </c:forEach>
+                     <c:if test="${empty commentsMap[loginMember.memberNo]}">
+					    <tr>
+					        <td colspan="5">댓글이 없습니다.</td>
+					    </tr>
+					 </c:if>
+                  </table>
+                  <div id="pageNavi">${pageNavi}</div>
+				 </div>
+				</div>
+			  </div>
+		     </c:when>
+		    </c:choose>
+		  </section>
 		</main>
 	<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 </div>

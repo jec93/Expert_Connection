@@ -669,7 +669,7 @@ public class BoardService {
 	 // 게시글 가져오기
 	public List<Board> getBoardsByMemberNo(String memberNo, int reqPage) {
         // 페이지네이션을 위한 offset 계산
-        int offset = (reqPage - 1) * 10;  // 한 페이지당 3개의 게시글을 표시
+        int offset = (reqPage - 1) * 10;  // 한 페이지당 10개의 게시글을 표시
 
         // 파라미터로 HashMap을 사용하여 전달
         HashMap<String, Object> param = new HashMap<>();
@@ -680,16 +680,23 @@ public class BoardService {
 
 
     // 댓글 가져오기
-    public List<BoardComment> getCommentsByBoardNo(String boardNo) {
-        return boardDao.getCommentsByBoardNo(boardNo);
+    public List<BoardComment> getCommentsByBoardNo(String boardNo,String memberNo) {
+    	HashMap<String, String> param = new HashMap<>();
+        param.put("memberNo", memberNo);
+        param.put("boardNo", boardNo);
+        return boardDao.getCommentsByBoardNo(param);
     }
 
     // 전체 게시글 수 가져오기
     public int getTotalBoardsByMemberNo(String memberNo) {
         return boardDao.getTotalBoardsByMemberNo(memberNo);
     }
-
+    // 전체 댓글 수 가져오기
 	public int getCommentCount(String boardNo) {
 		return boardDao.getCommentCount(boardNo);
+	}
+	// 내가쓴 댓글 불러오기
+	public List<BoardComment> getCommentsByMemberNo(String memberNo) {
+		return boardDao.getCommentsByMemberNo(memberNo);
 	}
 }

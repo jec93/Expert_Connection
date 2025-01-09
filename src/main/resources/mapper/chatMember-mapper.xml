@@ -30,7 +30,9 @@
 	<select id="selectRoomMembers" resultType="member">
 	    SELECT 
 		    m.MEMBER_NO AS memberNo,
-		    m.MEMBER_NICKNAME AS memberNickname
+		    m.MEMBER_NICKNAME AS memberNickname,
+		    m.PROFILE_NAME AS profileName,
+		    m.PROFILE_PATH AS profilePath
 		FROM tbl_chat_members cm
 		JOIN tbl_exco m 										-- 테이블 변경할 것(임시 지정)
 		ON cm.MEMBER_NO = m.MEMBER_NO

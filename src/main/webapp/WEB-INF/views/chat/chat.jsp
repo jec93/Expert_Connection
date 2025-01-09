@@ -225,35 +225,68 @@ a.leaveRoom:hover {
     display: flex;
     align-items: center;
     gap: 8px;
+    position: absolute;
 }
 
 #searchMsg {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    padding: 8px 12px;
+    border: 2px solid #82E3B6;
+    border-radius: 20px;
     font-size: 13px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    background-color: #ffffff;
+    width: 200px;
+    display: none;
+}
+
+/* 검색 입력 필드 포커스 시 스타일 */
+#searchMsg:focus {
+    border-color: #34805C;
+    box-shadow: 0 0 5px rgba(52, 128, 92, 0.3);
 }
 
 #searchContainer button {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
-    color: #333333;
+    font-size: 20px; 
+    color: #5f6368;
+    padding: 0px;
+     margin-right: 20px; /* 버튼을 왼쪽으로 이동 */
+     margin-top: 5px;
 }
 
 #searchContainer button:hover {
     color: #34805C;
 }
 
+#filePreview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute;
+    bottom: 60px; /* 채팅 입력창 위로 조정 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+
 #filePreview img {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: cover;
+    border-radius: 8px;
     border: 1px solid #ddd;
-    margin-right: 5px;
 }
 
 #filePreview span {
     font-size: 12px;
-    margin-right: 5px;
+    margin-right: 3px;
     color: #555;
 }
 
@@ -263,6 +296,12 @@ a.leaveRoom:hover {
     color: #ff0000;
     font-size: 16px;
     cursor: pointer;
+    line-height: 20px; /* 내부 정렬 */
+    padding: 0; /* 기본 패딩 제거 */
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #responseList button {
@@ -380,7 +419,7 @@ a.leaveRoom:hover {
 					<c:forEach var="member" items="${memberList}">
 						<div class="member">
 							<div class="profile-img">
-								<img src="/path/to/profileImage.jpg" alt="Profile Image">
+								<img src="${member.profilePath}${member.profileName}" alt="Profile Image">
 							</div>
 							<div>
 								<div class="member-name">${member.memberNickname}</div>
@@ -408,7 +447,7 @@ a.leaveRoom:hover {
 						<c:forEach var="chat" items="${chatList}">
 							<div class="message ${chat.memberNo == sessionScope.loginMember.memberNo ? 'self' : ''}">
 							    <div class="profile-img">
-							        <img src="/path/to/profileImage.jpg" alt="Profile Image">
+							        <img src="${chat.profilePath}${chat.profileName}" alt="Profile Image">
 							    </div>
 							    <div>
 							        <div class="member-id">${chat.memberNickname}</div>
@@ -476,7 +515,7 @@ a.leaveRoom:hover {
 
         let fn = {
             init : function () {
-                ws = new WebSocket("ws://192.168.10.52/chat/doChat.exco"); // 해당 PC IP로 변경할 것.
+                ws = new WebSocket("ws://localhost/chat/doChat.exco"); // 해당 PC IP로 변경할 것.
                 ws.onopen = function() {
                     var msg = { type: "connect", memberNo: memberNo };
                     ws.send(JSON.stringify(msg));
@@ -669,51 +708,73 @@ a.leaveRoom:hover {
 			},
 			// ----------------- 여기서 부터 검색 기능 -----------------
 			toggleSearch: function () {
-		        const searchInput = document.getElementById("searchMsg");
-		        if (searchInput.style.display === "none") {
-		            searchInput.style.display = "inline-block";
-		            searchInput.focus();
-		        } else {
-		            searchInput.style.display = "none";
-		            searchInput.value = "";
-		            fn.clearSearchHighlight(); // 기존 검색 강조 해제
-		        }
-		    },
-		    searchMessages: function () {
-		        const searchTerm = document.getElementById("searchMsg").value.toLowerCase();
-		        if (!searchTerm) {
-		            alert("검색어를 입력하세요.");
-		            return;
-		        }
+			    const searchInput = document.getElementById("searchMsg");
+			    if (searchInput.style.display === "none") {
+			        searchInput.style.display = "inline-block";
+			        searchInput.focus();
 
-		        const messages = document.querySelectorAll("#msgArea .message");
-		        let firstMatch = null;
-		        
-		        messages.forEach(message => {
-		            const content = message.querySelector(".message-content").textContent.toLowerCase();
-		            if (content.includes(searchTerm)) {
-		                message.style.backgroundColor = "#ffffcc"; // 강조 표시
-		                if (!firstMatch) {
-		                    firstMatch = message; // 첫 번째 매칭된 메시지 저장
-		                }
-		            } else {
-		                message.style.backgroundColor = ""; // 원래 배경색 복원
-		            }
-		        });
-		        
-		        if (firstMatch) {
-		            firstMatch.scrollIntoView({ behavior: "smooth", block: "center" }); // 첫 번째 매칭된 메시지로 이동
-		        } else {
-		            alert("검색 결과가 없습니다.");
-		        }
-		    },
-		    
-		    clearSearchHighlight: function () {
-		        const messages = document.querySelectorAll("#msgArea .message");
-		        messages.forEach(message => {
-		            message.style.backgroundColor = ""; // 원래 배경색 복원
-		        });
-		    }
+			        // 문서 전체 클릭 이벤트 추가 (검색창 바깥을 클릭하면 닫힘)
+			        document.addEventListener("click", fn.closeSearchOnClickOutside);
+			    } else {
+			        searchInput.style.display = "none";
+			        searchInput.value = "";
+			        fn.clearSearchHighlight(); // 기존 검색 강조 해제
+
+			        // 문서 클릭 감지 이벤트 제거
+			        document.removeEventListener("click", fn.closeSearchOnClickOutside);
+			    }
+			},
+
+			searchMessages: function () {
+			    const searchTerm = document.getElementById("searchMsg").value.toLowerCase();
+			    if (!searchTerm) {
+			        alert("검색어를 입력하세요.");
+			        return;
+			    }
+
+			    const messages = document.querySelectorAll("#msgArea .message");
+			    let firstMatch = null;
+
+			    messages.forEach(message => {
+			        const content = message.querySelector(".message-content").textContent.toLowerCase();
+			        if (content.includes(searchTerm)) {
+			            message.style.backgroundColor = "#ffffcc"; // 강조 표시
+			            if (!firstMatch) {
+			                firstMatch = message; // 첫 번째 매칭된 메시지 저장
+			            }
+			        } else {
+			            message.style.backgroundColor = ""; // 원래 배경색 복원
+			        }
+			    });
+
+			    if (firstMatch) {
+			        firstMatch.scrollIntoView({ behavior: "smooth", block: "center" }); // 첫 번째 매칭된 메시지로 이동
+			    } else {
+			        alert("검색 결과가 없습니다.");
+			    }
+			},
+
+			clearSearchHighlight: function () {
+			    const messages = document.querySelectorAll("#msgArea .message");
+			    messages.forEach(message => {
+			        message.style.backgroundColor = ""; // 원래 배경색 복원
+			    });
+			},
+
+			closeSearchOnClickOutside: function (event) {
+			    const searchContainer = document.getElementById("searchContainer");
+			    const searchInput = document.getElementById("searchMsg");
+
+			    if (!searchContainer.contains(event.target) && event.target !== searchInput) {
+			        searchInput.style.display = "none";
+			        searchInput.value = "";
+			        fn.clearSearchHighlight(); // 기존 검색 강조 해제
+
+			        // 문서 클릭 감지 이벤트 제거
+			        document.removeEventListener("click", fn.closeSearchOnClickOutside);
+			    }
+			}
+
         };
         
     	 // 팝업 열기/닫기 이벤트

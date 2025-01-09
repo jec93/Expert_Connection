@@ -69,7 +69,7 @@ public class MemberDao {
 		return sqlSession.update("member.updateMember", member);
 	}
 	//프로필사진 업데이트
-	public Member getMemberById(Long memberNo) {
+	public Member getMemberById(String memberNo) {
         return sqlSession.selectOne("member.selectMemberById",memberNo);  // DAO 호출
     }
 	//아이디 찾기
@@ -104,5 +104,17 @@ public class MemberDao {
 	    int result = sqlSession.insert("member.insertProfileImage", parameterMap);
 	    return result > 0;
 	}
-	
+	public String getIntroduceContent(String memberNo) {
+        return sqlSession.selectOne("member.getIntroduceContent", memberNo);
+    }
+	// introduce_content가 존재하는지 업데이트 여부를 반환
+    public boolean updateIntroduce(HashMap<String, String> parameterMap) {
+    	int result = sqlSession.update("member.updateIntroduce",parameterMap);
+        return result > 0;
+    }
+    // introduce_content가 없다면 INSERT
+    public boolean insertIntroduce(HashMap<String, String> parameterMap) {
+    	int result = sqlSession.insert("member.insertIntroduce",parameterMap);
+        return result > 0;
+    }
 }

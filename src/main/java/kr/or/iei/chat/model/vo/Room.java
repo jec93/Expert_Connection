@@ -10,6 +10,8 @@ public class Room {
     // 조인
     private String msg;
     private String memberNickname;
+    private String profilePath;
+	private String profileName;
 
     // 추가된 필드
     private String displayName; // 화면에 표시될 이름 (채팅방 이름 or 상대방 닉네임)
@@ -19,9 +21,9 @@ public class Room {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Room(String roomId, String roomName, String createNo, String msgDate, boolean isHidden, String msg,
-			String memberNickname, String displayName, int memberCount) {
+			String memberNickname, String profilePath, String profileName, String displayName, int memberCount) {
 		super();
 		this.roomId = roomId;
 		this.roomName = roomName;
@@ -30,62 +32,99 @@ public class Room {
 		this.isHidden = isHidden;
 		this.msg = msg;
 		this.memberNickname = memberNickname;
+		this.profilePath = profilePath;
+		this.profileName = profileName;
 		this.displayName = displayName;
 		this.memberCount = memberCount;
 	}
-	
+
 	public String getRoomId() {
 		return roomId;
 	}
+
 	public void setRoomId(String roomId) {
 		this.roomId = roomId;
 	}
+
 	public String getRoomName() {
 		return roomName;
 	}
+
 	public void setRoomName(String roomName) {
 		this.roomName = roomName;
 	}
+
 	public String getCreateNo() {
 		return createNo;
 	}
+
 	public void setCreateNo(String createNo) {
 		this.createNo = createNo;
 	}
+
 	public String getMsgDate() {
 		return msgDate;
 	}
+
 	public void setMsgDate(String msgDate) {
 		this.msgDate = msgDate;
 	}
+
 	public boolean isHidden() {
 		return isHidden;
 	}
+
 	public void setHidden(boolean isHidden) {
 		this.isHidden = isHidden;
 	}
+
 	public String getMsg() {
 		return msg;
 	}
+
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
 	public String getMemberNickname() {
 		return memberNickname;
 	}
+
 	public void setMemberNickname(String memberNickname) {
 		this.memberNickname = memberNickname;
 	}
+
+	public String getProfilePath() {
+		return profilePath;
+	}
+
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
+	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	public int getMemberCount() {
 		return memberCount;
 	}
+
 	public void setMemberCount(int memberCount) {
 		this.memberCount = memberCount;
 	}
+    
+	
 }
