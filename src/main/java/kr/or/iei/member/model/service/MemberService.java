@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.iei.board.model.service.BoardService;
 import kr.or.iei.board.model.vo.Board;
@@ -104,7 +105,7 @@ public class MemberService {
 		return memberDao.updateMember(member);
 	}
 	//프로필사진업데이트
-	public Member getMemberById(Long memberNo) {
+	public Member getMemberById(String memberNo) {
         // memberNo로 회원 정보를 조회하는 로직
         return memberDao.getMemberById(memberNo);
     }
@@ -160,18 +161,47 @@ public class MemberService {
     }
 
     // 게시글에 대한 댓글 가져오기
-    public List<BoardComment> getCommentsByBoardNo(String boardNo) {
-        return boardService.getCommentsByBoardNo(boardNo);
+    public List<BoardComment> getCommentsByBoardNo(String boardNo, String memberNo) {
+        return boardService.getCommentsByBoardNo(boardNo, memberNo);
     }
 
     // 전체 게시글 수 가져오기
     public int getTotalBoardsByMemberNo(String memberNo) {
         return boardService.getTotalBoardsByMemberNo(memberNo);
     }
-
+    //내가쓴 댓글 불러오기
+  	public List<BoardComment> getCommentsByMemberNo(String memberNo) {
+  		return boardService.getCommentsByMemberNo(memberNo);
+  	}
+    //전체 댓글 수 가져오기
 	public int getCommentCount(String boardNo) {
 		return boardService.getCommentCount(boardNo);
 	}
-	
+	// introduceContent를 가져오는 메서드
+    public String getIntroduceContent(String memberNo) {
+        return memberDao.getIntroduceContent(memberNo);
+    }
+	//소개글 저장
+	public boolean saveIntroduce(String introduceContent, String memberNo) {
+		HashMap<String, String> parameterMap = new HashMap<String, String>();
+		parameterMap.put("memberNo", memberNo);
+		parameterMap.put("introduceContent", introduceContent);
 
+        // 해당 memberNo에 데이터가 있는지 확인
+        boolean isUpdated = memberDao.updateIntroduce(parameterMap);
+
+        // 데이터가 없다면 INSERT 쿼리 실행
+        if (!isUpdated) {
+            return memberDao.insertIntroduce(parameterMap);
+        }
+
+        // 데이터가 있으면 UPDATE 쿼리 실행
+        return memberDao.updateIntroduce(parameterMap);
+    }
+
+	public boolean savePortfolio(String memberNo, List<MultipartFile> portfolioFiles, String uploadPath) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }
