@@ -1394,3 +1394,51 @@ section.section {
 	color : var(--main2);
 	margin : 30px;
 }
+
+
+/* 알림 알람 */
+.notification-count {
+	display: none;
+    /* background-color: #FF1A1A; */
+    /* border-radius: 50%; */
+    /* margin-left: 20px; */
+    /* padding: 2px 8px; */
+    width: 50px;
+    height: fit-content;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 10px;
+}
+.notification-count > span {
+	color: white;
+	font-size : 15px;
+	margin-left: 50px;
+    margin-bottom: 10px;
+    background-color: red;
+    font-size: 15px;
+    /* position: inherit; */
+    border-radius: 50%;
+    padding: 5px;
+
+}
+.notification-list {
+	display: none;
+	position: absolute;
+	top: auto;
+	/* right: 0; */ 
+	background-color: white;
+	border: 1px solid #ccc;
+	width: 300px;
+	max-height: 300px;
+	overflow-y: auto;
+	z-index: 1000;
+}
+.notification-item {
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+}
+.alarm_box {
+	position : relative;
+	font-size : 15px;	
+}

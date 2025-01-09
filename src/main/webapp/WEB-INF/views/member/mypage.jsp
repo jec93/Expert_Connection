@@ -301,7 +301,7 @@ input[name="tab-item"] {
 							<ul class="adminPage_link_box">
 								<li><a id="adminPage_link" href="/board/list.exco?reqPage=1&boardType=4&boardTypeNm=4">공지사항 관리</a></li>
 								<li><a id="adminPage_link" href="/board/list.exco?reqPage=1&boardType=5&boardTypeNm=5">FAQ 관리</a></li>
-								<li><a id="adminPage_link" href="/board/adminManageList.exco?reqPage=1&boardType=${board.boardType}&searchName=">커뮤니티 관리</a></li>
+								<li><a id="adminPage_link" href="/board/adminManageCommunity.exco?reqPage=1&boardType=${board.boardType}&searchName=board">커뮤니티 관리</a></li>
 								<li><a id="adminPage_link" href="/categories/categoriesManage.exco">카테고리 관리</a></li>
 								<li><a id="adminPage_link" href="/admin/reportManageFrm.exco">신고항목 관리</a></li>								
 							</ul>

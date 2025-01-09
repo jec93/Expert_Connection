@@ -235,7 +235,8 @@
 	<select id="selectAllBoardList"
 			parameterType = "hashmap"
 			resultType = "board">
-	SELECT BOARD_NO AS BOARDNO,
+	SELECT DISTINCT
+		BOARD_NO AS BOARDNO,
         BOARD_TITLE AS BOARDTITLE,
         B.MEMBER_NO AS MEMBERNO,
         B.BOARD_TYPE AS BOARDTYPE,
@@ -281,7 +282,8 @@
 	<select id="selectAllCommentList"
 			parameterType = "hashmap"
 			resultType = "boardComment">
-	SELECT COMMENT_NO AS COMMENTNO,
+	SELECT
+		COMMENT_NO AS COMMENTNO,
         C.MEMBER_NO AS MEMBERNO,
         NICK.MEMBER_NICKNAME AS COMMENTWRITER,
         COMMENT_CONTENT AS COMMENTCONTENT,
