@@ -2,6 +2,7 @@ package kr.or.iei.member.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.or.iei.board.model.service.BoardService;
+import kr.or.iei.board.model.vo.Board;
+import kr.or.iei.board.model.vo.BoardComment;
 import kr.or.iei.member.model.dao.MemberDao;
 import kr.or.iei.member.model.vo.Member;
 
@@ -20,6 +24,8 @@ public class MemberService {
 	@Qualifier("dao")
 	private MemberDao memberDao;
 	
+	@Autowired                                
+	private BoardService boardService;
 	//로그인
 	public Member memberLogin(Member member) {
 		return memberDao.memberLogin(member);
@@ -54,7 +60,7 @@ public class MemberService {
 	
 	//회원가입 - 전문가
 	@Transactional
-	public int joinExpert(Member member, ArrayList<Member> memberList) {
+	public int joinExpert(Member member) {
 		
 		String memberNo = memberDao.selectMemberNo();
 		member.setMemberNo(memberNo);
@@ -64,21 +70,15 @@ public class MemberService {
 		 if (result > 0) {
 		        result = memberDao.join(member);
 		        if (result <= 0) {
-		            throw new RuntimeException();
-		        }
-
-		        for (Member member1 : memberList) {
-		            member1.setMemberNo(memberNo);
-		            result = memberDao.joinExpert(member1);
-
-		            if (result <= 0) {
-		                throw new RuntimeException();
-		            }
+		            throw new RuntimeException();	       
 		        }
 		 }
 		return result;
 	}
-
+	//회원가입 - 전문가 파일
+	public void saveExpertFile(String memberNo, String filePath) {
+		memberDao.insertExpertFile(memberNo, filePath);
+	}
 	//아이디 중복체크
 	public int idDuplChk(String memberId) {
 		return memberDao.idDuplChk(memberId);
@@ -103,7 +103,11 @@ public class MemberService {
 	public int updateMember(Member member) {
 		return memberDao.updateMember(member);
 	}
-	
+	//프로필사진업데이트
+	public Member getMemberById(Long memberNo) {
+        // memberNo로 회원 정보를 조회하는 로직
+        return memberDao.getMemberById(memberNo);
+    }
 	//아이디 찾기
 	public String searchMemberId(String memberPhone, String memberEmail) {
 		return memberDao.searchMemberId(memberPhone, memberEmail);
@@ -138,7 +142,7 @@ public class MemberService {
 		HashMap<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("memberNo", memberNo);
 		parameterMap.put("profilePath", profilePath);
-		parameterMap.put("fileName", profileName);
+		parameterMap.put("profileName", profileName);
 		
 		//해당 memberNo에 데이터가 있는지 확인
 		boolean isUpdated = memberDao.updateProfileImage(parameterMap);
@@ -149,4 +153,25 @@ public class MemberService {
 	    }
 		return memberDao.updateProfileImage(parameterMap);
 	}
+	
+	//게시글 가져오기
+	public List<Board> getBoardsByMemberNo(String memberNo, int reqPage) {
+        return boardService.getBoardsByMemberNo(memberNo, reqPage);
+    }
+
+    // 게시글에 대한 댓글 가져오기
+    public List<BoardComment> getCommentsByBoardNo(String boardNo) {
+        return boardService.getCommentsByBoardNo(boardNo);
+    }
+
+    // 전체 게시글 수 가져오기
+    public int getTotalBoardsByMemberNo(String memberNo) {
+        return boardService.getTotalBoardsByMemberNo(memberNo);
+    }
+
+	public int getCommentCount(String boardNo) {
+		return boardService.getCommentCount(boardNo);
+	}
+	
+
 }

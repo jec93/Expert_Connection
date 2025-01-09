@@ -177,4 +177,25 @@ public class BoardDao {
 	public String searchBoardNoByCommentNo(String commentNo) {
 		return sqlSession.selectOne("board.searchBoardNoByCommentNo", commentNo);
 	}
+	
+	//명현---------------------------------------------------------
+	
+	// 게시글 가져오기
+	public List<Board> getBoardsByMemberNo(HashMap<String, Object> param) {
+	    return sqlSession.selectList("board.selectBoardsByMemberNo", param); // MyBatis 쿼리 실행
+	}
+	
+	//댓글 가져오기
+	public List<BoardComment> getCommentsByBoardNo(String boardNo) {
+	    return sqlSession.selectList("board.selectCommentsByBoardNo", boardNo);
+	}
+
+    // 전체 게시글 수 가져오기
+	public int getTotalBoardsByMemberNo(String memberNo) {
+	    return sqlSession.selectOne("board.selectTotalBoardsByMemberNo", memberNo);
+	}
+	//댓글 총 갯수 가져오기
+	public int getCommentCount(String boardNo) {
+		return sqlSession.selectOne("board.selectCommentCount", boardNo);
+	}
 }

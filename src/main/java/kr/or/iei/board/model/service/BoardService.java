@@ -665,5 +665,31 @@ public class BoardService {
 		}
 		return String.valueOf(boardReact.getBoardReaction());
 	}
+   //명현------------------------------------------------------------
+	 // 게시글 가져오기
+	public List<Board> getBoardsByMemberNo(String memberNo, int reqPage) {
+        // 페이지네이션을 위한 offset 계산
+        int offset = (reqPage - 1) * 10;  // 한 페이지당 3개의 게시글을 표시
 
+        // 파라미터로 HashMap을 사용하여 전달
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("memberNo", memberNo);
+        param.put("offset", offset);
+        return boardDao.getBoardsByMemberNo(param); // DAO로 파라미터 전달
+    }
+
+
+    // 댓글 가져오기
+    public List<BoardComment> getCommentsByBoardNo(String boardNo) {
+        return boardDao.getCommentsByBoardNo(boardNo);
+    }
+
+    // 전체 게시글 수 가져오기
+    public int getTotalBoardsByMemberNo(String memberNo) {
+        return boardDao.getTotalBoardsByMemberNo(memberNo);
+    }
+
+	public int getCommentCount(String boardNo) {
+		return boardDao.getCommentCount(boardNo);
+	}
 }

@@ -74,13 +74,26 @@
 			<main class="content">
 				<section class="section profileUpdate-wrap">
 					<div class="profile-title">프로필사진 변경</div>
-					<form action="/member/profileUpdate.exco" method="post" enctype="multipart/form-data">
+					<form action="/member/profileUpdateAjax.exco" method="post" enctype="multipart/form-data">
 					 <input type="hidden" name="memberNo" value="${loginMember.memberNo}">
 						<div class="profileUpdate-input-wrap">
 							<div>
 							    <a href="javascript:void(0)" onclick="showProfilePopup()" class="circle-button">
-							        <!-- profileImage 값이 null이 아니면 해당 이미지를 표시하고, null이면 기본 이미지를 표시 -->
-							        <img src="${loginMember.profilePath + loginMember.profileName != null ? loginMember.profilePath + loginMember.profileName  : '/resources/logo/expert_connection_favicon.png'}" class="profile-img"> 
+							        <c:choose>
+									   <c:when test="${not empty loginMember}">
+									       <c:choose>
+									           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+									               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+									           </c:when>
+									           <c:otherwise>
+									               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+									           </c:otherwise>
+									       </c:choose>
+									   </c:when>
+									   <c:otherwise>
+									       <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+									   </c:otherwise>
+									</c:choose> 
 							    </a>
 							</div>
 							<div class="profileUpdate-input-title">
@@ -107,6 +120,28 @@
 	            window.close();
 	        }
 	    };
+	    document.getElementById("submitBtn").addEventListener("click", function () {
+	        const form = document.getElementById("profileUpdateForm");
+	        const formData = new FormData(form); // FormData로 파일과 데이터를 묶어서 전송
+
+	        fetch("/member/profileUpdateAjax.exco", {
+	            method: "POST",
+	            body: formData,
+	        })
+	        .then(response => response.json())
+	        .then(data => {
+	            if (data.success) {
+	                // 프로필 이미지를 새로 업데이트
+	                document.getElementById("profileImage").src = data.profileUrl;
+	                alert("프로필 사진이 성공적으로 업데이트되었습니다!");
+	            } else {
+	                alert("프로필 사진 업데이트에 실패했습니다: " + data.message);
+	            }
+	        })
+	        .catch(error => {
+	            console.error("Error:", error);
+	            alert("업데이트 중 오류가 발생했습니다.");
+	        });
 
 </script>
 </body>

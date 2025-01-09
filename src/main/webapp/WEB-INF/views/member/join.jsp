@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -8,7 +8,6 @@
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 .join-wrap {
 	width: 100%;
@@ -77,8 +76,25 @@ button:hover {
 	cursor: pointer;
 	transition: background-color 0.3s;
 }
+.custom-file-button{
+	width : 56px;
+	background-color: #34805C;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
 .join-btn-primary:hover {
-	background-color : #2f5233;
+	background-color : #7CBBAD;;
+}
+.file-name{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-left : 10px;
 }
 .join-btn-primary-chk{
 	width : 135px;
@@ -92,11 +108,24 @@ button:hover {
 	transition: background-color 0.3s;
 }
 .join-btn-primary-chk:hover {
-	background-color : #2f5233;
+	background-color : #7CBBAD;
 }
-</style>
-</head>
 
+</style>
+<script type="text/javascript">
+        window.onload = function() {
+            var message = "${message}";
+            var error = "${error}";
+
+            if (message) {
+                alert(message);  // 성공 메시지
+            } else if (error) {
+                alert(error);  // 실패 메시지
+            }
+        };
+</script>
+</head>
+<body>
 <div class="join-wrap">
 		<jsp:include page="/WEB-INF/views/common/header.jsp" />
 		<main class="content">
@@ -211,9 +240,8 @@ button:hover {
 							  <input type="radio" name="memberGender" value="2">비공개
 						</div>
 					</div>
-					
 					<div class="join-button-box">
-						<button type="submit" id="submitBtn" class="join-btn-primary lg">회원가입</button>
+						<button type="submit" id="submitBtn" class="join-btn-primary lg" onclick="submitCom()">회원가입</button>
 					</div>
 				</form>
 			</section>
@@ -221,6 +249,8 @@ button:hover {
 	<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
 	<script>
+	$('#submitBtn').prop('disabled', true);
+
 	$(document).ready(function() {
 	    let sentCode = '';  // 서버에서 받은 인증번호
 
@@ -281,7 +311,7 @@ button:hover {
 		"memberPw" : false,
 		"memberPwConfirm" : false,
 		"memberNickname" : false,
-		"memberPhone" : false		
+		"memberPhone" : false,		
 	}
 	
 	const memberId = $('#memberId'); 
@@ -319,10 +349,10 @@ button:hover {
             type : "get", 
             success : function(res){
                 if(res == 0){
-                    msg("알림", "사용 가능한 아이디입니다", "success");
+                    msg("알림", "사용 가능한 아이디입니다", "success"); 
                     checkObj.idDuplChk = true;
                 }else {
-                    msg("알림", "중복된 아이디가 존재합니다", "warning");
+                    msg("알림", "중복된 아이디가 존재합니다", "warning").css('color', 'red');
                     checkObj.idDuplChk = false;
                 }
             },
@@ -372,7 +402,7 @@ button:hover {
 					msg("알림", "사용 가능한 닉네임입니다", "success");
 					checkObj.nickDuplChk = true;
 				}else {
-					msg("알림", "중복된 닉네임이 존재합니다", "warning");
+					msg("알림", "중복된 닉네임이 존재합니다", "warning").css('color', 'red');
 					checkObj.nickDuplChk = false;
 				}
 			},
@@ -421,7 +451,7 @@ button:hover {
             checkObj.memberPwConfirm = true;
         }else{
             pwMessage.addClass('invalid');
-            pwMessage.html('비밀번호가 일치하지 않습니다');
+            pwMessage.html('비밀번호가 일치하지 않습니다').css('color', 'red');
             checkObj.memberPwConfirm = false;
         }
     });
@@ -429,14 +459,14 @@ button:hover {
     function checkPasswordMatch() {
         pwConfirmMessage.removeClass('valid invalid');
 
-        if (dinnerPw.val() === dinnerPwConfirm.val()) {
+        if (memberPw.val() === memberPwConfirm.val()) {
             pwConfirmMessage.html("비밀번호가 일치합니다");
             pwConfirmMessage.addClass('valid');
-            checkObj.dinnerPwConfirm = true;
+            checkObj.memberPwConfirm = true;
         } else {
-            pwConfirmMessage.html("비밀번호가 일치하지 않습니다");
+            pwConfirmMessage.html("비밀번호가 일치하지 않습니다").css('color', 'red');
             pwConfirmMessage.addClass('invalid');
-            checkObj.dinnerPwConfirm = false;
+            checkObj.memberPwConfirm = false;
         }
     }
 	
@@ -459,6 +489,24 @@ button:hover {
 			checkObj.memberPhone = false;
 		}
 	});
+	function isAllTrue() {
+	    return Object.values(checkObj).every(value => value === true);
+	}
+
+	// submit 버튼 클릭 시 실행되는 이벤트
+	$('#submitBtn').click(function(event) {
+
+	    // 모든 항목이 true인지 확인
+	    if (isAllTrue()) {
+	    	    alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
+	    } else {
+	    }
+	});
+
+	// 정보를 수정할 때마다 호출되는 함수
+	function updateCheckObj(key, value) {
+	    checkObj[key] = value;
+	}
 	
 	function joinValidate(){
 		

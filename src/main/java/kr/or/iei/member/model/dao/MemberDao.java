@@ -37,6 +37,13 @@ public class MemberDao {
 	public int joinWholeExpert(Member member) {
 		return sqlSession.insert("member.insertWholeExpert", member);
 	}
+	//회원가입 - 전문가 파일
+	public void insertExpertFile(String memberNo, String filePath) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("memberNo", memberNo);
+	    params.put("filePath", filePath);
+	    sqlSession.insert("member.insertExpertFile", params); // tbl_expert_management에 삽입
+	}
 	//아이디 중복체크
 	public int idDuplChk(String memberId) {		
 		return sqlSession.selectOne("member.idDuplChk", memberId);
@@ -61,6 +68,10 @@ public class MemberDao {
 	public int updateMember(Member member) {
 		return sqlSession.update("member.updateMember", member);
 	}
+	//프로필사진 업데이트
+	public Member getMemberById(Long memberNo) {
+        return sqlSession.selectOne("member.selectMemberById",memberNo);  // DAO 호출
+    }
 	//아이디 찾기
 	public String searchMemberId(String memberPhone, String memberEmail) {
 		Map<String, String> params = new HashMap<>();
@@ -93,4 +104,5 @@ public class MemberDao {
 	    int result = sqlSession.insert("member.insertProfileImage", parameterMap);
 	    return result > 0;
 	}
+	
 }

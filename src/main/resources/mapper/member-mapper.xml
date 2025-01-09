@@ -15,6 +15,8 @@
          exco.member_gender AS memberGender,
          exco.member_email AS memberEmail,
          exco.enroll_date AS enrollDate,
+         exco.profile_path AS profilePath,
+         exco.profile_name AS profileName,
          whole.member_type AS memberType
 		 FROM tbl_exco exco
 		 JOIN tbl_whole_member whole
@@ -65,6 +67,7 @@
 		 JOIN tbl_expert_management m
 		   ON exco.member_no = m.member_no		
   </insert>
+  
   <!-- 회원가입 - 일반회원 -->
   <insert id="insertWholeMember" parameterType="member">
 		  insert into tbl_whole_member
@@ -79,6 +82,17 @@
 		  values
 		  (#{memberNo}, 7)
   </insert>
+  
+  <!-- tbl_expert_management에 파일 경로 삽입 -->
+	<insert id="insertExpertFile" parameterType="Map">
+	    INSERT INTO tbl_expert_management (member_no, expert_file)
+	    VALUES (#{memberNo}, #{filePath})
+	</insert>
+	
+  <!-- 회원 ID로 회원 정보 조회 (프로필사진 업데이트) -->
+    <select id="selectMemberById" parameterType="member" resultType="member">
+        SELECT * FROM tbl_exco WHERE member_no = #{memberNo}
+    </select>
   
   <!-- 아이디 중복체크 -->
   <select id="idDuplChk" parameterType="string" resultType="_int">
