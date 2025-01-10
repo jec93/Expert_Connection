@@ -21,13 +21,12 @@ public class MemberDao {
 	public Member memberLogin(Member member) {
 		return sqlSession.selectOne("member.selectOneMember", member);
 	}
+	public Member expertLogin(Member member) {
+		return sqlSession.selectOne("member.selectOneExpert", member);
+	}
 	//회원가입 - 일반회원
 	public int join(Member member) {
 		return sqlSession.insert("member.insertMember", member);
-	}
-	//회원가입 - 전문가
-	public int joinExpert(Member member) {
-		return sqlSession.insert("member.insertExpert", member);
 	}
 	//회원가입 - 일반회원 
 	public int joinWholeMember(Member member) {
@@ -38,10 +37,12 @@ public class MemberDao {
 		return sqlSession.insert("member.insertWholeExpert", member);
 	}
 	//회원가입 - 전문가 파일
-	public void insertExpertFile(String memberNo, String filePath) {
+	public void insertExpertFile(String memberNo, String filePath,String fileName,String thirdCategoryCd) {
 	    Map<String, Object> params = new HashMap<>();
 	    params.put("memberNo", memberNo);
 	    params.put("filePath", filePath);
+	    params.put("fileName", fileName);
+	    params.put("thirdCategoryCd", thirdCategoryCd);
 	    sqlSession.insert("member.insertExpertFile", params); // tbl_expert_management에 삽입
 	}
 	//아이디 중복체크
@@ -117,4 +118,14 @@ public class MemberDao {
     	int result = sqlSession.insert("member.insertIntroduce",parameterMap);
         return result > 0;
     }
+    //portfolio가 존재하면 update
+	public boolean updatePortfolioFile(HashMap<String, String> parameterMap) {
+		int result = sqlSession.update("member.updatePortfolioFile",parameterMap);
+		return result > 0;
+	}
+	//portfolio가 없다면 insert
+	public boolean insertPortfolioFile(HashMap<String, String> parameterMap) {
+		int result = sqlSession.insert("member.insertPortfolioFile",parameterMap);
+		return result > 0;
+	}
 }

@@ -3,7 +3,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="member">
 
-  <!-- 로그인 -->
+  <!-- 로그인 회원 -->
   <select id="selectOneMember" parameterType="member" resultType="member">
   	     SELECT 
          exco.member_no AS memberNo,
@@ -24,6 +24,32 @@
 		WHERE exco.member_id = #{memberId}
 		  AND exco.member_pw = #{memberPw}
   </select>
+  
+  <!-- 로그인 전문가 -->
+  <select id="selectOneExpert" parameterType="member" resultType="member">
+   SELECT 
+      exco.member_no AS memberNo,
+      exco.member_id AS memberId,
+      exco.member_pw AS memberPw,
+      exco.member_nickname AS memberNickname,
+      exco.member_phone AS memberPhone,
+      exco.member_addr AS memberAddr,
+      exco.member_gender AS memberGender,
+      exco.member_email AS memberEmail,
+      exco.enroll_date AS enrollDate,
+      exco.profile_path AS profilePath,
+      exco.profile_name AS profileName,
+      whole.member_type AS memberType,
+      expert.permission_state AS permissionState
+   FROM tbl_exco exco
+   JOIN tbl_whole_member whole
+     ON exco.member_no = whole.member_no
+   LEFT JOIN tbl_expert_management expert
+     ON exco.member_no = expert.member_no
+   WHERE exco.member_id = #{memberId}
+     AND exco.member_pw = #{memberPw}
+     AND expert.permission_state = 'p'  <!-- PERMISSION_STATE가 'p'인 경우만 확인 -->
+	</select>
 
   <!-- 회원가입 - 일반회원 -->  
   <insert id="insertMember" parameterType="member">
@@ -50,24 +76,7 @@
     	  sysdate
  			 )
  </insert>
-	
- <!-- 회원가입 - 전문가 -->  
- <insert id="insertExpert" parameterType="member">
-  		 insert into tbl_exco
-         exco.member_no AS memberNo,
-         exco.member_id AS memberId,
-         exco.member_pw AS memberPw,
-         exco.member_nickname AS memberNickname,
-         exco.member_phone AS memberPhone,
-         exco.member_addr AS memberAddr,
-         exco.member_gender AS memberGender,
-         exco.member_email AS memberEmail,
-         exco.enroll_date AS enrollDate,
-         m.expert_file AS expertFile
-		 JOIN tbl_expert_management m
-		   ON exco.member_no = m.member_no		
-  </insert>
-  
+
   <!-- 회원가입 - 일반회원 -->
   <insert id="insertWholeMember" parameterType="member">
 		  insert into tbl_whole_member
@@ -84,10 +93,27 @@
   </insert>
   
   <!-- tbl_expert_management에 파일 경로 삽입 -->
-	<insert id="insertExpertFile" parameterType="Map">
-	    INSERT INTO tbl_expert_management (member_no, expert_file)
-	    VALUES (#{memberNo}, #{filePath})
+	<insert id="insertExpertFile" parameterType="map">
+    INSERT INTO TBL_EXPERT_MANAGEMENT (
+        RECEIVE_NO,
+		MEMBER_NO,
+		EXPERT_FILE_NAME,
+		EXPERT_FILE_PATH,
+		PERMISSION_STATE,
+		EXPERT_GRADE,
+		THIRD_CATEGORY_CD
+    ) 
+    VALUES (
+        SEQ_RECEIVE_NO.NEXTVAL, 
+        #{memberNo},
+        #{expertFileName},
+        #{expertFilePath},
+        'E',
+        0,
+        #{thirdCategoryCd}
+    )
 	</insert>
+
 	
   <!-- 회원 ID로 회원 정보 조회 (프로필사진 업데이트) -->
     <select id="selectMemberById" parameterType="member" resultType="member">

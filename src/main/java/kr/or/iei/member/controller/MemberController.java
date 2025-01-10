@@ -111,7 +111,8 @@ public class MemberController {
 	}
 	//회원가입 - 전문가
 	@PostMapping("joinExpert.exco")
-	public String joinExpert(Member member, @RequestParam("portfolio") MultipartFile portfolio, HttpServletRequest request) {
+	public String joinExpert(Member member, @RequestParam("portfolio") MultipartFile portfolio, HttpServletRequest request,
+											@RequestParam("thirdCategoryCd") String thirdCategoryCd) {
 	    // 파일이 없으면 오류 처리
 	    if (portfolio.isEmpty()) {
 	        return "member/join"; // 파일 없으면 다시 join 폼으로 돌아감
@@ -138,8 +139,8 @@ public class MemberController {
 
 	        if (result > 0) {
 	            // 회원가입이 성공하면, tbl_expert_management에 파일 경로 저장
-	            memberService.saveExpertFile(member.getMemberNo(), filePath);
-	            return "member/login"; // 로그인 페이지로 리디렉션
+	            memberService.saveExpertFile(member.getMemberNo(), filePath, fileName, thirdCategoryCd);
+	            return "member/expertWaiting"; // 로그인 페이지로 리디렉션
 	        } else {
 	            return "member/join"; // 회원가입 실패 시 join 폼으로 돌아감
 	        }
@@ -396,37 +397,46 @@ public class MemberController {
         Member loginMember = (Member) session.getAttribute("loginMember");
        
         if (loginMember != null) {
-            // 로그인된 사용자의 memberNo로 게시글 데이터 가져오기
-            List<Board> boards = memberService.getBoardsByMemberNo(loginMember.getMemberNo(), reqPage);
-            model.addAttribute("boards", boards); // JSP에서 사용할 수 있도록 데이터 전달
+            // 한 페이지에 표시할 게시글 수
+            int boardsPerPage = 5;
 
-         // 각 게시글에 대한 댓글과 댓글 수를 한번에 가져와서 모델에 전달
+            // 전체 게시글 가져오기
+            List<Board> allBoards = memberService.getBoardsByMemberNo(loginMember.getMemberNo(),reqPage);
+
+            // 시작과 끝 인덱스 계산
+            int start = (reqPage - 1) * boardsPerPage;
+            int end = Math.min(start + boardsPerPage, allBoards.size());
+
+            // 해당 페이지에 표시할 게시글만 추출
+            List<Board> paginatedBoards = allBoards.subList(start, end);
+
+            // 각 게시글에 대한 댓글 및 댓글 수 조회
             Map<String, List<BoardComment>> commentsMap = new HashMap<>();
             Map<String, Integer> commentCountMap = new HashMap<>();
-            for (Board board : boards) {
-                // 댓글 리스트와 댓글 개수 한번에 가져오기
-                List<BoardComment> comments = memberService.getCommentsByBoardNo(board.getBoardNo(),loginMember.getMemberNo());
+            for (Board board : paginatedBoards) {
+                // 게시글에 대한 댓글 리스트 가져오기
+                List<BoardComment> comments = memberService.getCommentsByBoardNo(board.getBoardNo(), loginMember.getMemberNo());
                 commentsMap.put(board.getBoardNo(), comments);
-                System.out.println("comment : " + comments);
+
+                // 게시글에 대한 댓글 개수 가져오기
                 int commentCount = memberService.getCommentCount(board.getBoardNo());
                 commentCountMap.put(board.getBoardNo(), commentCount);
             }
-            
-            // 댓글 정보 모델에 전달
+
+            // JSP에서 사용할 데이터 추가
+            model.addAttribute("boards", paginatedBoards); // 게시글 리스트
             model.addAttribute("commentsMap", commentsMap); // 댓글 리스트
             model.addAttribute("commentCountMap", commentCountMap); // 댓글 개수
-            
-            // 페이지네이션을 위한 총 게시글 수와 페이지 정보 전달
-            int totalBoards = memberService.getTotalBoardsByMemberNo(loginMember.getMemberNo());
-            model.addAttribute("totalBoards", totalBoards); // 전체 게시글 수
+
+            // 페이지네이션 정보 추가
+            int totalBoards = allBoards.size(); // 전체 게시글 수
+            model.addAttribute("totalBoards", totalBoards);
             model.addAttribute("reqPage", reqPage); // 현재 페이지 번호
-            int totalPages = (int) Math.ceil((double) totalBoards / 10); // 10개씩 페이지 나누기
-            model.addAttribute("totalPages", totalPages); // 전체 페이지 수
-            
-            
-            
+            int totalPages = (int) Math.ceil((double) totalBoards / boardsPerPage); // 전체 페이지 수
+            model.addAttribute("totalPages", totalPages);
+
         } else {
-            // 로그인되지 않은 경우 처리 (예: 로그인 페이지로 리다이렉트)
+            // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
             return "redirect:/login.exco";
         }
 
@@ -441,36 +451,30 @@ public class MemberController {
 	    Member loginMember = (Member) session.getAttribute("loginMember");
 
 	    if (loginMember != null) {
-	        // 로그인된 사용자의 memberNo로 게시글 데이터 가져오기
-	        List<Board> boards = memberService.getBoardsByMemberNo(loginMember.getMemberNo(), reqPage);
-	        model.addAttribute("boards", boards); // JSP에서 사용할 수 있도록 데이터 전달
+	        // 한 페이지에 표시할 댓글 수
+	        int commentsPerPage = 5;
 
-	        // 각 게시글에 대한 댓글과 댓글 수를 한번에 가져오기 위한 방법 수정
-	        Map<String, List<BoardComment>> commentsMap = new HashMap<>();
-	        Map<String, Integer> commentCountMap = new HashMap<>();
-
-	        // 한 명의 회원이 작성한 모든 댓글을 가져옵니다.
+	        // 전체 댓글 가져오기
 	        List<BoardComment> memberComments = memberService.getCommentsByMemberNo(loginMember.getMemberNo());
-	        
-	        // 각 게시글에 대한 댓글을 memberComments에서 필터링하여 commentsMap에 저장
-	        for (BoardComment comment : memberComments) {
-	            commentsMap.computeIfAbsent(comment.getMemberNo(), k -> new ArrayList<>()).add(comment);
-	        }
 
-	        // 댓글 정보 모델에 전달
-	        model.addAttribute("commentsMap", commentsMap); // 댓글 리스트
-	        model.addAttribute("commentCountMap", commentCountMap); // 댓글 개수
+	        // 시작과 끝 인덱스 계산
+	        int start = (reqPage - 1) * commentsPerPage;
+	        int end = Math.min(start + commentsPerPage, memberComments.size());
 
-	        // 페이지네이션을 위한 총 게시글 수와 페이지 정보 전달
-	        int totalBoards = memberService.getTotalBoardsByMemberNo(loginMember.getMemberNo());
-	        model.addAttribute("totalBoards", totalBoards); // 전체 게시글 수
-	        model.addAttribute("reqPage", reqPage); // 현재 페이지 번호
-	        int totalPages = (int) Math.ceil((double) totalBoards / 10); // 10개씩 페이지 나누기
-	        model.addAttribute("totalPages", totalPages); // 전체 페이지 수
+	        // 해당 페이지에 표시할 댓글만 추출
+	        List<BoardComment> paginatedComments = memberComments.subList(start, end);
+
+	        // 전체 페이지 수 계산
+	        int totalPages = (int) Math.ceil((double) memberComments.size() / commentsPerPage);
+
+	        // 모델에 데이터 추가
+	        model.addAttribute("comments", paginatedComments);
+	        model.addAttribute("reqPage", reqPage);
+	        model.addAttribute("totalPages", totalPages);
 
 	    } else {
 	        // 로그인되지 않은 경우 처리 (예: 로그인 페이지로 리다이렉트)
-	        return "redirect:/login.exco";
+	        return "redirect:/login";
 	    }
 
 	    return "member/writtenComment"; // 게시글 확인 페이지 JSP 경로
@@ -478,12 +482,14 @@ public class MemberController {
 	//소개글 저장
 	@PostMapping("saveIntroduce.exco")
     public String saveIntroduce(@RequestParam("introduceText") String introduceText, 
-                                 @RequestParam("memberNo") String memberNo) {
+                                 @RequestParam("memberNo") String memberNo, RedirectAttributes redirectAttributes) {
         // 멤버의 소개글을 저장하고 결과 메시지를 반환
         boolean result = memberService.saveIntroduce(introduceText, memberNo);
         
         // 성공적으로 저장된 경우 리다이렉트
         if (result) {
+        	redirectAttributes.addFlashAttribute("msg", "소개글이 저장되었습니다.");
+            redirectAttributes.addFlashAttribute("icon", "success");
             return "redirect:/member/mypageFrm.exco";
         }
         
@@ -494,17 +500,61 @@ public class MemberController {
 	@PostMapping("/savePortfolio.exco")
 	public String savePortfolio(@RequestParam("memberNo") String memberNo,
 	                            @RequestParam("portfolioFiles") List<MultipartFile> portfolioFiles,
-	                            HttpServletRequest request) {
-	    // 파일 저장 경로 지정 (예: 서버의 uploads 폴더)
-	    String uploadPath = "/resources/portfolio/";
+	                            HttpServletRequest request,
+	                            Model model) {
+	    model.addAttribute("title", "알림");
 
-	    // 파일 저장 및 DB 저장
-	    boolean isSaved = memberService.savePortfolio(memberNo, portfolioFiles, uploadPath);
-
-	    if (isSaved) {
-	        return "redirect:/mypageFrm.exco"; // 저장 후 마이페이지로 리다이렉트
+	    // 파일 저장 경로 설정
+	    String uploadDir = request.getSession().getServletContext().getRealPath("/resources/portfolio/");
+	    File dir = new File(uploadDir);
+	    if (!dir.exists() && !dir.mkdirs()) {
+	        model.addAttribute("msg", "디렉토리 생성 실패");
+	        model.addAttribute("icon", "error");
+	        return "common/msg";
 	    }
-	    return "errorPage"; // 실패 시 에러 페이지로 이동
+
+	    try {
+	        // 파일 저장 및 경로, 이름 DB 저장
+	        List<String> savedFiles = new ArrayList<>();
+	        for (MultipartFile file : portfolioFiles) {
+	            if (file.isEmpty()) {
+	                continue; // 빈 파일은 건너뛰기
+	            }
+
+	            String originalFilename = file.getOriginalFilename();
+	            File saveFile = new File(dir, originalFilename);
+	            file.transferTo(saveFile);
+
+	            // 파일 경로와 이름 저장
+	            String filePath = "/resources/portfolio/";
+	            savedFiles.add(originalFilename);
+
+	            boolean isSaved = memberService.savePortfolioFile(memberNo, filePath, originalFilename);
+	            if (!isSaved) {
+	                model.addAttribute("msg", "파일 저장 중 오류 발생");
+	                model.addAttribute("icon", "error");
+	                return "common/msg";
+	            }
+	        }
+
+	        if (!savedFiles.isEmpty()) {
+	            model.addAttribute("msg", "포트폴리오가 성공적으로 업로드되었습니다.");
+	            model.addAttribute("icon", "success");
+	        } else {
+	            model.addAttribute("msg", "업로드된 파일이 없습니다.");
+	            model.addAttribute("icon", "error");
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        model.addAttribute("msg", "파일 저장 중 오류 발생");
+	        model.addAttribute("icon", "error");
+	    }
+
+	    return "common/msg";
+	}
+	@GetMapping("expertWaitingFrm.exco")
+	public String expertWaitingFrm() {
+		return "member/expertWaiting";
 	}
 }
 	
