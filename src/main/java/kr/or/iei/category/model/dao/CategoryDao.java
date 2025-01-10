@@ -97,6 +97,17 @@ public class CategoryDao {
 
 	public List<Category> viewFiSeCategory(String secondCd) {
 		// TODO Auto-generated method stub
+		System.out.println("secondCd : "+secondCd);
 		return sqlSession.selectList("category.viewFiSeCategory",secondCd);
+	}
+
+	public List<Map<String, Object>> getReportCategories() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("category.getReportCategories");
+	}
+
+	public List<Map<String, Object>> getNoticeCategories() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("category.noticeCategories");
 	}
 }

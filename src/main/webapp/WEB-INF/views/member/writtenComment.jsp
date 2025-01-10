@@ -9,6 +9,31 @@
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <style>
+.pagination-comment {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pagination-comment a, .pagination-comment span {
+    margin: 0 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-top : 10px;
+}
+
+.pagination-comment a:hover {
+    background-color: #f0f0f0;
+}
+
+.pagination-comment .current {
+    font-weight: bold;
+    color: white;
+    background-color: #7CBBAD;
+    border-color: #7CBBAD;
+}
 .circle-button {
    width: 120px;
    height: 120px;
@@ -112,7 +137,7 @@
 	                        <th style="width:15%">아쉬워요</th>
 	                        <th style="width:20%">작성일</th>
 	                     </tr>
-	                     <c:forEach var="comment" items="${commentsMap[loginMember.memberNo]}">
+	                     <c:forEach var="comment" items="${comments}">
 	                     <tr>
 	                        <td>${comment.commentNo}</td>
 	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${comment.boardNo}&boardType=${comment.boardType}">
@@ -124,13 +149,30 @@
 	                        <td>${comment.commentDate}</td>
 	                     </tr>
                     	 </c:forEach>
-                     <c:if test="${empty commentsMap[loginMember.memberNo]}">
+                     <c:if test="${empty comments}">
 					    <tr>
 					        <td colspan="5">댓글이 없습니다.</td>
 					    </tr>
 					 </c:if>
                   </table>
-                  <div id="pageNavi">${pageNavi}</div>
+                  <div class="pagination-comment">
+                    <c:if test="${reqPage > 1}">
+                        <a href="?reqPage=${reqPage - 1}">&laquo; 이전</a>
+                    </c:if>
+                    <c:forEach var="i" begin="1" end="${totalPages}">
+                        <c:choose>
+                            <c:when test="${i == reqPage}">
+                                <span class="current">${i}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="?reqPage=${i}">${i}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    <c:if test="${reqPage < totalPages}">
+                        <a href="?reqPage=${reqPage + 1}">다음 &raquo;</a>
+                    </c:if>
+                  </div>
 				 </div>
 				</div>
 			  </div>
@@ -169,7 +211,7 @@
 	                        <th style="width:15%">아쉬워요</th>
 	                        <th style="width:20%">작성일</th>
 	                     </tr>
-	                     <c:forEach var="comment" items="${commentsMap[loginMember.memberNo]}">
+	                     <c:forEach var="comment" items="${comments}">
 	                     <tr>
 	                        <td>${comment.commentNo}</td>
 	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${comment.boardNo}&boardType=${comment.boardType}">
@@ -181,14 +223,31 @@
 	                        <td>${comment.commentDate}</td>
 	                     </tr>
                     	 </c:forEach>
-                     <c:if test="${empty commentsMap[loginMember.memberNo]}">
+                     <c:if test="${empty comments}">
 					    <tr>
 					        <td colspan="5">댓글이 없습니다.</td>
 					    </tr>
 					 </c:if>
                   </table>
-                  <div id="pageNavi">${pageNavi}</div>
-				 </div>
+                  <div class="pagination-comment">
+                    <c:if test="${reqPage > 1}">
+                        <a href="?reqPage=${reqPage - 1}">&laquo; 이전</a>
+                    </c:if>
+                    <c:forEach var="i" begin="1" end="${totalPages}">
+                        <c:choose>
+                            <c:when test="${i == reqPage}">
+                                <span class="current">${i}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="?reqPage=${i}">${i}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    <c:if test="${reqPage < totalPages}">
+                        <a href="?reqPage=${reqPage + 1}">다음 &raquo;</a>
+                    </c:if>
+                   </div>
+                 </div>
 				</div>
 			  </div>
 		     </c:when>

@@ -217,6 +217,9 @@ body {
     margin-top: 15px;
 }
 
+.review-content{
+	border-bottom: 1px solid;
+}
 </style>
 
 </head>
@@ -273,6 +276,7 @@ body {
 			<div class="tabs">
 				<button class="active" data-tab="info-tab" onclick="showTab('info-tab')">정보</button>
 				<button data-tab="portfolio-tab" onclick="showTab('portfolio-tab')">포트폴리오</button>
+				<button data-tab="review-tab" onclick="showTab('review-tab')">리뷰</button>
 			</div>
 			
 			<!-- 정보탭 -->
@@ -339,6 +343,58 @@ body {
 			    </c:if>
 			</div>
 			
+			<%-- 리뷰 탭 --%>
+			<div id="review-tab" class="tab-content">
+					<div class="inputreviewBox">
+						<form name="insertreview" action="/expert/insertReview">
+							<input type="hidden" name="introNo" value="${expertDetail.introNo }"><%-- 현재 소개 번호 --%>
+							<input type="hidden" name="writer" value="${loginMember.memberNo}"><%-- 현재 댓글 작성자(로그인한 회원) --%>
+							<input type="hidden" name="memberNo" value="${expertDetail.memberNo }"><%-- 전문가 번호 --%>
+							<input type="radio" name="reviewScore" value="1">★<br>
+							<input type="radio" name="reviewScore" value="2">★★<br>
+							<input type="radio" name="reviewScore" value="3">★★★<br>
+							<input type="radio" name="reviewScore" value="4">★★★★<br>
+							<input type="radio" name="reviewScore" value="5">★★★★★<br>
+						    <c:if test="${not empty loginMember }">
+								<ul class="review-write">
+									<li>
+										<div class="input-item">
+											<textarea name="reviewContent"></textarea>
+										</div>
+									</li>
+									<li>
+										<button type="submit" class="btn-primary">등록</button>
+									</li>
+								</ul>
+							</c:if>
+						</form>
+					</div>
+				<c:forEach var="review" items="${expertDetail.reviewList}">
+					<ul class="posting-review">
+						<li>
+							<div class="review-info">
+								<div class="rev-info">
+									<span id="reviewNickname">${review.nickname}</span>
+									<span id="reviewScore">★ : ${review.reviewScore}</span>
+								</div>
+								<c:if test="${not empty loginMember}">
+									<div class="updreview">
+										<c:if test="${loginMember.memberNo eq review.memberNo}">
+										<a href='javascript:void(0)' onclick="delreview('${review.reviewNo}');">삭제</a>
+										<a href='javascript:void(0)' onclick="mdfreview(this,'${review.reviewNo}');">수정</a>
+										</c:if>
+										<a href='javascript:void(0)' onclick="reportBoard('${review.reviewNo}','1');">신고</a>
+									</div>
+								</c:if>
+							</div>
+							<p class="review-content">${review.reviewContent}</p>
+							<div class="input-item" style="display: none;">
+								<textarea name="reviewContent">${review.reviewContent}</textarea>
+							</div>
+						</li>
+					</ul>
+				</c:forEach>
+			</div>
 		</div>
 
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />

@@ -497,7 +497,7 @@
 	
 	<!-- 게시글 목록 가져오기 -->
    <select id="selectBoardsByMemberNo" resultType="board">
-      SELECT
+      	  SELECT
 	      b.board_no AS boardNo,
 	      b.board_title AS boardTitle,
 	      b.board_content AS boardContent,
@@ -509,10 +509,10 @@
 	      e.member_no AS memberNo,
 	      e.member_nickname AS memberNickname,
 	      e.member_addr AS memberAddr
-      FROM tbl_board b
-      JOIN tbl_exco e ON b.member_no = e.member_no
-      WHERE b.member_no = #{memberNo}  <!-- 특정 memberNo에 해당하는 게시글 조회 -->
-      ORDER BY b.board_date DESC
+	      FROM tbl_board b
+	      JOIN tbl_exco e ON b.member_no = e.member_no
+	      WHERE b.member_no = #{memberNo}  <!-- 특정 memberNo에 해당하는 게시글 조회 -->
+	      ORDER BY b.board_date DESC
    </select>
     
     <!-- 댓글을 가져오는 쿼리 -->
@@ -525,11 +525,11 @@
 	      c.comment_like AS commentLike,
 	      c.comment_dislike AS commentDislike,
 	      e.member_no AS memberNo
-      FROM tbl_comment c
-      JOIN tbl_board b ON c.board_no = b.board_no
-      JOIN tbl_exco e ON b.member_no = e.member_no
-      WHERE c.board_no = #{boardNo}
-      ORDER BY c.comment_date DESC
+	      FROM tbl_comment c
+	      JOIN tbl_board b ON c.board_no = b.board_no
+	      JOIN tbl_exco e ON b.member_no = e.member_no
+	      WHERE c.board_no = #{boardNo}
+	      ORDER BY c.comment_date DESC
    </select>
 
 	<!-- 내가쓴 댓글 조회 -->
@@ -543,10 +543,10 @@
         c.comment_like AS commentLike,
         c.comment_dislike AS commentDislike,
         b.board_type AS boardType  <!-- board_type 추가 -->
-    FROM tbl_comment c
-    JOIN tbl_board b ON c.board_no = b.board_no  <!-- tbl_board와 조인 -->
-    WHERE c.member_no = #{memberNo}
-    ORDER BY c.comment_date DESC
+	    FROM tbl_comment c
+	    JOIN tbl_board b ON c.board_no = b.board_no  <!-- tbl_board와 조인 -->
+	    WHERE c.member_no = #{memberNo}
+	    ORDER BY c.comment_date DESC
    </select>
 
     <!-- 특정 회원의 전체 게시글 수를 가져오는 쿼리 -->
@@ -557,9 +557,9 @@
     </select>
     
     <!-- 게시물의 전체 댓글 수를 가져오는 쿼리 -->
-    <select id="selectCommentCount" resultType="int">
-    SELECT COUNT(*) 
-    FROM tbl_board 
-    WHERE board_no = #{boardNo}
-</select>
+	<select id="selectCommentCount" resultType="int">
+		SELECT COUNT(*)
+		FROM tbl_comment
+		WHERE board_no = #{boardNo}
+	</select>
 </mapper>

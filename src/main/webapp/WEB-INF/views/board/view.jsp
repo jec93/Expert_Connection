@@ -1,10 +1,13 @@
+<%@page import="java.util.Map"%>
 <%@page import="kr.or.iei.member.model.vo.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
 Object loginChk = session.getAttribute("loginMember");
-boolean isLogin = loginChk != null; %>
+boolean isLogin = loginChk != null;
+Map<String, Object> categories = (Map<String, Object>) application.getAttribute("categories");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +15,8 @@ boolean isLogin = loginChk != null; %>
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png" />
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png" />
+<!-- <script src="/resources/js/sweetalert2.all.min.js"></script>
+<link rel="stylesheet" href="/resources/css/sweetalert2.min.css"> -->
 <style>
 .boardContent {
 	min-height: 200px;
@@ -212,7 +217,6 @@ boolean isLogin = loginChk != null; %>
 		               </div>
 						<c:forEach var="comment" items="${board.commentList}">
 							<ul class="posting-comment">
-								<li><span class="material-icons">account_box</span></li>
 								<li>
 									<div class="comment-info">
 										<div class="cmt-info">
@@ -311,45 +315,72 @@ boolean isLogin = loginChk != null; %>
 			});
 		}
 		
+		const categories = <%= new com.google.gson.Gson().toJson(categories) %>;
+		let reportCategories = categories.reportCategories
+		.filter(item=> item.SECONDCATEGORYCD === '301_a0001');
+		
 		function reportBoard(boardNo, boardType, reportType) {
-			  swal({
-			    title: "신고하기",
-			    text: `중단 검토 후 게재가 중단됩니다.
-			          신고 정책에 부합되지 않을 경우
-			          다시 게재될 수 있습니다.`,
-			    content: {
-			      element: "div",
-			      attributes: {
-			        innerHTML: `
-			          <div style="width: 80%; margin: 0 auto;">
-			            <div style="text-align: left;">
-			              <label><input type="radio" name="radioOption" value="A_301_a0001"> 성적 수치심이나 불쾌감을 유발</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0002"> 비방 또는 음해 목적</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0003"> 영리목적으로 개인 사업정보 노출</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0004"> 허위 사실을 유포</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0005"> 동일한 글을 여러번 작성 (3회 이상)</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0006"> 폭력, 비행, 사행심을 조장</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0007"> 본인과 타인의 개인정보 노출</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0008"> 권리침해</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0009"> 게시판 주제에 맞지 않는 게시글</label><br>
-			              <label><input type="radio" name="radioOption" value="A_301_a0010">기타<br><input type="text"></label>
-			            </div>
-			          </div>
-			        `
-			      }
-			    },
-			    buttons: ["취소", "확인"],
-			  }).then((value) => {
-			    if (value) {
-			    	const selectedValue = document.querySelector('input[name="radioOption"]:checked');
-			      if (selectedValue) {
-			    	  location.href = '/admin/reportBoard.exco?reportType='+reportType+'&targetNo='+boardNo+'&boardType='+boardType+'&reporter='+${loginMember.memberNo}+'&reportReason='+selectedValue.value;
-			      } else {
-			        swal("신고 사유를 선택하세요.");
-			      }
-			    }
-			  });
-			}
+		    let reportHtml = '';
+		    reportCategories.forEach(item => {
+		        if (item.THIRDCATEGORYCD === 'A_301_a0010') {
+		            reportHtml += '<label><input type="radio" name="radioOption" value="' + item.THIRDCATEGORYCD + '">' + item.THIRDCATEGORYNM + '</label><br>';
+		            reportHtml += '<input type="text" name="reportInput">';
+		        } else {
+		            reportHtml += '<label><input type="radio" name="radioOption" value="' + item.THIRDCATEGORYCD + '" data-category-name="' + item.THIRDCATEGORYNM +'">' + item.THIRDCATEGORYNM + '</label><br>';
+		        }
+		    });
+
+		    swal({
+		        title: "신고하기",
+		        text: `중단 검토 후 게재가 중단됩니다.
+		              신고 정책에 부합되지 않을 경우
+		              다시 게재될 수 있습니다.`,
+		        content: {
+		            element: "div",
+		            attributes: {
+		                innerHTML:
+		                    '<div style="width: 80%; margin: 0 auto;">' +
+		                    '<div id="reportList" style="text-align: left;">' +
+		                    reportHtml + '</div></div>'
+		            }
+		        },
+		        buttons: ["취소", "확인"],
+		    }).then((value) => {
+		        if (value) {
+		            const selectedValue = document.querySelector('input[name="radioOption"]:checked');
+		            
+		            let additionalInput = '';
+
+		            if (selectedValue) {
+		                if (selectedValue.value === "A_301_a0010") {
+		                    additionalInput = document.querySelector('input[name="reportInput"]').value;
+		                    if (!additionalInput.trim()) {
+		                        swal("기타 내용을 입력하세요.");
+		                        return;
+		                    }
+		                    location.href = '/admin/reportBoard.exco?reportType=' + reportType +
+                            '&targetNo=' + boardNo +
+                            '&boardType=' + boardType +
+                            '&reporter=' + ${loginMember.memberNo} +
+                            '&reportCd=' + selectedValue.value+
+                            '&reportNm=' + additionalInput;
+		                } else {
+		                	additionalInput = selectedValue.dataset.categoryName.value;
+		                	
+		                	 location.href = '/admin/reportBoard.exco?reportType=' + reportType +
+                            '&targetNo=' + boardNo +
+                            '&boardType=' + boardType +
+                            '&reporter=' + ${loginMember.memberNo} +
+                            '&reportCd=' + selectedValue.value+
+                            '&reportNm=' + additionalInput;
+		                }
+		            } else {
+		                swal("신고 사유를 선택하세요.");
+		            }
+		        }
+		    });
+		}
+
 		
 		function delComment(commentNo) { // 삭제 버튼 클릭 시 호출
 			swal({

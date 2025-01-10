@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import kr.or.iei.expert.model.dao.ExpertDao;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
+import kr.or.iei.expert.model.vo.Review;
 
 @Service("expertService")
 public class ExpertService {
@@ -18,7 +19,10 @@ public class ExpertService {
 	private ExpertDao expertDao;
 
 	public ExpertIntroduce viewExpertInfoByMemberNo(String memberNo) {
-		return expertDao.viewExpertInfoByMemberNo(memberNo);
+		ExpertIntroduce expertIntroduce = expertDao.viewExpertInfoByMemberNo(memberNo);
+		ArrayList<Review> reviewList = (ArrayList<Review>) expertDao.readReviewListByIntroNo(expertIntroduce.getIntroNo());
+		expertIntroduce.setReviewList(reviewList);
+		return expertIntroduce;
 	}
 
 	public List<ExpertIntroduce> findExpertsByCategory(String categoryNm, String addr) {
@@ -33,6 +37,11 @@ public class ExpertService {
 	public boolean updatePortfolio(ExpertIntroduce portfolio) {
 		int result = expertDao.updatePortfolio(portfolio);
 	    return result > 0;
+	}
+
+	public int insertReview(Review review) {
+		// TODO Auto-generated method stub
+		return expertDao.insertReview(review);
 	}
 
 }

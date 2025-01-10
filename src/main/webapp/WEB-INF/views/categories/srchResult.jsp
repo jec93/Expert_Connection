@@ -60,7 +60,7 @@
 	border: 1px solid;
 }
 .info-container{
-	width: 250px;
+	width: 280px;
 	height : 300px;
 	box-shadow: 0 4px 8px var(--main3);
 	margin : 15px;
