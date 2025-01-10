@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="notice">
+<!-- 알림번호 생성하기 -->
+<select id="createNoticeNo"
+		resultType="string">
+SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_NOTICE_NO.NEXTVAL, 4, '0') FROM DUAL 		
+</select>
+
+<!-- 알림목록 저장하기 -->
+<insert id="saveNotifications"
+		parameterType="notice">
+INSERT INTO TBL_NOTICE (
+	NOTICE_NO,
+	MEMBER_NO,
+	MESSAGE,
+	READ_YN
+	)
+	VALUES
+	(
+	SEQ_NOTICE_NO.NEXTVAL, 
+	#{memberNo},
+	#{message},
+	'N'
+	)
+</insert>
+
+<!-- 알림목록 가져오기 -->
+<select id="getNotifications"
+		parameterType="string"
+		resultType="notice">
+SELECT NOTICE_NO AS NOTICENO,
+		MEMBER_NO AS MEMBERNO,
+		MESSAGE AS MESSAGE,
+		CREATED_AT AS CREATEDAT,
+		READ_YN AS READYN
+FROM TBL_NOTICE
+WHERE MEMBER_NO = #{memberNo}
+ORDER BY CREATEDAT DESC
+</select>
+</mapper>

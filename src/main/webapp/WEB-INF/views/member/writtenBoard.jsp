@@ -28,7 +28,7 @@
    transition: background-color 0.3s ease;
    margin: 10px;
    border : 1px solid black;
-   margin-left : 125px;
+   margin-left : 310px;
    margin-top : -40px;
 }
 .profile-img {
@@ -40,11 +40,11 @@
     left: 0;
 }
 .memberNickname{
-   margin-left : 280px;
+   margin-left : 470px;
    margin-top : -100px;
 }
 .written{
-   margin-left : 550px;
+   margin-left : 740px;
    margin-top : -30px;
 }
 .writtenBoard{
@@ -59,7 +59,7 @@
 	text-align : center; 	
 }
 .writtenBoard-board{
-	width : 800px;
+	width : 1100px;
 	height : 120px;
 	margin-top : 100px;
 	margin-left : 80px;
@@ -77,31 +77,80 @@
 	<jsp:include page="/WEB-INF/views/common/header.jsp" />
 	  <main class="content">
 		<section class="section mypage-wrap">
+		  <c:choose>
+		   <c:when test="${loginMember != null && (loginMember.memberType == 1 || loginMember.memberType == 2 || loginMember.memberType == 3)}">
+		      <div class="mypage">
+		         <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
+		         <div class="mypage-memberProfile">
+		            <div class="memberInfo-brife">
+		                <a href="javascript:void(0)" class="circle-button">
+		                 <c:choose>
+				           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+				               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+				           </c:when>
+				           <c:otherwise>
+				               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+				           </c:otherwise>
+				       </c:choose>
+		              </a>
+		            </div>
+		            <div class="update-nickname">
+		               <h3 class="memberNickname">${loginMember.memberNickname} 회원님</h3>
+		            </div>
+		            <div class="written">
+	    			 <div class="writtenBoard">작성글</div>
+					 <a href="/member/writtenCommentFrm.exco" class="writtenComment" id="memberInfo-update">댓글</a>
+	                </div>
+		         </div>
+		         <div class="writtenBoard-board">
+                       <div class="writtenBoard-child">
+						<table class="tbl">
+	                     <tr>
+	                        <th style="width:8%">번호</th>
+	                        <th style="width:25%">제목</th>
+	                        <th style="width:15%">좋아요수/댓글수</th>
+	                        <th style="width:20%">작성일</th>
+	                        <th style="width:10%">조회수</th>
+	                     </tr>
+	                     <c:forEach var="board" items="${boards}">
+	                     <tr>
+	                        <td>${board.boardNo}</td>
+	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
+	                        <td>${board.boardLike}/${commentCountMap[board.boardNo]}</td>
+	                        <td>${board.boardDate}</td>
+	                        <td>${board.boardCount}</td>
+	                     </tr>
+                     </c:forEach>
+                     <c:if test="${empty boards}">
+					    <tr>
+					        <td colspan="5">게시글이 없습니다.</td>
+					    </tr>
+					 </c:if>
+                  </table>
+                  <div id="pageNavi">${pageNavi}</div>
+				 </div>
+				</div>
+			  </div>
+			 </c:when>
+		  <c:when test="${loginMember != null && (loginMember.memberType == 4 || loginMember.memberType == 5 || loginMember.memberType == 6)}">
 		      <div class="mypage">
 		         <input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
 		
 		         <div class="mypage-memberProfile">
 		            <div class="memberInfo-brife">
 		                <a href="javascript:void(0)" class="circle-button">
-		               <c:choose>
-					   <c:when test="${not empty loginMember}">
-					       <c:choose>
-					           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
-					               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
-					           </c:when>
-					           <c:otherwise>
-					               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
-					           </c:otherwise>
-					       </c:choose>
-					   </c:when>
-					   <c:otherwise>
-					       <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
-					   </c:otherwise>
-					</c:choose>
-		            </a>
+		              	 <c:choose>
+				           <c:when test="${not empty loginMember.profilePath && not empty loginMember.profileName}">
+				               <img src="${loginMember.profilePath}${loginMember.profileName}" class="profile-img">
+				           </c:when>
+				           <c:otherwise>
+				               <img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+				           </c:otherwise>
+				       </c:choose>
+		           	 </a>
 		            </div>
 		            <div class="update-nickname">
-		               <h3 class="memberNickname">${loginMember.memberNickname} 님</h3>
+		               <h3 class="memberNickname">${loginMember.memberNickname} 전문가님</h3>
 		            </div>
 		            <div class="written">
 	    			<div class="writtenBoard">작성글</div>
@@ -113,24 +162,32 @@
 						<table class="tbl">
 	                     <tr>
 	                        <th style="width:8%">번호</th>
-	                        <th style="width:30%">제목</th>
+	                        <th style="width:25%">제목</th>
 	                        <th style="width:15%">좋아요수/댓글수</th>
-	                        <th style="width:15%">작성일</th>
+	                        <th style="width:20%">작성일</th>
 	                        <th style="width:10%">조회수</th>
 	                     </tr>
-	                     <c:forEach var="board" items="${boardList}">
+	                     <c:forEach var="board" items="${boards}">
 	                     <tr>
 	                        <td>${board.boardNo}</td>
 	                        <td><a class="boardTitle" href="/board/viewBoardFrm.exco?boardNo=${board.boardNo}&boardType=${board.boardType}">${board.boardTitle}</a></td>
-	                        <td>${board.boardlike}/</td>
-	                        <td>${board.boardDate}/${pageScope['commentCount_' + board.boardNo]}</td>
+	                        <td>${board.boardLike}/${commentCountMap[board.boardNo]}</td>
+	                        <td>${board.boardDate}</td>
 	                        <td>${board.boardCount}</td>
 	                     </tr>
-                     </c:forEach>
+                     	</c:forEach>
+                     	<c:if test="${empty boards}">
+						    <tr>
+						        <td colspan="5">게시글이 없습니다.</td>
+						    </tr>
+					 	</c:if>
                   </table>
                   <div id="pageNavi">${pageNavi}</div>
 				 </div>
 				</div>
+			  </div>
+			 </c:when>
+			</c:choose> 
 		   </section>
 		</main>
 	<jsp:include page="/WEB-INF/views/common/footer.jsp" />

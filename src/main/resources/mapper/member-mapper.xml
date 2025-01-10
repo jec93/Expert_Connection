@@ -53,7 +53,7 @@
 	
  <!-- 회원가입 - 전문가 -->  
  <insert id="insertExpert" parameterType="member">
-  		 insert
+  		 insert into tbl_exco
          exco.member_no AS memberNo,
          exco.member_id AS memberId,
          exco.member_pw AS memberPw,
@@ -63,7 +63,7 @@
          exco.member_gender AS memberGender,
          exco.member_email AS memberEmail,
          exco.enroll_date AS enrollDate,
-		 FROM tbl_exco exco
+         m.expert_file AS expertFile
 		 JOIN tbl_expert_management m
 		   ON exco.member_no = m.member_no		
   </insert>
@@ -172,9 +172,29 @@
   </insert>
   
   <!-- 프로필 이미지 삽입 -->
-   <insert id="insertProfileImage" parameterType="map">
+  <insert id="insertProfileImage" parameterType="map">
 	    INSERT INTO tbl_exco (profile_path, profile_name)
 	    VALUES (#{profilePath}, #{profileName})
+  </insert>
+   
+  <!-- introduceContent 가져오는 쿼리 -->
+   <select id="getIntroduceContent" parameterType="string" resultType="string">
+        SELECT INTRODUCE_CONTENT
+        FROM tbl_expert_introduce
+        WHERE MEMBER_NO = #{memberNo}
+   </select>
+    
+   <!-- tbl_expert_introduce 테이블에서 해당 MEMBER_NO에 대한 데이터가 존재하면 업데이트하는 쿼리 -->
+   <update id="updateIntroduce">
+        UPDATE tbl_expert_introduce
+        SET INTRODUCE_CONTENT = #{introduceContent}
+        WHERE MEMBER_NO = #{memberNo}
+   </update>
+
+   <!-- tbl_expert_introduce 테이블에 해당 MEMBER_NO의 데이터가 없으면 INSERT하는 쿼리 -->
+   <insert id="insertIntroduce">
+        INSERT INTO tbl_expert_introduce (MEMBER_NO, INTRODUCE_TITLE, INTRODUCE_CONTENT, EXPERT_LIKE, EXPERT_DISLIKE)
+        VALUES (#{memberNo}, '기본 제목', #{introduceContent}, 0, 0)
    </insert>
    
 </mapper>

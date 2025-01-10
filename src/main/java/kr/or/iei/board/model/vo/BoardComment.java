@@ -9,6 +9,7 @@ public class BoardComment {
 	private String commentDate;
 	private String commentLike;
 	private String commentDislike;
+	private int boardType;
 	
 	private int report;		// 댓글 신고
 
@@ -18,7 +19,7 @@ public class BoardComment {
 	}
 
 	public BoardComment(String commentNo, String boardNo, String memberNo, String commentWriter, String commentContent,
-			String commentDate, String commentLike, String commentDislike, int report) {
+			String commentDate, String commentLike, String commentDislike, int report,int boardType) {
 		super();
 		this.commentNo = commentNo;
 		this.boardNo = boardNo;
@@ -29,6 +30,7 @@ public class BoardComment {
 		this.commentLike = commentLike;
 		this.commentDislike = commentDislike;
 		this.report = report;
+		this.boardType = boardType;
 	}
 
 	public String getCommentNo() {
@@ -84,6 +86,12 @@ public class BoardComment {
 	}
 	public void setReport(int report) {
 		this.report = report;
+	}
+	public int getboardType() {
+		return boardType;
+	}
+	public void setboardType(int boardType) {
+		this.boardType = boardType;
 	}
 
 	@Override
