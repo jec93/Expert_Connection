@@ -76,6 +76,13 @@
     justify-content: center;
     font-size: 12px;
     color: #777;
+    overflow: hidden;
+}
+
+.chat-img img {
+	width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* 채팅방 이름 및 마지막 메시지 스타일 */
@@ -141,7 +148,7 @@
 
 	<script>
 	//웹소켓 연결
-	const socket = new WebSocket("ws://localhost/chat/doChat.exco") // IP 변경
+	const socket = new WebSocket("ws://192.168.10.52/chat/doChat.exco") // IP 변경
 	
 	socket.onmessage = function(event) {
 	    const data = JSON.parse(event.data);

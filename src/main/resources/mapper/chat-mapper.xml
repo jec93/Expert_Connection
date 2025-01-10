@@ -4,53 +4,56 @@
 
 	<select id="getRoomList" parameterType="string" resultType="room">
 	SELECT DISTINCT
-	    r.room_id AS roomId,
-	    CASE 
-	        WHEN groupCount.cnt >= 3 THEN r.room_name 
-	        ELSE NVL(opponent.nickname, '나')        -- 그렇지 않으면 상대방 닉네임
-	    END AS displayName,
-	    latest.msg AS msg,
-	    latest.msg_date AS msgDate,
-	    groupCount.cnt AS memberCount
-	FROM tbl_room r
-	-- 로그인한 사용자가 참여한 채팅방 목록
-	JOIN tbl_chat_members cm ON r.room_id = cm.room_id
-	-- 각 채팅방의 참여 인원 수 계산
-	LEFT JOIN (
-	    SELECT room_id, COUNT(*) AS cnt
-	    FROM tbl_chat_members
-	    WHERE status = 'Y'
-	    GROUP BY room_id
-	) groupCount ON r.room_id = groupCount.room_id
-	-- 각 채팅방의 최신 메시지 가져오기
-	LEFT JOIN (
-	    SELECT 
-	        room_id, 
-	        msg, 
-	        msg_date
-	    FROM (
-	        SELECT 
-	            t.room_id, 
-	            t.msg, 
-	            t.msg_date,
-	            ROW_NUMBER() OVER (PARTITION BY t.room_id ORDER BY t.msg_date DESC) AS rn
-	        FROM tbl_chat t
-	    )
-	    WHERE rn = 1 -- 각 방의 가장 최근 메시지
-	) latest ON r.room_id = latest.room_id
-	-- 상대방의 닉네임 가져오기
-	LEFT JOIN (
-	    SELECT DISTINCT
-	        cm.room_id, 
-	        m.member_nickname AS nickname,
-            m.profile_name AS profileName,
-            m.profile_path AS profilePath
-	    FROM tbl_chat_members cm
-	    JOIN tbl_exco m ON cm.member_no = m.member_no
-	    WHERE cm.status = 'Y' AND cm.member_no != #{_parameter}
-	) opponent ON r.room_id = opponent.room_id
-	WHERE cm.member_no = #{_parameter} AND cm.is_hidden = 'N' -- AND~~ 숨김처리 추가한 것임.
-	ORDER BY latest.msg_date DESC NULLS LAST
+		    r.room_id AS roomId,
+		    CASE 
+		        WHEN groupCount.cnt >= 3 THEN r.room_name 
+		        ELSE NVL(opponent.nickname, '나')        -- 그렇지 않으면 상대방 닉네임
+		    END AS displayName,
+		    latest.msg AS msg,
+		    latest.msg_date AS msgDate,
+	        opponent.profilename AS profileName,
+	        opponent.profilepath AS profilePath,
+		    groupCount.cnt AS memberCount
+	        
+		FROM tbl_room r
+		-- 로그인한 사용자가 참여한 채팅방 목록
+		JOIN tbl_chat_members cm ON r.room_id = cm.room_id
+		-- 각 채팅방의 참여 인원 수 계산
+		LEFT JOIN (
+		    SELECT room_id, COUNT(*) AS cnt
+		    FROM tbl_chat_members
+		    WHERE status = 'Y'
+		    GROUP BY room_id
+		) groupCount ON r.room_id = groupCount.room_id
+		-- 각 채팅방의 최신 메시지 가져오기
+		LEFT JOIN (
+		    SELECT 
+		        room_id, 
+		        msg, 
+		        msg_date
+		    FROM (
+		        SELECT 
+		            t.room_id, 
+		            t.msg, 
+		            t.msg_date,
+		            ROW_NUMBER() OVER (PARTITION BY t.room_id ORDER BY t.msg_date DESC) AS rn
+		        FROM tbl_chat t
+		    )
+		    WHERE rn = 1 -- 각 방의 가장 최근 메시지
+		) latest ON r.room_id = latest.room_id
+		-- 상대방의 닉네임 가져오기
+		LEFT JOIN (
+		    SELECT DISTINCT
+		        cm.room_id, 
+		        m.member_nickname AS nickname,
+	            m.profile_name AS profileName,
+	            m.profile_path AS profilePath
+		    FROM tbl_chat_members cm
+		    JOIN tbl_exco m ON cm.member_no = m.member_no
+		    WHERE cm.status = 'Y' AND cm.member_no != #{_parameter}
+		) opponent ON r.room_id = opponent.room_id
+		WHERE cm.member_no = #{_parameter} AND cm.is_hidden = 'N' -- AND~~ 숨김처리 추가한 것임.
+		ORDER BY latest.msg_date DESC NULLS LAST
 	</select>
 	
 	<!-- 숨김 상태 반환 -->
@@ -99,7 +102,7 @@
 	</insert>
 	
 	<select id="getRoomId" resultType="string">
-	SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(seq_room.NEXTVAL, 4, '0') 
+	SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(seq_room.NEXTVAL, 4, '0')
 	       FROM DUAL
 	</select>
 	
