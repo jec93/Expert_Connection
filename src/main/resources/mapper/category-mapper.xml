@@ -26,16 +26,16 @@
 
     <!-- 중분류 및 소분류 조회 -->
     <select id="getAllSubCategories" resultType="map">
-	  	select
-	        first_category_cd AS firstCategoryCd,
-            first_category_nm AS firstCategoryNm,
-            second_category_cd AS secondCategoryCd,
-            second_category_nm AS secondCategoryNm,
-            third_category_cd AS thirdCategoryCd,
-            third_category_nm AS thirdCategoryNm
-	    from tbl_code
-	    where first_category_cd like 'A%'
-	    order by first_category_cd, second_category_cd, third_category_cd
+  	select
+        first_category_cd AS firstCategoryCd,
+        first_category_nm AS firstCategoryNm,
+        second_category_cd AS secondCategoryCd,
+        second_category_nm AS secondCategoryNm,
+        third_category_cd AS thirdCategoryCd,
+        third_category_nm AS thirdCategoryNm
+    from tbl_code
+    where first_category_cd like 'A%'
+    order by first_category_cd, second_category_cd, third_category_cd
 	</select>
 	
 	<select id="thirdCdListByThirdNmList"
@@ -177,4 +177,30 @@
         </when>
     </choose>
 	</insert>
+	
+	<select id="getReportCategories"
+	resultType="map">
+	SELECT 
+       	FIRST_CATEGORY_CD AS firstCategoryCd,
+        FIRST_CATEGORY_NM AS firstCategoryNm,
+        SECOND_CATEGORY_CD AS secondCategoryCd,
+        SECOND_CATEGORY_NM AS secondCategoryNm,
+        THIRD_CATEGORY_CD AS thirdCategoryCd,
+        THIRD_CATEGORY_NM AS thirdCategoryNm
+   	FROM TBL_CODE
+   	WHERE FIRST_CATEGORY_CD LIKE 'D%'
+	</select>
+	
+	<select id="noticeCategories"
+	resultType="map">
+	SELECT 
+       	FIRST_CATEGORY_CD AS firstCategoryCd,
+        FIRST_CATEGORY_NM AS firstCategoryNm,
+        SECOND_CATEGORY_CD AS secondCategoryCd,
+        SECOND_CATEGORY_NM AS secondCategoryNm,
+        THIRD_CATEGORY_CD AS thirdCategoryCd,
+        THIRD_CATEGORY_NM AS thirdCategoryNm
+   	FROM TBL_CODE
+   	WHERE FIRST_CATEGORY_CD LIKE 'B%'
+	</select>
 </mapper>

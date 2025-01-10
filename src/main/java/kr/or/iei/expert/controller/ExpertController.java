@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import kr.or.iei.category.model.service.CategoryService;
 import kr.or.iei.expert.model.service.ExpertService;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
+import kr.or.iei.expert.model.vo.Review;
 import kr.or.iei.member.model.vo.Member;
 
 @Controller("expertController")
@@ -68,13 +69,12 @@ public class ExpertController {
     		model.addAttribute("title", "정보");
     		model.addAttribute("msg", "검색 결과 없음.");
     		model.addAttribute("icon", "info");
-    		model.addAttribute("loc", "/expert/expertBotSearchFrm.exco");
     		return "common/msg";
     	}
     	
     	ArrayList<ExpertIntroduce> filteredList = new ArrayList<ExpertIntroduce>();
     	for(ExpertIntroduce i : srchList){
-    		if(i.getExpertAddr().equals(addr)) {
+    		if(i.getExpertAddr().contains(addr)) {
     			filteredList.add(i);
     		}
     	}
@@ -160,5 +160,10 @@ public class ExpertController {
 	    response.put("fileName", fileName);
 	    return response;
 	}
-
+	@GetMapping("/insertReview")
+	public String insertReview(Review review) {
+		System.out.println(review);
+		int result = expertService.insertReview(review);
+		return "";
+	}
 }

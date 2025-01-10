@@ -38,13 +38,26 @@
 	  align-items: center;
 	  width: 50%;
 	  height: 50px;
-	  background-color: var(--main5); /* 배경 색상 */
+	  background-color: var(--main3); /* 배경 색상 */
 	  border-radius: 25px;
 	  padding: 0 15px;
 	  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	  position: relative;
 	}
-
+	
+	.search-container button {
+	    position: absolute;
+	    right: 10px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    background: url('/resources/images/icon_search.png') no-repeat center center;
+	    background-size: 20px 20px;
+	    width: 40px;
+	    height: 40px;
+	    border: none;
+	    cursor: pointer;
+	  }
+	  
     .search-input {
       flex: 1;
       border: none;
@@ -78,7 +91,7 @@
       list-style: none;
       padding: 0;
       margin: 0;
-      display: block;
+      display: none;
       max-height: 200px;
       overflow-y: auto;
    }
@@ -212,6 +225,7 @@
 		    			<form action="/categories/searchThirdNm.exco" method="get">
 					    	<div class="search-area">
 					    		<div class="search-container">
+					    			<button></button>
 								    <input type="text" class="search-input" placeholder="Search" oninput="showSuggestions(this.value)" name="keyword">
 								    <ul class="suggestions" id="suggestions-list"></ul>
 								  </div>

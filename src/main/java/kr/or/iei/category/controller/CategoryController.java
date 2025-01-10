@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -70,13 +72,18 @@ public class CategoryController {
     }
     
     @GetMapping("/searchThirdNm.exco")
-    public String searchThirdNm(String keyword, Model model) {
+    public String searchThirdNm(String keyword, Model model, HttpServletRequest request) {
+    	if(keyword.length()==0) {
+    		model.addAttribute("title", "오류!");
+    		model.addAttribute("msg", "검색어를 입력하세요");
+    		model.addAttribute("icon", "error");
+    		return "common/msg";
+    	}
     	ArrayList<ExpertIntroduce> srchList = categoryService.searchExperts(keyword);
     	if(srchList==null) {
     		model.addAttribute("title", "정보");
     		model.addAttribute("msg", "검색 결과 없음.");
     		model.addAttribute("icon", "info");
-    		model.addAttribute("loc", "/categories/categoryFrm.exco");
     		return "common/msg";
     	}
     	model.addAttribute("keyword",keyword);
@@ -91,7 +98,6 @@ public class CategoryController {
     		model.addAttribute("title", "정보");
     		model.addAttribute("msg", "검색 결과 없음.");
     		model.addAttribute("icon", "info");
-    		model.addAttribute("loc", "/categories/categoryFrm.exco");
     		return "common/msg";
     	}
     	model.addAttribute("keyword",firstCategoryNm);

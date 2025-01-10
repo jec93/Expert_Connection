@@ -35,7 +35,6 @@ public class AdminController {
 	// 관리자페이지 -> 신고항목 관리 페이지 이동
 	@GetMapping("reportManageFrm.exco")
 	public String reportManageFrm() {
-
 		return "admin/reportManage";
 	}
 
@@ -63,12 +62,13 @@ public class AdminController {
 
 	// 게시글,댓글 신고하기
 	@GetMapping("reportBoard.exco")
-	public String insertReportByInfo(String targetNo, String boardType, String reporter, String reportType, String reportReason, Model model) {
+	public String insertReportByInfo(String targetNo, String boardType, String reporter, String reportType, String reportCd, String reportNm, Model model) {
 		Report reportData = new Report();
 		reportData.setTargetNo(targetNo);
 		reportData.setReporter(reporter);
 		reportData.setReportType(Integer.parseInt(reportType));
-		reportData.setThirdCategoryCd(reportReason);
+		reportData.setThirdCategoryCd(reportCd);
+		reportData.setThirdCategoryNM(reportNm);
 		adminService.insertReportByInfo(reportData);
 		model.addAttribute("title","신고해주셔서 감사합니다.");
 		model.addAttribute("msg", "사용자님의 신고로 Expert Connection의 규정을 어기고 이용환경을 해치는 사용자를 적발하는데 많은 도움이 되었습니다. 보내주신 신고내용은 검토 후 회신드리겠습니다. (허위신고 등은 신고자 본인에게 제재가 가해질 수 있습니다.) 앞으로도 규정을 어기는 사용자가 있다면 신고기능을 적극 이용해주시길 부탁드립니다. 감사합니다. 🍀");
@@ -335,11 +335,9 @@ public class AdminController {
 	    if(result>0) {
 	    	model.addAttribute("icon","success");
 		    model.addAttribute("title","카테고리 수정완료");
-		    model.addAttribute("loc","/categories/categoriesManage.exco");
 	    }else {
 	    	model.addAttribute("icon","error");
 		    model.addAttribute("title","카테고리 수정실패");
-		    model.addAttribute("loc","/categories/categoriesManage.exco");
 	    }
 	    return "common/msg";
 	}
@@ -350,11 +348,9 @@ public class AdminController {
 		if(result>0) {
 			model.addAttribute("icon","success");
 			model.addAttribute("title","카테고리 삭제완료");
-			model.addAttribute("loc","/categories/categoriesManage.exco");
 		}else {
 			model.addAttribute("icon","error");
 			model.addAttribute("title","카테고리 삭제실패");
-			model.addAttribute("loc","/categories/categoriesManage.exco");
 		}
 		return "common/msg";
 	}
@@ -365,11 +361,9 @@ public class AdminController {
 		if(result>0) {
 			model.addAttribute("icon","success");
 			model.addAttribute("title","카테고리 추가완료");
-			model.addAttribute("loc","/categories/categoriesManage.exco");
 		}else {
 			model.addAttribute("icon","error");
 			model.addAttribute("title","카테고리 추가실패");
-			model.addAttribute("loc","/categories/categoriesManage.exco");
 		}
 		return "common/msg";
 	}

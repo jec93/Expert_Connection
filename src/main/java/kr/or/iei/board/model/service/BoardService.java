@@ -196,8 +196,8 @@ public class BoardService {
 			}
 			
 			//commentChk != null인것은 댓글을 작성하고 상세보기 이동하는 경우에도, 파일 정보를 select 할 수 있도록
-			 if(result>0 || commentChk != null) { ArrayList<BoardFile> fileList =
-			 (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(boardNo);
+			 if(result>0 || commentChk != null) {
+			 ArrayList<BoardFile> fileList = (ArrayList<BoardFile>)boardDao.ReadFileByBoardNo(boardNo);
 			 board.setFileList(fileList);
 			  
 			 ArrayList<BoardComment> commentList = (ArrayList<BoardComment>)boardDao.readCommentListByBoardNo(boardNo);
