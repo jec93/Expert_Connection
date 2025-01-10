@@ -1,5 +1,7 @@
 package kr.or.iei.expert.model.vo;
 
+import java.util.ArrayList;
+
 public class ExpertIntroduce {
 	private String memberNo;
 	private String expertId;
@@ -22,6 +24,9 @@ public class ExpertIntroduce {
 	private String thirdCategoryNm;
 	private String profilePath;
 	private String profileName;
+	private String introNo;
+	
+	private ArrayList<Review> reviewList;
 	
 	public ExpertIntroduce() {
 		super();
@@ -32,7 +37,8 @@ public class ExpertIntroduce {
 			String expertAddr, String expertGender, String expertEmail, String memberType, String enrollDate,
 			String thirdCategoryCd, String expertGrade, String expertFileName, String expertFilePath,
 			String introduceTitle, String introduceContent, String expertLike, String expertDislike,
-			String thirdCategoryNm, String profilePath, String profileName) {
+			String thirdCategoryNm, String profilePath, String profileName, String introNo,
+			ArrayList<Review> reviewList) {
 		super();
 		this.memberNo = memberNo;
 		this.expertId = expertId;
@@ -55,7 +61,27 @@ public class ExpertIntroduce {
 		this.thirdCategoryNm = thirdCategoryNm;
 		this.profilePath = profilePath;
 		this.profileName = profileName;
+		this.introNo = introNo;
+		this.reviewList = reviewList;
 	}
+
+	public ArrayList<Review> getReviewList() {
+		return reviewList;
+	}
+
+	public void setReviewList(ArrayList<Review> reviewList) {
+		this.reviewList = reviewList;
+	}
+
+	public String getIntroNo() {
+		return introNo;
+	}
+
+
+	public void setIntroNo(String introNo) {
+		this.introNo = introNo;
+	}
+
 
 	public String getMemberNo() {
 		return memberNo;
@@ -234,7 +260,8 @@ public class ExpertIntroduce {
 				+ ", expertFileName=" + expertFileName + ", expertFilePath=" + expertFilePath + ", introduceTitle="
 				+ introduceTitle + ", introduceContent=" + introduceContent + ", expertLike=" + expertLike
 				+ ", expertDislike=" + expertDislike + ", thirdCategoryNm=" + thirdCategoryNm + ", profilePath="
-				+ profilePath + ", profileName=" + profileName + "]";
+				+ profilePath + ", profileName=" + profileName + ", introNo=" + introNo + ", reviewList=" + reviewList
+				+ "]";
 	}
 	
 }

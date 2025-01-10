@@ -138,35 +138,6 @@ public class AdminService {
 		reportData.setFirstCategoryNM("신고 코드 관리");
 		reportData.setSecondCategoryCd("301_a0001");
 		reportData.setSecondCategoryNM("신고 코드 종류");
-		switch(reportData.getThirdCategoryCd()) {
-		case "A_301_a0001":
-			reportData.setThirdCategoryNM("0. 성적 수치심이나 불쾌감을 유발");
-			break;
-		case "A_301_a0002":
-			reportData.setThirdCategoryNM("1. 비방 또는 음해 목적");
-			break;
-		case "A_301_a0003":
-			reportData.setThirdCategoryNM("2. 영리목적으로 개인 사업정보 노출");
-			break;
-		case "A_301_a0004":
-			reportData.setThirdCategoryNM("3. 허위사실 유포");
-			break;
-		case "A_301_a0005":
-			reportData.setThirdCategoryNM("4. 동일한 글을 여러번 작성(3회 이상)");
-			break;
-		case "A_301_a0006":
-			reportData.setThirdCategoryNM("5. 폭력, 비행, 사행심을 조장");
-			break;
-		case "A_301_a0007":
-			reportData.setThirdCategoryNM("6. 본인 또는 타인의 개인정보 노출");
-			break;
-		case "A_301_a0008":
-			reportData.setThirdCategoryNM("7. 권리침해");
-			break;
-		case "A_301_a0009":
-			reportData.setThirdCategoryNM("8. 게시판 주제에 맞지 않는 게시글");
-			break;
-		}
 		adminDao.insertReportByInfo(reportData);
 	}
 
@@ -475,6 +446,7 @@ public class AdminService {
 		 * */
 		//늘리고자하는 소분류의 중분류(대분류는 포함됨)의 전체 정보를 가져옴
 		ArrayList<Category> categoryInfo = (ArrayList<Category>)categoryDao.viewFiSeCategory(secondCd);
+		System.out.println("크기"+categoryInfo.size());
 		
 		int tmp = 0;
 		String newThirdCd ="";

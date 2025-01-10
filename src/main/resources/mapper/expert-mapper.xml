@@ -59,6 +59,7 @@
 	    I.INTRODUCE_CONTENT AS introduceContent,
 	    I.EXPERT_LIKE AS expertLike,
 	    I.EXPERT_DISLIKE AS expertDislike,
+	    I.INTRO_NO AS introNo,
 	    C.THIRD_CATEGORY_NM AS thirdCategoryNm,
 	    E.PROFILE_PATH AS profilePath,
         E.PROFILE_NAME AS profileName
@@ -248,4 +249,58 @@
 	        expert_file_path = #{expertFilePath}
 	    WHERE member_no = #{memberNo}
 	</update>
+	
+	<!-- 소개번호로 리뷰리스트 가져오기 -->
+	<select id="readReviewListByIntroNo"
+	parameterType="string"
+	resultType="review">
+	SELECT
+	    R.REVIEW_NO AS reviewNo,
+	    R.INTRO_NO AS introNo,
+	    R.MEMBER_NO AS memberNo,
+	    R.WRITER AS writer,
+	    NICK.MEMBER_NICKNAME AS nickname,
+	    R.REVIEW_CONTENT AS reviewContent,
+	    R.REVIEW_DATE AS reviewDate,
+	    R.REVIEW_SCORE AS reviewScore
+	FROM
+	    TBL_REVIEW R
+	LEFT JOIN
+	    (
+	        SELECT MEMBER_NO, MEMBER_NICKNAME
+	        FROM (
+	            SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	            UNION ALL
+	            SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+	            UNION ALL
+	            SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	        ) W
+	    ) NICK
+	ON NICK.MEMBER_NO = R.WRITER
+	WHERE
+	    R.INTRO_NO = #{string}
+	</select>
+	
+	<insert id="insertReview"
+	parameterType="review">
+	INSERT INTO
+		TBL_REVIEW
+		(
+			REVIEW_NO,
+			INTRO_NO,
+			MEMBER_NO,
+			WRITER,
+			REVIEW_CONTENT,
+			REVIEW_SCORE
+		)
+		VALUES
+		(
+			TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_REVIEW_NO.NEXTVAL, 4,'0'),
+			#{introNo},
+			#{memberNo},
+			#{writer},
+			#{reviewContent},
+			#{reviewScore}
+		)
+	</insert>
 </mapper>

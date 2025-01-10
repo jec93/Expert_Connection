@@ -29,7 +29,10 @@
 			
 			if(loc != '' && loc != null){
 				location.href = loc; //서블릿에서 등록한, 이동할 url로 이동!
-			}
+			} else {
+	            // loc 값이 없으면 이전 페이지로 이동하면서 새로고침
+	            window.location.href = document.referrer; // 이전 페이지로 이동
+	        }
 		});
 	</script>
 </body>

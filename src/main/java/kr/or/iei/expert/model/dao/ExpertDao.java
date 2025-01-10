@@ -1,5 +1,6 @@
 package kr.or.iei.expert.model.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.expert.model.vo.ExpertManagement;
+import kr.or.iei.expert.model.vo.Review;
 
 
 @Repository("expertDao")
@@ -42,6 +44,16 @@ public class ExpertDao {
 
 	public int updatePortfolio(ExpertIntroduce portfolio) {
 		return sqlSession.update("expertManagement.updatePortfolio", portfolio);
+	}
+
+	public List<Review> readReviewListByIntroNo(String introNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("expertManagement.readReviewListByIntroNo",introNo);
+	}
+
+	public int insertReview(Review review) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("expertManagement.insertReview",review);
 	}
 
 }

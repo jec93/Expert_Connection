@@ -45,10 +45,18 @@ public class CategoryService {
         // 중분류 및 소분류 가져오기
         List<Map<String, Object>> subCategories = categoryDao.getSubCategories();
         
+        //신고 항목 분류 가져오기
+        List<Map<String, Object>> reportCategories = categoryDao.getReportCategories();
+        
+        //알림 항목 분류 가져오기
+        List<Map<String, Object>> noticeCategories = categoryDao.getNoticeCategories();
+        
         // 데이터를 Map으로 구성
         Map<String, Object> allCategories = new HashMap<>();
         allCategories.put("firstCategories", firstCategories);
         allCategories.put("subCategories", subCategories);
+        allCategories.put("reportCategories", reportCategories);
+        allCategories.put("noticeCategories", noticeCategories);
         
         return allCategories;
     }
@@ -63,13 +71,15 @@ public class CategoryService {
 	}
 
 	public ArrayList<ExpertIntroduce> searchExperts(String keyword) {
-		// TODO Auto-generated method stub
 		// Komoran을 이용하여 입력 텍스트 분석
 		KomoranResult result = komoran.analyze(keyword);
-		
 		// 명사만 추출
-        List<String> keywords = result.getNouns();
-
+		List<String> keywords = result.getNouns();
+		
+		if(keywords.size()==0) {
+			keywords.add(keyword);
+		}
+        
         //키워드로 검색 리스트 정리
         List<String> thirdCdList = categoryDao.thirdCdListByThirdNmList(keywords);
         if(thirdCdList.isEmpty()) {
