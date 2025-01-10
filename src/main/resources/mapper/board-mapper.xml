@@ -82,8 +82,8 @@
 	</select>
 	
 	<select id="viewByBoardNo"
-	parameterType="string"
-	resultType="board">
+			parameterType="string"
+			resultType="board">
 	SELECT 
     BOARD_NO AS boardNo,
     MEMBER_NO AS memberNo,
@@ -108,7 +108,7 @@
 	</select>
 	
 	<update id="updateReadByboardNo"
-	parameterType="string">
+			parameterType="string">
 	UPDATE
 		TBL_BOARD
 	SET
@@ -117,8 +117,8 @@
 	</update>
 	
 	<select id="readFileByBoardNo"
-	parameterType="string"
-	resultType="boardFile">
+			parameterType="string"
+			resultType="boardFile">
 	SELECT
 	    FILE_NO AS fileNo,
 	    BOARD_NO AS boardNo,
@@ -128,8 +128,8 @@
 	</select>
 	
 	<select id="readCommentListByBoardNo"
-	parameterType="string"
-	resultType="boardComment">
+			parameterType="string"
+			resultType="boardComment">
 	SELECT
 	    COMMENT_NO AS commentNo,
 	    BOARD_NO AS boardNo,
@@ -154,7 +154,7 @@
 	</select>
 	
 	<select id="insertBoardFileByFile"
-	parameterType="boardFile">
+			parameterType="boardFile">
 	INSERT INTO TBL_FILE
 	VALUES
 	(TO_CHAR
@@ -166,38 +166,37 @@
 	</select>
 	
 	<delete id="deleteBoardByBoardNo"
-	parameterType="string">
+			parameterType="string">
 	DELETE
 		TBL_BOARD
-	WHERE
-		BOARD_NO = #{boardNo}
+	WHERE BOARD_NO = #{boardNo}
 	</delete>
 	
 	<update id="updateBoardByNewBoard"
-	parameterType="board">
+			parameterType="board">
 	UPDATE TBL_BOARD
-		SET BOARD_TITLE = #{boardTitle},
-			BOARD_CONTENT = #{boardContent},
-			BOARD_TYPE = #{boardType}
-		WHERE BOARD_NO = #{boardNo}
+	SET BOARD_TITLE = #{boardTitle},
+		BOARD_CONTENT = #{boardContent},
+		BOARD_TYPE = #{boardType}
+	WHERE BOARD_NO = #{boardNo}
 	</update>
 	
 	<delete id="deleteBoardFileByBoardNo"
-	parameterType="string">
+			parameterType="string">
 	DELETE
-		FROM TBL_FILE
-		WHERE BOARD_NO = #{boardNo}
+	FROM TBL_FILE
+	WHERE BOARD_NO = #{boardNo}
 	</delete>
 	
 	<delete id="deleteBoardFileByFileId"
-	parameterType="string">
+			parameterType="string">
 	DELETE
-		FROM TBL_FILE
-        WHERE file_no = #{fileNo}
+	FROM TBL_FILE
+    WHERE file_no = #{fileNo}
 	</delete>
 	
 	<insert id="insertCommentByComment"
-	parameterType="boardComment">
+			parameterType="boardComment">
 		INSERT INTO
 			TBL_COMMENT
 			(
@@ -216,7 +215,7 @@
 	</insert>
 	
 	<delete id="deleteCommentByCommentNo"
-	parameterType="string">
+			parameterType="string">
 	DELETE
 		FROM
 			TBL_COMMENT
@@ -225,7 +224,7 @@
 	</delete>
 	
 	<update id="updateCommentByComment"
-	parameterType="boardComment">
+			parameterType="boardComment">
 	UPDATE TBL_COMMENT
 		SET COMMENT_CONTENT = #{commentContent}
 		WHERE COMMENT_NO = #{commentNo}
@@ -282,7 +281,7 @@
 	<select id="selectAllCommentList"
 			parameterType = "hashmap"
 			resultType = "boardComment">
-	SELECT
+	SELECT DISTINCT
 		COMMENT_NO AS COMMENTNO,
         C.MEMBER_NO AS MEMBERNO,
         NICK.MEMBER_NICKNAME AS COMMENTWRITER,
@@ -324,8 +323,8 @@
 	</select>
 	
 	<select id="chkLikeByComment"
-	parameterType="map"
-	resultType="commentReact">
+			parameterType="map"
+			resultType="commentReact">
 	SELECT
     	COMMENT_NO AS commentNo,
     	MEMBER_NO AS memberNo,
@@ -336,7 +335,7 @@
 	</select>
 	
 	<update id="updReactByReact"
-	parameterType="commentReact">
+			parameterType="commentReact">
 	UPDATE
 	    TBL_COMMENT_REACT
 	    SET COMMENT_CHK = #{commentChk}
@@ -345,14 +344,14 @@
 	</update>
 	
 	<update id="updateComLikeCnt"
-	parameterType="moveStin">
+			parameterType="moveStin">
 	UPDATE TBL_COMMENT_REACT
 	SET COMMENT_CHK = #{intData}
 	WHERE COMMENT_NO = #{stData}
 	</update>
 	
 	<update id="updateComLikeByReact"
-	parameterType="commentReact">
+			parameterType="commentReact">
 	UPDATE TBL_COMMENT_REACT
 		SET
 			COMMENT_CHK = #{commentChk}
@@ -362,7 +361,7 @@
 	</update>
 	
 	<insert id="insertComLikeInfo"
-	parameterType="commentReact">
+			parameterType="commentReact">
 	INSERT INTO
 		TBL_COMMENT_REACT
 		(
@@ -379,30 +378,30 @@
 	</insert>
 	
 	<update id="updateCommentLikeByComment"
-	parameterType="map">
+			parameterType="map">
     UPDATE TBL_COMMENT
-    <set>
-        <if test="like == 1">
-            COMMENT_LIKE = COMMENT_LIKE + 
-            <choose>
-                <when test="newAction">1</when>
-                <otherwise>-1</otherwise>
-            </choose>
-        </if>
-        <if test="like == -1">
-            COMMENT_DISLIKE = COMMENT_DISLIKE + 
-            <choose>
-                <when test="newAction">1</when>
-                <otherwise>-1</otherwise>
-            </choose>
-        </if>
-    </set>
+	    <set>
+	        <if test="like == 1">
+	            COMMENT_LIKE = COMMENT_LIKE + 
+	            <choose>
+	                <when test="newAction">1</when>
+	                <otherwise>-1</otherwise>
+	            </choose>
+	        </if>
+	        <if test="like == -1">
+	            COMMENT_DISLIKE = COMMENT_DISLIKE + 
+	            <choose>
+	                <when test="newAction">1</when>
+	                <otherwise>-1</otherwise>
+	            </choose>
+	        </if>
+	    </set>
     WHERE COMMENT_NO = #{commentNo}
 	</update>
 	
 	<select id="commentBycommentNo"
-	parameterType="string"
-	resultType="boardComment">
+			parameterType="string"
+			resultType="boardComment">
 	SELECT
 	    COMMENT_NO AS commentNo,
 	    BOARD_NO AS boardNo,
@@ -426,8 +425,8 @@
 	</select>
 	
 	<select id="chkBoardLikeByBoard"
-	parameterType="map"
-	resultType="boardReact">
+			parameterType="map"
+			resultType="boardReact">
 	SELECT
     	BOARD_NO AS boardNo,
     	MEMBER_NO AS memberNo,
@@ -438,7 +437,7 @@
 	</select>
 	
 	<insert id="insertBoardLikeInfo"
-	parameterType="boardReact">
+			parameterType="boardReact">
 	INSERT INTO
 		TBL_BOARD_REACT
 		(
@@ -455,7 +454,7 @@
 	</insert>
 	
 	<update id="updateBoardLikeByBoard"
-	parameterType="map">
+			parameterType="map">
     UPDATE TBL_BOARD
     <set>
         <if test="like == 1">
@@ -477,7 +476,7 @@
 	</update>
 	
 	<update id="updBoardByReact"
-	parameterType="boardReact">
+			parameterType="boardReact">
 	UPDATE
 	    TBL_BOARD_REACT
 	    SET BOARD_REACTION = #{boardReaction}
@@ -497,39 +496,58 @@
 	<!-- 명현 -->
 	
 	<!-- 게시글 목록 가져오기 -->
-    <select id="selectBoardsByMemberNo" resultType="board">
-        SELECT
-            b.board_no AS boardNo,
-            b.board_title AS boardTitle,
-            b.board_content AS boardContent,
-            b.board_date AS boardDate,
-            b.board_like AS boardLike,
-            b.board_dislike AS boardDislike,
-            e.member_no AS memberNo,
-            e.member_nickname AS memberNickname,
-            e.member_addr AS memberAddr,
-            e.profile_path AS profilePath,
-            e.profile_name AS profileName
-        FROM tbl_board b
-        JOIN tbl_exco e ON b.member_no = e.member_no
-        WHERE b.member_no = #{memberNo}  <!-- 특정 memberNo에 해당하는 게시글 조회 -->
-        ORDER BY b.board_date DESC
-     </select>
+   <select id="selectBoardsByMemberNo" resultType="board">
+      SELECT
+	      b.board_no AS boardNo,
+	      b.board_title AS boardTitle,
+	      b.board_content AS boardContent,
+	      b.board_date AS boardDate,
+	      b.board_type AS boardType,
+	      b.board_like AS boardLike,
+	      b.board_dislike AS boardDislike,
+	      b.board_count AS boardCount,
+	      e.member_no AS memberNo,
+	      e.member_nickname AS memberNickname,
+	      e.member_addr AS memberAddr
+      FROM tbl_board b
+      JOIN tbl_exco e ON b.member_no = e.member_no
+      WHERE b.member_no = #{memberNo}  <!-- 특정 memberNo에 해당하는 게시글 조회 -->
+      ORDER BY b.board_date DESC
+   </select>
     
     <!-- 댓글을 가져오는 쿼리 -->
-    <select id="selectCommentsByBoardNo" resultType="boardComment">
-        SELECT
-            c.comment_no AS commentNo,
-            c.comment_content AS commentContent,
-            c.comment_date AS commentDate,
-            b.board_no AS boardNo,
-            c.comment_like AS commentLike,
-            c.comment_dislike AS commentDislike
-        FROM tbl_comment c
-        JOIN tbl_board b ON c.board_no = b.board_no
-        WHERE c.board_no = #{boardNo}
-        ORDER BY c.comment_date DESC
-    </select>
+   <select id="selectCommentsByBoardNo" resultType="boardComment">
+      SELECT
+	      c.comment_no AS commentNo,
+	      c.comment_content AS commentContent,
+	      c.comment_date AS commentDate,
+	      b.board_no AS boardNo,
+	      c.comment_like AS commentLike,
+	      c.comment_dislike AS commentDislike,
+	      e.member_no AS memberNo
+      FROM tbl_comment c
+      JOIN tbl_board b ON c.board_no = b.board_no
+      JOIN tbl_exco e ON b.member_no = e.member_no
+      WHERE c.board_no = #{boardNo}
+      ORDER BY c.comment_date DESC
+   </select>
+
+	<!-- 내가쓴 댓글 조회 -->
+   <select id="selectCommentsByMemberNo" resultType="boardComment">
+    SELECT 
+        c.comment_no AS commentNo,
+        c.comment_content AS commentContent,
+        c.comment_date AS commentDate,
+        c.board_no AS boardNo,
+        c.member_no AS memberNo,
+        c.comment_like AS commentLike,
+        c.comment_dislike AS commentDislike,
+        b.board_type AS boardType  <!-- board_type 추가 -->
+    FROM tbl_comment c
+    JOIN tbl_board b ON c.board_no = b.board_no  <!-- tbl_board와 조인 -->
+    WHERE c.member_no = #{memberNo}
+    ORDER BY c.comment_date DESC
+   </select>
 
     <!-- 특정 회원의 전체 게시글 수를 가져오는 쿼리 -->
     <select id="selectTotalBoardsByMemberNo" resultType="int">
