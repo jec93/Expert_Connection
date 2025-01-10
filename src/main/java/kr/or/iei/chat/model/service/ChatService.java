@@ -2,6 +2,7 @@ package kr.or.iei.chat.model.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.or.iei.chat.model.dao.ChatDao;
 import kr.or.iei.chat.model.vo.Chat;
 import kr.or.iei.chat.model.vo.Room;
+import kr.or.iei.member.model.vo.Member;
 
 @Service("chatService")
 public class ChatService {
@@ -86,5 +88,11 @@ public class ChatService {
 	// 기존 채팅방 조회
 	public String findExistingRoom(String memberNo, String otherMemberNo) {
 		return chatDao.findRoomByMembers(memberNo, otherMemberNo);
+	}
+
+	// 실시간 채팅 멤버 각 프로필 가져오기
+	public Member getMemberProfile(String memberNo) {
+		System.out.println("프로플 멤버 넘버 값 : " + memberNo);
+		return chatDao.getMemberProfile(memberNo);
 	}
 }

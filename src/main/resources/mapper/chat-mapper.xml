@@ -74,14 +74,17 @@
 	    m.member_nickname AS memberNickname,
 	    m.profile_path AS profilePath,
 	    m.profile_name AS profileName,
+	    w.member_type AS memberType,  -- 추가된 부분
 	    a.msg_gb AS msgGb, 
 	    a.msg, 
 	    a.file_name AS fileName, 
 	    a.file_path AS filePath, 
 	    a.msg_date AS msgDate
 	FROM tbl_chat a
-	JOIN tbl_exco m 									-- 테이블 변경할 것(임시 지정)
-	ON a.member_no = m.member_no
+	JOIN tbl_exco m 
+	    ON a.member_no = m.member_no
+	JOIN tbl_whole_member w  -- 새로운 JOIN 추가
+	    ON a.member_no = w.member_no
 	WHERE TRIM(a.room_id) = #{_parameter}
 	ORDER BY a.msg_date
 	</select>
@@ -163,4 +166,15 @@
         AND member_no = #{otherMemberNo}
         GROUP BY room_id
     </select>
+    
+    <!-- 프로필 사진 + 멤버 타입도 불러옴 -->
+    <select id="getMemberProfile" parameterType="String" resultType="member">
+	    SELECT e.profile_path AS profilePath,
+	           e.profile_name AS profileName,
+	           w.member_type AS memberType
+	    FROM tbl_exco e
+	    JOIN tbl_whole_member w ON TRIM(e.member_no) = TRIM(w.member_no)
+	    WHERE TRIM(e.member_no) = TRIM(#{memberNo})
+	</select>
+    
 </mapper>

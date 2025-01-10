@@ -97,6 +97,26 @@ body {
     font-size: 13px;
     font-weight: bold;
     color: #333333;
+    display: flex;
+    align-items: center; /* 텍스트와 아이콘을 수직 정렬 */
+}
+
+.member .member-name .grade-icon {
+	height: 13px; /* 닉네임과 같은 크기로 맞춤 */
+    width: auto; /* 가로 비율 유지 */
+    vertical-align: middle; /* 세로 정렬 */
+}
+
+.member-id {
+	display: inline-flex;
+    align-items: center; /* 텍스트와 아이콘을 수직 정렬 */
+}
+
+.member-id .grade-icon{
+	height: 15px; /* 닉네임과 같은 크기로 맞춤 */
+    width: auto; /* 가로 비율 유지 */
+    vertical-align: middle; /* 세로 정렬 */
+    gap: 4px;
 }
 
 /* 메시지 스타일 */
@@ -123,15 +143,29 @@ body {
 }
 
 .message-content {
+    border-radius: 10px;
+    line-height: 1.4;
+    color: #000000;
+   
+}
+
+.message-text {
 	display: inline-block; /* 글자 수에 따라 너비가 조정되도록 설정 */
+	font-size: 13px;
     background-color: #82E3B6;
     padding: 10px 14px;
     border-radius: 10px;
-    font-size: 13px;
-    line-height: 1.4;
-    color: #000000;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     margin: 0; /* 메시지 여백 제거 */
+    max-width: 70%; /* 메시지 최대 너비 설정 */
+    word-wrap: break-word; /* 긴 단어 자동 줄바꿈 */
+    white-space: pre-line; /* 줄바꿈 적용 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+/* 자신이 보낸 메시지 */
+.message.self {
+    justify-content: flex-end;
+    text-align: right;
 }
 
 .message-content.self {
@@ -139,11 +173,28 @@ body {
     color: #ffffff;
 }
 
+.message.self .profile-img {
+    display: none;
+}
+
+.message.self .message-text {
+    background-color: #34805C;
+    color: #ffffff;
+}
+
+.chat-image {
+    max-width: 250px; /* 최대 너비 설정 */
+    max-height: 250px; /* 최대 높이 설정 */
+    width: auto; /* 원본 비율 유지 */
+    height: auto; /* 원본 비율 유지 */
+    display: block; /* 블록 요소로 변경 */
+    margin-bottom: 10px; /* 메시지와의 간격 */
+}
+
 .chat-time {
     font-size: 10px;
     color: #777;
     margin-top: 3px;
-    text-align: right;
 }
 
 /* 채팅 입력 영역 */
@@ -202,22 +253,6 @@ a.leaveRoom {
 
 a.leaveRoom:hover {
     text-decoration: underline;
-}
-
-/* 오른쪽 정렬 메시지 스타일 */
-.message.self {
-    justify-content: flex-end;
-    text-align: right;
-}
-
-.message.self .profile-img {
-    display: none;
-}
-
-.message.self .message-content {
-    background-color: #34805C;
-    color: #ffffff;
-    text-align: right;
 }
 
 /* 검색 입력 필드 */
@@ -419,10 +454,29 @@ a.leaveRoom:hover {
 					<c:forEach var="member" items="${memberList}">
 						<div class="member">
 							<div class="profile-img">
-								<img src="${member.profilePath}${member.profileName}" alt="Profile Image">
+								<c:choose>
+						           <c:when test="${not empty member.profilePath && not empty member.profileName}">
+						               <img src="${member.profilePath}${member.profileName}" class="Profile Image">
+						           </c:when>
+						           <c:otherwise>
+						               <img src="/resources/logo/expert_connection_favicon.png" class="Profile Image">
+						           </c:otherwise>
+						       </c:choose>
 							</div>
 							<div>
-								<div class="member-name">${member.memberNickname}</div>
+								<div class="member-name">${member.memberNickname}
+								<c:choose>
+					                <c:when test="${member.memberType == 4}">
+					                    <img src="/resources/images/expert_type_01.png" alt="등급 0" class="grade-icon">
+					                </c:when>
+					                <c:when test="${member.memberType == 5}">
+					                    <img src="/resources/images/expert_type_02.png" alt="등급 1" class="grade-icon">
+					                </c:when>
+					                <c:when test="${member.memberType == 6}">
+					                    <img src="/resources/images/expert_type_03.png" alt="등급 2" class="grade-icon">
+					                </c:when>
+					            </c:choose>
+								</div>
 							</div>
 						</div>
 					</c:forEach>
@@ -450,12 +504,34 @@ a.leaveRoom:hover {
 							        <img src="${chat.profilePath}${chat.profileName}" alt="Profile Image">
 							    </div>
 							    <div>
-							        <div class="member-id">${chat.memberNickname}</div>
+							        <div class="member-id">${chat.memberNickname}
+								        <c:choose>
+							                <c:when test="${chat.memberType == 4}">
+							                    <img src="/resources/images/expert_type_01.png" alt="등급 0" class="grade-icon">
+							                </c:when>
+							                <c:when test="${chat.memberType == 5}">
+							                    <img src="/resources/images/expert_type_02.png" alt="등급 1" class="grade-icon">
+							                </c:when>
+							                <c:when test="${chat.memberType == 6}">
+							                    <img src="/resources/images/expert_type_03.png" alt="등급 2" class="grade-icon">
+							                </c:when>
+							            </c:choose>
+							        </div>
 							        <div class="message-content">
+							        
 							            <c:if test="${chat.msgGb eq 1}">
-							                <a href="javascript:void(0)" onclick="fn.chatFileDown('${chat.fileName}', '${chat.filePath}')">${chat.fileName}</a>
-							            </c:if>
-							            ${chat.msg}
+										    <c:choose>
+										        <c:when test="${chat.fileName.endsWith('.jpg') or chat.fileName.endsWith('.jpeg') or chat.fileName.endsWith('.png') or chat.fileName.endsWith('.gif')}">
+										            <img src='/resources/upload/${chat.filePath}' alt="${chat.fileName}" class="chat-image">
+										        </c:when>
+										        <c:otherwise>
+										            <a href="javascript:void(0)" onclick="fn.chatFileDown('${chat.fileName}', '${chat.filePath}')">${chat.fileName}</a>
+										        </c:otherwise>
+										    </c:choose>
+										</c:if>
+							            <c:if test="${not empty chat.msg}">
+								            <div class="message-text">${chat.msg}</div>
+								        </c:if>
 							        </div>
 							        <div class="chat-time">${chat.msgDate}</div>
 							    </div>
@@ -515,7 +591,8 @@ a.leaveRoom:hover {
 
         let fn = {
             init : function () {
-                ws = new WebSocket("ws://192.168.10.52/chat/doChat.exco"); // 해당 PC IP로 변경할 것.
+                ws = new WebSocket("ws://localhost/chat/doChat.exco"); // 해당 PC IP로 변경할 것.
+                //ws = new WebSocket("ws://192.168.10.52/chat/doChat.exco"); // 해당 PC IP로 변경할 것.
                 ws.onopen = function() {
                     var msg = { type: "connect", memberNo: memberNo };
                     ws.send(JSON.stringify(msg));
@@ -528,31 +605,63 @@ a.leaveRoom:hover {
                     const memberNo = msgData.memberNo;
                     const memberNickname = msgData.memberNickname; // 발신자 닉네임
                     const msg = msgData.msg;
+                    const profilePath = msgData.profilePath || "/resources/images/default-profile.png";  // 프로필 경로 (기본 이미지 처리)
+                    const profileName = msgData.profileName || "";
+                    const profileImage = profilePath + profileName; // 전체 이미지 경로 만들기
+                    const memberType = msgData.memberType;
+                    
                     var currentTime = moment().format('YYYY-MM-DD HH:mm:ss'); 
 
                     let fileLink = '';
                     if (msgData.filePath && msgData.fileName) {
-                    	fileLink = '<a href="' + msgData.filePath + '" download="' + msgData.fileName + '" class="file-link">' +
-			                        msgData.fileName +
-			                        '</a><br>';
+                    	if (msgData.fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                            fileLink = '<img src=/resources/upload/' + msgData.filePath + ' class="chat-image">';
+                        } else {
+                            fileLink = '<a href="' + msgData.filePath + '" download="' + msgData.fileName + '" class="file-link">' +
+                                       msgData.fileName + '</a><br>';
+                        }
                     }
                     
-                 // 내가 보낸 메시지인지 확인
+                    // 등급 아이콘 추가 여부 체크 
+                    let gradeIcon = "";
+                    if (memberType == 4) {
+                        gradeIcon = '<img src="/resources/images/expert_type_01.png" alt="등급 0" class="grade-icon">';
+                    } else if (memberType == 5) {
+                        gradeIcon = '<img src="/resources/images/expert_type_02.png" alt="등급 1" class="grade-icon">';
+                    } else if (memberType == 6) {
+                        gradeIcon = '<img src="/resources/images/expert_type_03.png" alt="등급 2" class="grade-icon">';
+                    }
+                    
+                    // 내가 보낸 메시지인지 확인
                     const isSelf = memberNo === '${sessionScope.loginMember.memberNo}';
                     const messageClass = isSelf ? 'self' : '';
                     
-                    var messageHtml =
-                        '<div class="message ' + messageClass + '">' +
-                            '<div class="profile-img">' +
-                                '<img src="/path/to/profileImage.jpg" alt="Profile Image">' +
-                            '</div>' +
-                            '<div>' +
-                                '<div class="member-id">' + memberNickname + '</div>' +
-                                '<div class="message-content">' + fileLink + msg + '</div>' +
-                                '<div class="chat-time">' + currentTime + '</div>' +
-                            '</div>' +
-                        '</div>';
-                    
+                    var messageHtml = '<div class="message ' + messageClass + '">';
+
+                    // 상대방이 보낸 메시지일 경우 프로필 이미지 추가
+                    if (!isSelf) {
+                        messageHtml += '<div class="profile-img">' +
+                                            '<img src="' + profileImage + '" alt="Profile Image">' +
+                                        '</div>';
+                    }
+
+                    messageHtml += '<div class="message-content">' +
+                                        '<div class="member-id">' + memberNickname + ' ' + gradeIcon + '</div>';
+
+                    // 파일이 있을 경우 추가
+                    if (fileLink) {
+                        messageHtml += '<div class="chat-image-container">' + fileLink + '</div>';
+                    }
+
+                    // 텍스트 메시지가 있을 경우 추가
+                    if (msg) {
+                        messageHtml += '<div class="message-text">' + msg + '</div>';
+                    }
+
+                    messageHtml += '<div class="chat-time">' + currentTime + '</div>' +
+                                   '</div>' +
+                                   '</div>'; // .message 닫기
+
                     $("#msgArea").append(messageHtml);
                     $("#msgArea").scrollTop($("#msgArea")[0].scrollHeight);
                 };
@@ -572,7 +681,8 @@ a.leaveRoom:hover {
                     roomId: roomId,
                     memberNo: memberNo, // 질문자 ID
                     msg: triggerWord, // 질문 내용
-                    memberNickname: memberNickname // 질문자 닉네임
+                    memberNickname: memberNickname, // 질문자 닉네임
+                    memberType: memberType
                 };
                 // WebSocket으로 메시지 전송
                 ws.send(JSON.stringify(questionData));
@@ -583,7 +693,8 @@ a.leaveRoom:hover {
                     roomId: roomId,       // 채팅방 ID
                     memberNo: expertMemberNo, // 전문가 ID
                     msg: responseContent, // 답변 내용
-                    memberNickname: expertNickname // 전문가 닉네임
+                    memberNickname: expertNickname, // 전문가 닉네임
+                    memberType: memberType
                 };
                 ws.send(JSON.stringify(answerData));
             },

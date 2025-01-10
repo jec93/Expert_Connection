@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import kr.or.iei.chat.model.service.ChatService;
 import kr.or.iei.chat.model.vo.Chat;
 import kr.or.iei.member.model.service.MemberService;
+import kr.or.iei.member.model.vo.Member;
 
 
 @Component("socketHandler")
@@ -73,6 +74,12 @@ public class SocketHandler extends TextWebSocketHandler{
 			String fileName = jsonObj.get("fileName") != null ? jsonObj.get("fileName").getAsString() : null;
 			String filePath = jsonObj.get("filePath") != null ? jsonObj.get("filePath").getAsString() : null;
 			
+			Member profile = service.getMemberProfile(memberNo);
+			
+	        String profilePath = (profile != null) ? profile.getProfilePath() : "/resources/images/default-profile.png";
+	        String profileName = (profile != null) ? profile.getProfileName() : "";
+	        String memberType = profile.getMemberType();
+			
 			Chat chat = new Chat();
 			chat.setRoomId(roomId);
 			chat.setMemberNo(memberNo);
@@ -100,10 +107,13 @@ public class SocketHandler extends TextWebSocketHandler{
 		        response.addProperty("roomId", roomId);
 		        response.addProperty("memberNo", memberNo); 
 		        response.addProperty("isHidden", false);
-		        response.addProperty("fileName", fileName); // 파일 이름 추가
-		        response.addProperty("filePath", filePath); // 파일 경로 추가
+		        response.addProperty("fileName", fileName); 
+		        response.addProperty("filePath", filePath); 
 		        response.addProperty("msg", msg);
 		        response.addProperty("memberNickname", memberNickname);
+		        response.addProperty("profilePath", profilePath); 
+	            response.addProperty("profileName", profileName);
+	            response.addProperty("memberType", memberType);
 		        
 		        
 		        this.sendMsg(response.toString());
@@ -134,6 +144,14 @@ public class SocketHandler extends TextWebSocketHandler{
 	    chat.setMsgGb("0"); // 일반 메시지
 	    chat.setFileName(null);
 	    chat.setFilePath(null);
+	    
+	    Member profile = service.getMemberProfile(memberNo);
+		
+	    String profilePath = (profile != null) ? profile.getProfilePath() : "/resources/images/default-profile.png";
+        String profileName = (profile != null) ? profile.getProfileName() : "";
+        String memberType = profile.getMemberType();
+        
+        System.out.println("memberType : " + memberType);
 
 	    int result = service.insertChat(chat);
 
@@ -145,6 +163,9 @@ public class SocketHandler extends TextWebSocketHandler{
 	        response.addProperty("memberNo", memberNo); // 전문가의 회원 번호
 	        response.addProperty("msg", msg);
 	        response.addProperty("memberNickname", memberNickname);
+	        response.addProperty("profilePath", profilePath); 
+            response.addProperty("profileName", profileName); 
+            response.addProperty("memberType", memberType);
 
 	        this.sendMsg(response.toString());
 	    }

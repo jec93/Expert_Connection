@@ -16,6 +16,7 @@ public class Chat {
 	private String memberNickname;
 	private String profilePath;
 	private String profileName;
+	private String memberType;
 	
 	public Chat() {
 		super();
@@ -24,7 +25,7 @@ public class Chat {
 
 	public Chat(String roomId, String roomName, String chatId, String memberNo, String msgGb, String msg,
 			String fileName, String filePath, String msgDate, String memberNickname, String profilePath,
-			String profileName) {
+			String profileName, String memberType) {
 		super();
 		this.roomId = roomId;
 		this.roomName = roomName;
@@ -38,6 +39,7 @@ public class Chat {
 		this.memberNickname = memberNickname;
 		this.profilePath = profilePath;
 		this.profileName = profileName;
+		this.memberType = memberType;
 	}
 
 	public String getRoomId() {
@@ -135,6 +137,13 @@ public class Chat {
 	public void setProfileName(String profileName) {
 		this.profileName = profileName;
 	}
-	
+
+	public String getMemberType() {
+		return memberType;
+	}
+
+	public void setMemberType(String memberType) {
+		this.memberType = memberType;
+	}
 	
 }

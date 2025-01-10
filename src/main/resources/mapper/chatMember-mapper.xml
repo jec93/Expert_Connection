@@ -32,10 +32,14 @@
 		    m.MEMBER_NO AS memberNo,
 		    m.MEMBER_NICKNAME AS memberNickname,
 		    m.PROFILE_NAME AS profileName,
-		    m.PROFILE_PATH AS profilePath
+		    m.PROFILE_PATH AS profilePath,
+		    w.MEMBER_TYPE AS memberType  -- 추가된 컬럼
 		FROM tbl_chat_members cm
-		JOIN tbl_exco m 										-- 테이블 변경할 것(임시 지정)
-		ON cm.MEMBER_NO = m.MEMBER_NO
+		JOIN tbl_exco m  
+		    ON cm.MEMBER_NO = m.MEMBER_NO
+		JOIN tbl_whole_member w  -- 새로운 JOIN 추가
+		    ON cm.MEMBER_NO = w.MEMBER_NO
 		WHERE TRIM(cm.ROOM_ID) = #{roomId}
+
 	</select>
 </mapper>

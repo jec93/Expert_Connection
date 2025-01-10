@@ -12,7 +12,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -228,8 +227,15 @@ body {
 
 		<div class="content">
 			<div class="profile-header">
-		    <img class="profile-img" src="/resources/logo/expert_connection_favicon.png" alt="프로필 사진">
-		    <div class="profile-info">
+				<c:choose>
+					<c:when test="${not empty expertDetail.profilePath && not empty expertDetail.profileName}">
+						<img src="${expertDetail.profilePath}${expertDetail.profileName}" class="profile-img">
+					</c:when>
+					<c:otherwise>
+						<img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+					</c:otherwise>
+				</c:choose>
+				<div class="profile-info">
 		        <h1 class="profile-header-title">
 		            ${expertDetail.expertNickname}
 		            <c:choose>
