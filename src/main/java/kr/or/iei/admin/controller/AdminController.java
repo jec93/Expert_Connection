@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.iei.admin.model.service.AdminService;
 import kr.or.iei.admin.model.vo.AccessRestriction;
+import kr.or.iei.admin.model.vo.ExpertPageData;
 import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
@@ -371,4 +372,48 @@ public class AdminController {
 	/*
 	 * @GetMapping("deleteCategory.exco") public String
 	 */
+	
+	//관리자 페이지 -> 전문가 승인 검토 + 활동중인 전문가 목록 페이지로 이동
+	@GetMapping("expertManagement.exco")
+	public String expertManagemnet(int reqPage, String searchName, Model model) {
+		
+		ExpertPageData pd = null;
+		if(searchName.equals("expected")) {
+			pd = adminService.selectExpectedExpertList(reqPage, searchName);
+		} else if (searchName.equals("null")) {
+			pd = adminService.selectExpectedExpertList(reqPage, searchName);
+		} else if (searchName.equals("approval")) {
+			pd = adminService.selectApprovalExpertList(reqPage, searchName);
+		} else if (searchName.equals("decline")) {
+			pd = adminService.selectHoldExpertList(reqPage, searchName);
+		} else if (searchName.equals("hold")) {
+			pd = adminService.selectHoldExpertList(reqPage, searchName);
+		}
+		
+		model.addAttribute("expertList", pd.getList());
+		model.addAttribute("pageNavi", pd.getPageNavi());
+		model.addAttribute("searchName", searchName);
+		
+		return "admin/expertManage";
+	}
+	
+	//관리자 페이지 -> 전문가 승인 반려
+	@GetMapping("expertDecline.exco")
+	public String expertDecline(String receiveNo, Model model) {
+		
+		int result = adminService.expertDecline(receiveNo);
+		
+		if(result > 0) {
+			model.addAttribute("icon","success");
+			model.addAttribute("title","전문가 승인 반려 완료");
+			model.addAttribute("text", "해당 승인 요청을 반려했습니다.");
+			model.addAttribute("loc","/admin/expertManagement.exco&reqPage=1&searchName=decline");
+		}else {
+			model.addAttribute("icon","error");
+			model.addAttribute("title","전문가 승인 반려 실패");
+			model.addAttribute("text", "해당 승인 요청을 처리하는 중 오류가 발생했습니다.");
+			model.addAttribute("loc","/admin/expertManagement.exco&reqPage=1&searchName=expected");
+		}
+		return "common/msg";
+	}
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import kr.or.iei.admin.model.dao.AdminDao;
 import kr.or.iei.admin.model.vo.AccessRestriction;
+import kr.or.iei.admin.model.vo.ExpertPageData;
 import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
@@ -21,6 +22,7 @@ import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.category.controller.CategoryInitializer;
 import kr.or.iei.category.model.dao.CategoryDao;
 import kr.or.iei.category.model.vo.Category;
+import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 @Service("adminService")
@@ -471,6 +473,320 @@ public class AdminService {
 			//추가시 데이터 초기화
 			categoryInitializer.refreshCategories();
 		}
+		return result;
+	}
+	
+	//관리자페이지 - 승인예정 전문가 목록 조회
+	public ExpertPageData selectExpectedExpertList(int reqPage, String searchName) {
+		int viewExpertCnt = 10;
+	      
+	    int end = reqPage * viewExpertCnt;
+	    int start = end - viewExpertCnt + 1;
+	      
+	    HashMap<String, Integer> map = new HashMap<String, Integer>();
+	    map.put("start", start);
+	    map.put("end", end);
+	  
+	    //전문가 리스트
+	    ArrayList<Expert> list = (ArrayList<Expert>) adminDao.selectExpectedExpertList(map);
+	  
+	   //전체 승인예정 전문가 회원 수
+	   int totCnt = adminDao.selectAllExpectedExpertCount();
+	  
+	   //전체 페이지 갯수
+	   int totPage = 0;
+	   if(totCnt % viewExpertCnt > 0) {
+	      totPage = totCnt / viewExpertCnt + 1;
+	   } else {
+	      totPage = totCnt / viewExpertCnt;
+	   }
+	  
+	   //페이지 네비게이션 사이즈      (1,2,3,4,5 or 6,7,8,9,10)
+	   int pageNaviSize = 5;
+	  
+	   //페이지 네비게이션 시작번호 설정 (1,2,3,4,5 == 1 or 6,7,8,9,10 == 6)
+	   int pageNo = ((reqPage-1) / pageNaviSize) * pageNaviSize + 1;
+	  
+	   //페이지 네비게이션 HTML
+	   String pageNavi = "<ul class = 'pagination circle-style'>";
+	  
+	   //이전버튼
+	   //시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
+	   if(pageNo != 1) {
+		   pageNavi += "<li>";
+		   pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage=" + (pageNo - 1) + "&searchName="+searchName+"'>";
+		   pageNavi += "<span class='material-icons'> < </span></a>";
+		   pageNavi += "</li>";
+	  }
+	  
+	  //페이지 네비게이션
+	  for(int i=0; i<pageNaviSize; i++) {
+		  pageNavi += "<li>";
+	 
+		  if(pageNo == reqPage) {
+			  pageNavi += "<a class='page-item active-page' href='/admin/expertManagement.exco?reqPage="+pageNo+"&searchName="+searchName+"'>";
+		  } else {
+			  pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage="+ pageNo+ "&searchName="+searchName+"'>";
+		  }
+		  pageNavi += pageNo + "</a></li>";
+		     
+		  pageNo++;
+		     
+		  if(pageNo > totPage) {
+		       break;
+		  }
+	  }
+	  
+	  //다음버튼
+	  if(pageNo <= totPage) {
+	     pageNavi += "<li>";
+		 pageNavi += "<a class = 'page-item' href='/admin/expertManagement.exco?reqPage=" + pageNo + "&searchName="+searchName+"'>";
+		 pageNavi += "<span class='material-icons'> > </span></a>";
+		 pageNavi += "</li>";
+	  }
+	  pageNavi += "</ul>";
+	  
+	  ExpertPageData pd = new ExpertPageData(list, pageNavi);
+	  
+	  return pd;
+	}
+
+	//관리자페이지 - 승인완료 전문가 목록 조회
+	public ExpertPageData selectApprovalExpertList(int reqPage, String searchName) {
+		int viewExpertCnt = 10;
+	      
+	    int end = reqPage * viewExpertCnt;
+	    int start = end - viewExpertCnt + 1;
+	      
+	    HashMap<String, Integer> map = new HashMap<String, Integer>();
+	    map.put("start", start);
+	    map.put("end", end);
+	  
+	    //전문가 리스트
+	    ArrayList<Expert> list = (ArrayList<Expert>) adminDao.selectApprovalExpertList(map);
+	  
+	   //전체 승인완료 전문가 회원 수
+	   int totCnt = adminDao.selectAllApprovalExpertCount();
+	  
+	   System.out.println(totCnt);
+	   
+	   //전체 페이지 갯수
+	   int totPage = 0;
+	   if(totCnt % viewExpertCnt > 0) {
+	      totPage = totCnt / viewExpertCnt + 1;
+	   } else {
+	      totPage = totCnt / viewExpertCnt;
+	   }
+	  
+	   //페이지 네비게이션 사이즈      (1,2,3,4,5 or 6,7,8,9,10)
+	   int pageNaviSize = 5;
+	  
+	   //페이지 네비게이션 시작번호 설정 (1,2,3,4,5 == 1 or 6,7,8,9,10 == 6)
+	   int pageNo = ((reqPage-1) / pageNaviSize) * pageNaviSize + 1;
+	  
+	   //페이지 네비게이션 HTML
+	   String pageNavi = "<ul class = 'pagination circle-style'>";
+	  
+	   //이전버튼
+	   //시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
+	   if(pageNo != 1) {
+		   pageNavi += "<li>";
+		   pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage=" + (pageNo - 1) + "&searchName="+searchName+"'>";
+		   pageNavi += "<span class='material-icons'> < </span></a>";
+		   pageNavi += "</li>";
+	  }
+	  
+	  //페이지 네비게이션
+	  for(int i=0; i<pageNaviSize; i++) {
+		  pageNavi += "<li>";
+	 
+		  if(pageNo == reqPage) {
+			  pageNavi += "<a class='page-item active-page' href='/admin/expertManagement.exco?reqPage="+pageNo+"&searchName="+searchName+"'>";
+		  } else {
+			  pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage="+ pageNo+ "&searchName="+searchName+"'>";
+		  }
+		  pageNavi += pageNo + "</a></li>";
+		     
+		  pageNo++;
+		     
+		  if(pageNo > totPage) {
+		       break;
+		  }
+	  }
+	  
+	  //다음버튼
+	  if(pageNo <= totPage) {
+	     pageNavi += "<li>";
+		 pageNavi += "<a class = 'page-item' href='/admin/expertManagement.exco?reqPage=" + pageNo + "&searchName="+searchName+"'>";
+		 pageNavi += "<span class='material-icons'> > </span></a>";
+		 pageNavi += "</li>";
+	  }
+	  pageNavi += "</ul>";
+	  
+	  ExpertPageData pd = new ExpertPageData(list, pageNavi);
+	  
+	  return pd;
+	}
+	
+	//관리자페이지 - 승인거절 전문가 목록 조회
+	public ExpertPageData selectDeclineExpertList(int reqPage, String searchName) {
+		int viewExpertCnt = 10;
+	      
+	    int end = reqPage * viewExpertCnt;
+	    int start = end - viewExpertCnt + 1;
+	      
+	    HashMap<String, Integer> map = new HashMap<String, Integer>();
+	    map.put("start", start);
+	    map.put("end", end);
+	  
+	    //전문가 리스트
+	    ArrayList<Expert> list = (ArrayList<Expert>) adminDao.selectDeclineExpertList(map);
+	  
+	   //전체 승인거절 전문가 회원 수
+	   int totCnt = adminDao.selectAllDeclineExpertCount();
+	  
+	   //전체 페이지 갯수
+	   int totPage = 0;
+	   if(totCnt % viewExpertCnt > 0) {
+	      totPage = totCnt / viewExpertCnt + 1;
+	   } else {
+	      totPage = totCnt / viewExpertCnt;
+	   }
+	  
+	   //페이지 네비게이션 사이즈      (1,2,3,4,5 or 6,7,8,9,10)
+	   int pageNaviSize = 5;
+	  
+	   //페이지 네비게이션 시작번호 설정 (1,2,3,4,5 == 1 or 6,7,8,9,10 == 6)
+	   int pageNo = ((reqPage-1) / pageNaviSize) * pageNaviSize + 1;
+	  
+	   //페이지 네비게이션 HTML
+	   String pageNavi = "<ul class = 'pagination circle-style'>";
+	  
+	   //이전버튼
+	   //시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
+	   if(pageNo != 1) {
+		   pageNavi += "<li>";
+		   pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage=" + (pageNo - 1) + "&searchName="+searchName+"'>";
+		   pageNavi += "<span class='material-icons'> < </span></a>";
+		   pageNavi += "</li>";
+	  }
+	  
+	  //페이지 네비게이션
+	  for(int i=0; i<pageNaviSize; i++) {
+		  pageNavi += "<li>";
+	 
+		  if(pageNo == reqPage) {
+			  pageNavi += "<a class='page-item active-page' href='/admin/expertManagement.exco?reqPage="+pageNo+"&searchName="+searchName+"'>";
+		  } else {
+			  pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage="+ pageNo+ "&searchName="+searchName+"'>";
+		  }
+		  pageNavi += pageNo + "</a></li>";
+		     
+		  pageNo++;
+		     
+		  if(pageNo > totPage) {
+		       break;
+		  }
+	  }
+	  
+	  //다음버튼
+	  if(pageNo <= totPage) {
+	     pageNavi += "<li>";
+		 pageNavi += "<a class = 'page-item' href='/admin/expertManagement.exco?reqPage=" + pageNo + "&searchName="+searchName+"'>";
+		 pageNavi += "<span class='material-icons'> > </span></a>";
+		 pageNavi += "</li>";
+	  }
+	  pageNavi += "</ul>";
+	  
+	  ExpertPageData pd = new ExpertPageData(list, pageNavi);
+	  
+	  return pd;
+	}
+
+	//관리자페이지 - 승인정지 전문가 목록 조회
+	public ExpertPageData selectHoldExpertList(int reqPage, String searchName) {
+		int viewExpertCnt = 10;
+	      
+	    int end = reqPage * viewExpertCnt;
+	    int start = end - viewExpertCnt + 1;
+	      
+	    HashMap<String, Integer> map = new HashMap<String, Integer>();
+	    map.put("start", start);
+	    map.put("end", end);
+	  
+	    //전문가 리스트
+	    ArrayList<Expert> list = (ArrayList<Expert>) adminDao.selectHoldExpertList(map);
+	  
+	   //전체 승인정지 전문가 회원 수
+	   int totCnt = adminDao.selectAllHoldExpertCount();
+	  
+	   //전체 페이지 갯수
+	   int totPage = 0;
+	   if(totCnt % viewExpertCnt > 0) {
+	      totPage = totCnt / viewExpertCnt + 1;
+	   } else {
+	      totPage = totCnt / viewExpertCnt;
+	   }
+	  
+	   //페이지 네비게이션 사이즈      (1,2,3,4,5 or 6,7,8,9,10)
+	   int pageNaviSize = 5;
+	  
+	   //페이지 네비게이션 시작번호 설정 (1,2,3,4,5 == 1 or 6,7,8,9,10 == 6)
+	   int pageNo = ((reqPage-1) / pageNaviSize) * pageNaviSize + 1;
+	  
+	   //페이지 네비게이션 HTML
+	   String pageNavi = "<ul class = 'pagination circle-style'>";
+	  
+	   //이전버튼
+	   //시작번호 != 1 (시작번호 == 1 or 6 or 11 or 16 or 21 .....)
+	   if(pageNo != 1) {
+		   pageNavi += "<li>";
+		   pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage=" + (pageNo - 1) + "&searchName="+searchName+"'>";
+		   pageNavi += "<span class='material-icons'> < </span></a>";
+		   pageNavi += "</li>";
+	  }
+	  
+	  //페이지 네비게이션
+	  for(int i=0; i<pageNaviSize; i++) {
+		  pageNavi += "<li>";
+	 
+		  if(pageNo == reqPage) {
+			  pageNavi += "<a class='page-item active-page' href='/admin/expertManagement.exco?reqPage="+pageNo+"&searchName="+searchName+"'>";
+		  } else {
+			  pageNavi += "<a class='page-item' href='/admin/expertManagement.exco?reqPage="+ pageNo+ "&searchName="+searchName+"'>";
+		  }
+		  pageNavi += pageNo + "</a></li>";
+		     
+		  pageNo++;
+		     
+		  if(pageNo > totPage) {
+		       break;
+		  }
+	  }
+	  
+	  //다음버튼
+	  if(pageNo <= totPage) {
+	     pageNavi += "<li>";
+		 pageNavi += "<a class = 'page-item' href='/admin/expertManagement.exco?reqPage=" + pageNo + "&searchName="+searchName+"'>";
+		 pageNavi += "<span class='material-icons'> > </span></a>";
+		 pageNavi += "</li>";
+	  }
+	  pageNavi += "</ul>";
+	  
+	  ExpertPageData pd = new ExpertPageData(list, pageNavi);
+	  
+	  return pd;
+	}
+
+	//관리자페이지 - 전문가 승인 반려
+	public int expertDecline(String receiveNo) {
+		
+		int result = adminDao.expertDecline(receiveNo);
+		
+		if (result > 0) {
+			//이메일 발송하게해야함
+		}
+		
 		return result;
 	}
 }

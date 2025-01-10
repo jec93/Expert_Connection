@@ -44,7 +44,7 @@
 						</ul>
 						<ul class="side-menu">
 							<li><a href="/admin/memberReportManage.exco?reqPage=1&searchName=report">신고내역 관리</a></li>
-							<li><a href="#">전문가 승인 검토</a></li>
+							<li><a href="/admin/expertManagement.exco?reqPage=1&searchName=expected">전문가 승인 검토</a></li>
 						</ul>
 						<ul class="side-menu-title">
 							<li>사이트 관리</li>

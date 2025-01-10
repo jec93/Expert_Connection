@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import kr.or.iei.admin.model.vo.AccessRestriction;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.board.model.vo.Board;
+import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 @Repository("adminDao")
@@ -108,9 +109,53 @@ public class AdminDao {
 		return sqlSession.selectOne("report.checkAccess", map);
 	}
 
+	//관리자페이지 -> 승인예정 전문가 목록 조회
+	public List<Expert> selectExpectedExpertList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("expertManagement.allExpectedExpertList", map);
+	}
+
+	//관리자페이지 -> 승인예정 전문가 총 인원 조회
+	public int selectAllExpectedExpertCount() {
+		return sqlSession.selectOne("expertManagement.allExpectedExpertCount");
+	}
+	
+	//관리자페이지 -> 승인완료 전문가 목록 조회
+	public List<Expert> selectApprovalExpertList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("expertManagement.allApprovalExpertList", map);
+	}
+
+	//관리자페이지 -> 승인완료 전문가 총 인원 조회
+	public int selectAllApprovalExpertCount() {
+		return sqlSession.selectOne("expertManagement.allApprovalExpertCount");
+	}
+	
+	//관리자페이지 -> 승인거절 전문가 목록 조회
+	public List<Expert> selectDeclineExpertList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("expertManagement.allDeclineExpertList", map);
+	}
+
+	//관리자페이지 -> 승인거절 전문가 총 인원 조회
+	public int selectAllDeclineExpertCount() {
+		return sqlSession.selectOne("expertManagement.allDeclineExpertCount");
+	}
+	
+	//관리자페이지 -> 승인정지 전문가 목록 조회
+	public List<Expert> selectHoldExpertList(HashMap<String, Integer> map) {
+		return sqlSession.selectList("expertManagement.allHoldExpertList", map);
+	}
+
+	//관리자페이지 -> 승인정지 전문가 총 인원 조회
+	public int selectAllHoldExpertCount() {
+		return sqlSession.selectOne("expertManagement.allHoldExpertCount");
+	}
 	/*
 	 * //관리자페이지 -> 접근제한횟수 증가 public int updateRestrictionCount(String memberNo) {
 	 * return sqlSession.update("report.updateRestrictionCount", memberNo); }
 	 */
+
+	//관리자페이지 - 전문가 승인 반려
+	public int expertDecline(String receiveNo) {
+		return sqlSession.update("expertManagement.expertDecline", receiveNo);
+	}
 	
 }

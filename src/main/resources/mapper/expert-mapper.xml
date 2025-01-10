@@ -303,4 +303,237 @@
 			#{reviewScore}
 		)
 	</insert>
+	
+	<!-- 관리자페이지 승인예정 전문가 조회 -->
+	<select id="allExpectedExpertList"
+			parameterType = "hashmap"
+			resultType = "expert">
+	SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'E'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+	</select>
+	
+	<!-- 관리자 페이지 승인예정 전문가 총 인원수 -->
+	<select id="allExpectedExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'E'
+	</select>
+	
+	<!-- 관리자페이지 승인완료 전문가 조회 -->
+	<select id="allApprovalExpertList"
+        parameterType = "hashmap"
+        resultType = "expert">
+    SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'P'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+    </select>
+
+	
+	<!-- 관리자 페이지 승인완료 전문가 총 인원수 -->
+	<select id="allApprovalExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'P'
+	</select>
+	
+	<!-- 관리자페이지 승인거절 전문가 조회 -->
+	<select id="allDeclineExpertList"
+			parameterType = "hashmap"
+			resultType = "expert">
+	SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'D'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+	</select>
+	
+	<!-- 관리자 페이지 승인거절 전문가 총 인원수 -->
+	<select id="allDeclineExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'D'
+	</select>
+	
+	<!-- 관리자페이지 승인정지 전문가 조회 -->
+	<select id="allHoldExpertList"
+			parameterType = "hashmap"
+			resultType = "expert">
+	SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'H'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+	</select>
+	
+	<!-- 관리자 페이지 승인정지 전문가 총 인원수 -->
+	<select id="allHoldExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'H'
+	</select>
+	
+	<!-- 관리자 페이지 전문가 승인 반려 -->
+	<update id="expertDecline"
+			parameterType="string">
+	UPDATE TBL_EXPERT_MANAGEMENT
+			SET PERMISSION_STATE = 'D'
+	WHERE RECEIVE_NO = #{receiveNo}
+	</update>
 </mapper>

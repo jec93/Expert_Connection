@@ -5,7 +5,7 @@
 Boolean isNull = (Boolean) application.getAttribute("isNull");
 %>
 
-<link rel="stylesheet" href="/resources/css/test.css" />
+<link rel="stylesheet" href="/resources/css/exco.css" />
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="/resources/js/sweetalert.min.js"></script>
