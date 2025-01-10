@@ -2,507 +2,538 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="board">
 
-	<!-- 게시글 조회 -->
-	<select id="selectBoardList" parameterType="hashmap"
-		resultType="board">
-		SELECT B.BOARD_NO AS boardNo,
-		NICK.MEMBER_NICKNAME AS boardWriter,
-		B.BOARD_TYPE AS boardType,
-		B.BOARD_TITLE AS boardTitle,
-		B.BOARD_CONTENT AS boardContent,
-		CASE
-		WHEN EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
-		FLOOR(EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 일 전'
-		WHEN EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
-		FLOOR(EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 시간 전'
-		WHEN EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
-		FLOOR(EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 분 전'
-		ELSE
-		FLOOR(EXTRACT(SECOND FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 초 전'
-		END AS boardDate,
-		B.BOARD_COUNT AS boardCount,
-		B.BOARD_LIKE AS boardLike,
-		B.BOARD_DISLIKE AS boardDislike
-		FROM (
-		SELECT ROWNUM RNUM, B.*
-		FROM
-		(
-		SELECT B.*
-		FROM TBL_BOARD B
-		WHERE B.BOARD_TYPE = #{boardType}
-		ORDER BY B.BOARD_DATE DESC
-		) B
-		) B
-		LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
-		FROM (
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-		)W)NICK
-		ON B.MEMBER_NO = NICK.MEMBER_NO
-		WHERE RNUM BETWEEN #{start} AND #{end}
-		ORDER BY B.BOARD_DATE DESC
+	<!-- 게시글 조회  -->
+	<select id="selectBoardList"
+			parameterType = "hashmap"
+			resultType = "board">
+	SELECT B.BOARD_NO AS boardNo,
+        NICK.MEMBER_NICKNAME AS boardWriter,
+        B.BOARD_TYPE AS boardType,
+        B.BOARD_TITLE AS boardTitle,
+        B.BOARD_CONTENT AS boardContent,
+        CASE
+           WHEN EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
+               FLOOR(EXTRACT(DAY FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 일 전'
+           WHEN EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
+               FLOOR(EXTRACT(HOUR FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 시간 전'
+           WHEN EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE)) > 0 THEN
+               FLOOR(EXTRACT(MINUTE FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 분 전'
+           ELSE
+               FLOOR(EXTRACT(SECOND FROM (SYSTIMESTAMP - B.BOARD_DATE))) || ' 초 전'
+        END AS boardDate,
+        B.BOARD_COUNT AS boardCount,
+        B.BOARD_LIKE AS boardLike,
+        B.BOARD_DISLIKE AS boardDislike
+    FROM (
+	      SELECT ROWNUM RNUM, B.* 
+	      FROM
+               ( 
+	               SELECT B.*
+	               FROM TBL_BOARD B
+	               WHERE B.BOARD_TYPE = #{boardType}
+	               ORDER BY B.BOARD_DATE DESC
+               ) B
+	      ) B
+    LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+            FROM (
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+            )W)NICK
+    ON B.MEMBER_NO = NICK.MEMBER_NO
+    WHERE RNUM BETWEEN #{start} AND #{end}
+    ORDER BY B.BOARD_DATE DESC
 	</select>
-
+	
 	<!-- 전체 게시글 개수 조회 -->
-	<select id="selectBoardCount" parameterType="_int"
-		resultType="_int">
-		SELECT COUNT(*)
-		FROM TBL_BOARD
-		WHERE BOARD_TYPE = #{boardType}
+	<select id="selectBoardCount"
+			parameterType="_int"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_BOARD
+	WHERE BOARD_TYPE = #{boardType}
 	</select>
-
-	<select id="createBoardNo" resultType="string">
-		SELECT TO_CHAR(SYSDATE,
-		'YYYYMMDDHH24MI') || LPAD(SEQ_MEMBER.NEXTVAL, 4, '0') FROM DUAL
+	
+	<select id="createBoardNo"
+		resultType="string">
+		SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_MEMBER.NEXTVAL, 4, '0') FROM DUAL
 	</select>
-
-	<select id="insertBoard" parameterType="board">
-		INSERT INTO TBL_BOARD
-		(
+	
+	<select id="insertBoard"
+		parameterType="board">
+	INSERT INTO TBL_BOARD
+	(
 		BOARD_NO,
-		MEMBER_NO,
-		BOARD_TYPE,
+        MEMBER_NO,
+        BOARD_TYPE,
 		BOARD_TITLE,
 		BOARD_CONTENT
-		)
-		VALUES
-		(
+	)
+	VALUES
+	(
 		#{boardNo},
-		#{memberNo},
-		#{boardType},
+        #{memberNo},
+        #{boardType},
 		#{boardTitle},
 		#{boardContent}
-		)
+	)
 	</select>
-
-	<select id="viewByBoardNo" parameterType="string"
-		resultType="board">
-		SELECT
-		BOARD_NO AS boardNo,
-		MEMBER_NO AS memberNo,
-		(SELECT W.MEMBER_NICKNAME
-		FROM (
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-		) W
-		WHERE W.MEMBER_NO = TBL_BOARD.MEMBER_NO) AS boardWriter,
-		BOARD_TYPE AS boardType,
-		BOARD_TITLE AS boardTitle,
-		BOARD_CONTENT AS boardContent,
-		BOARD_DATE AS boardDate,
-		BOARD_COUNT AS boardCount,
-		BOARD_LIKE AS boardLike,
-		BOARD_DISLIKE AS boardDislike
-		FROM TBL_BOARD
-		WHERE BOARD_NO = #{boardNo}
+	
+	<select id="viewByBoardNo"
+			parameterType="string"
+			resultType="board">
+	SELECT 
+    BOARD_NO AS boardNo,
+    MEMBER_NO AS memberNo,
+    (SELECT W.MEMBER_NICKNAME
+     FROM (
+         SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+         UNION ALL
+         SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+         UNION ALL
+         SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+     ) W
+     WHERE W.MEMBER_NO = TBL_BOARD.MEMBER_NO) AS boardWriter,
+    BOARD_TYPE AS boardType,
+    BOARD_TITLE AS boardTitle,
+    BOARD_CONTENT AS boardContent,
+    BOARD_DATE AS boardDate,
+    BOARD_COUNT AS boardCount,
+    BOARD_LIKE AS boardLike,
+    BOARD_DISLIKE AS boardDislike
+	FROM TBL_BOARD
+	WHERE BOARD_NO = #{boardNo}
 	</select>
-
-	<update id="updateReadByboardNo" parameterType="string">
-		UPDATE
+	
+	<update id="updateReadByboardNo"
+			parameterType="string">
+	UPDATE
 		TBL_BOARD
-		SET
+	SET
 		BOARD_COUNT = BOARD_COUNT + 1
-		WHERE BOARD_NO = #{boardNo}
+	WHERE BOARD_NO = #{boardNo}
 	</update>
-
-	<select id="readFileByBoardNo" parameterType="string"
-		resultType="boardFile">
-		SELECT
-		FILE_NO AS fileNo,
-		BOARD_NO AS boardNo,
-		FILE_NAME AS fileName,
-		FILE_PATH AS filePath
-		FROM TBL_FILE WHERE BOARD_NO=#{string}
+	
+	<select id="readFileByBoardNo"
+			parameterType="string"
+			resultType="boardFile">
+	SELECT
+	    FILE_NO AS fileNo,
+	    BOARD_NO AS boardNo,
+	    FILE_NAME AS fileName,
+	    FILE_PATH AS filePath
+	FROM TBL_FILE WHERE BOARD_NO=#{string}
 	</select>
-
-	<select id="readCommentListByBoardNo" parameterType="string"
-		resultType="boardComment">
-		SELECT
-		COMMENT_NO AS commentNo,
-		BOARD_NO AS boardNo,
-		MEMBER_NO AS memberNo,
-		(SELECT W.MEMBER_NICKNAME
-		FROM (
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-		) W
-		WHERE W.MEMBER_NO = TBL_COMMENT.MEMBER_NO) AS commentWriter,
-		COMMENT_CONTENT AS commentContent,
-		COMMENT_DATE AS commentDate,
-		COMMENT_LIKE AS commentLike,
-		COMMENT_DISLIKE AS commentDislike
-		FROM
-		TBL_COMMENT
-		WHERE BOARD_NO = #{board_no}
-		ORDER BY COMMENT_DATE DESC
+	
+	<select id="readCommentListByBoardNo"
+			parameterType="string"
+			resultType="boardComment">
+	SELECT
+	    COMMENT_NO AS commentNo,
+	    BOARD_NO AS boardNo,
+        MEMBER_NO AS memberNo,
+	    (SELECT W.MEMBER_NICKNAME
+	        FROM (
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME  FROM TBL_KAKAO_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	    	) W
+	    WHERE W.MEMBER_NO = TBL_COMMENT.MEMBER_NO) AS commentWriter,
+	    COMMENT_CONTENT AS commentContent,
+	    COMMENT_DATE AS commentDate,
+	    COMMENT_LIKE AS commentLike,
+	    COMMENT_DISLIKE AS commentDislike
+	FROM
+	    TBL_COMMENT
+	WHERE BOARD_NO = #{board_no}
+	ORDER BY COMMENT_DATE DESC
 	</select>
-
-	<select id="insertBoardFileByFile" parameterType="boardFile">
-		INSERT INTO TBL_FILE
-		VALUES
-		(TO_CHAR
+	
+	<select id="insertBoardFileByFile"
+			parameterType="boardFile">
+	INSERT INTO TBL_FILE
+	VALUES
+	(TO_CHAR
 		(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_BOARD.NEXTVAL, 4,'0'),
 		#{boardNo},
 		#{fileName},
 		#{filePath}
 		)
 	</select>
-
-	<delete id="deleteBoardByBoardNo" parameterType="string">
-		DELETE
+	
+	<delete id="deleteBoardByBoardNo"
+			parameterType="string">
+	DELETE
 		TBL_BOARD
-		WHERE
-		BOARD_NO = #{boardNo}
+	WHERE BOARD_NO = #{boardNo}
 	</delete>
-
-	<update id="updateBoardByNewBoard" parameterType="board">
-		UPDATE TBL_BOARD
-		SET BOARD_TITLE = #{boardTitle},
+	
+	<update id="updateBoardByNewBoard"
+			parameterType="board">
+	UPDATE TBL_BOARD
+	SET BOARD_TITLE = #{boardTitle},
 		BOARD_CONTENT = #{boardContent},
 		BOARD_TYPE = #{boardType}
-		WHERE BOARD_NO = #{boardNo}
+	WHERE BOARD_NO = #{boardNo}
 	</update>
-
-	<delete id="deleteBoardFileByBoardNo" parameterType="string">
-		DELETE
-		FROM TBL_FILE
-		WHERE BOARD_NO = #{boardNo}
+	
+	<delete id="deleteBoardFileByBoardNo"
+			parameterType="string">
+	DELETE
+	FROM TBL_FILE
+	WHERE BOARD_NO = #{boardNo}
 	</delete>
-
-	<delete id="deleteBoardFileByFileId" parameterType="string">
-		DELETE
-		FROM TBL_FILE
-		WHERE file_no = #{fileNo}
+	
+	<delete id="deleteBoardFileByFileId"
+			parameterType="string">
+	DELETE
+	FROM TBL_FILE
+    WHERE file_no = #{fileNo}
 	</delete>
-
-	<insert id="insertCommentByComment" parameterType="boardComment">
+	
+	<insert id="insertCommentByComment"
+			parameterType="boardComment">
 		INSERT INTO
-		TBL_COMMENT
-		(
-		COMMENT_NO,
-		BOARD_NO,
-		MEMBER_NO,
-		COMMENT_CONTENT
-		)
-		VALUES
-		(
-		TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_COMMENT.NEXTVAL, 4, '0'),
-		#{boardNo},
-		#{memberNo},
-		#{commentContent}
-		)
+			TBL_COMMENT
+			(
+				COMMENT_NO,
+				BOARD_NO,
+				MEMBER_NO,
+				COMMENT_CONTENT
+			)
+			VALUES
+			(
+				TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_COMMENT.NEXTVAL, 4, '0'),
+				#{boardNo},
+				#{memberNo},
+				#{commentContent}
+			)
 	</insert>
-
-	<delete id="deleteCommentByCommentNo" parameterType="string">
-		DELETE
+	
+	<delete id="deleteCommentByCommentNo"
+			parameterType="string">
+	DELETE
 		FROM
-		TBL_COMMENT
+			TBL_COMMENT
 		WHERE
-		COMMENT_NO = #{commentNo}
+			COMMENT_NO = #{commentNo}
 	</delete>
-
-	<update id="updateCommentByComment" parameterType="boardComment">
-		UPDATE TBL_COMMENT
+	
+	<update id="updateCommentByComment"
+			parameterType="boardComment">
+	UPDATE TBL_COMMENT
 		SET COMMENT_CONTENT = #{commentContent}
-		WHERE COMMENT_NO =
-		#{commentNo}
+		WHERE COMMENT_NO = #{commentNo}
 	</update>
-
+	
 	<!-- 관리자페이지 게시판 구분 없이 모든 게시글 조회 -->
-	<select id="selectAllBoardList" parameterType="hashmap"
-		resultType="board">
-		SELECT BOARD_NO AS BOARDNO,
-		BOARD_TITLE AS BOARDTITLE,
-		B.MEMBER_NO AS MEMBERNO,
-		B.BOARD_TYPE AS BOARDTYPE,
-		NICK.MEMBER_NICKNAME AS BOARDWRITER,
-		B.BOARD_DATE AS BOARDDATE,
-		B.BOARD_COUNT AS BOARDCOUNT,
-		REPO.REPORT AS REPORT
-		FROM (
-		SELECT ROWNUM RNUM, B.*
-		FROM
-		(
-		SELECT B.*
-		FROM TBL_BOARD B
-		ORDER BY BOARD_NO DESC
-		)B
-		) B
-		LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
-		FROM (
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-		)W)NICK
-		ON B.MEMBER_NO = NICK.MEMBER_NO
-		LEFT JOIN (SELECT R.REPORT
-		FROM (
-		SELECT * FROM TBL_BOARD_REACT
-		)R)REPO
-		ON BOARD_NO = BOARD_NO
-		WHERE RNUM BETWEEN #{start} AND #{end}
-		ORDER BY REPO.REPORT DESC
+	<select id="selectAllBoardList"
+			parameterType = "hashmap"
+			resultType = "board">
+	SELECT DISTINCT
+		BOARD_NO AS BOARDNO,
+        BOARD_TITLE AS BOARDTITLE,
+        B.MEMBER_NO AS MEMBERNO,
+        B.BOARD_TYPE AS BOARDTYPE,
+        NICK.MEMBER_NICKNAME AS BOARDWRITER,
+        B.BOARD_DATE AS BOARDDATE,
+        B.BOARD_COUNT AS BOARDCOUNT,
+        REPO.REPORT AS REPORT
+	 FROM (
+	        SELECT ROWNUM RNUM, B.*
+	        FROM
+	            (
+	                SELECT B.*
+	                FROM TBL_BOARD B
+	                ORDER BY BOARD_NO DESC
+	            )B
+	        ) B
+	 LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+	      FROM  (
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	            )W)NICK
+	      ON B.MEMBER_NO = NICK.MEMBER_NO
+	 LEFT JOIN (SELECT R.REPORT
+	            FROM (
+	                SELECT * FROM TBL_BOARD_REACT
+	                )R)REPO
+	      ON BOARD_NO = BOARD_NO
+	 WHERE RNUM BETWEEN #{start} AND #{end}
+	    ORDER BY REPO.REPORT DESC
 	</select>
-
+	
 	<!-- 관리자페이지 게시판 구분 없이 모든 게시글 갯수 조회 -->
-	<select id="selectAllBoardCount" resultType="_int">
-		SELECT COUNT(*)
-		FROM TBL_BOARD
+	<select id="selectAllBoardCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_BOARD
 	</select>
-
+	
 	<!-- 관리자페이지 모든 댓글 조회 -->
-	<select id="selectAllCommentList" parameterType="hashmap"
-		resultType="boardComment">
-		SELECT COMMENT_NO AS COMMENTNO,
-		C.MEMBER_NO AS MEMBERNO,
-		NICK.MEMBER_NICKNAME AS COMMENTWRITER,
-		COMMENT_CONTENT AS COMMENTCONTENT,
-		COMMENT_DATE AS COMMENTDATE,
-		REPO.REPORT AS REPORT
-		FROM (
-		SELECT ROWNUM RNUM, C.*
-		FROM
-		(
-		SELECT C.*
-		FROM TBL_COMMENT C
-		ORDER BY COMMENT_NO DESC
-		)C
-		) C
-		LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
-		FROM (
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-		)W)NICK
-		ON C.MEMBER_NO = NICK.MEMBER_NO
-		LEFT JOIN (SELECT R.REPORT, R.MEMBER_NO
-		FROM (
-		SELECT * FROM TBL_COMMENT_REACT
-		)R)REPO
-		ON C.MEMBER_NO = REPO.MEMBER_NO
-		WHERE RNUM BETWEEN #{start} AND #{end}
-		ORDER BY REPO.REPORT DESC
+	<select id="selectAllCommentList"
+			parameterType = "hashmap"
+			resultType = "boardComment">
+	SELECT DISTINCT
+		COMMENT_NO AS COMMENTNO,
+        C.MEMBER_NO AS MEMBERNO,
+        NICK.MEMBER_NICKNAME AS COMMENTWRITER,
+        COMMENT_CONTENT AS COMMENTCONTENT,
+        COMMENT_DATE AS COMMENTDATE,
+        REPO.REPORT AS REPORT
+	FROM (
+	        SELECT ROWNUM RNUM, C.*
+	        FROM
+	            (
+	                SELECT C.*
+	                FROM TBL_COMMENT C
+	                ORDER BY COMMENT_NO DESC
+	            )C
+	        ) C
+	 LEFT JOIN (SELECT W.MEMBER_NICKNAME, W.MEMBER_NO
+	      FROM  (
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+	                UNION ALL
+	                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	            )W)NICK
+	      ON C.MEMBER_NO = NICK.MEMBER_NO
+	 LEFT JOIN (SELECT R.REPORT, R.MEMBER_NO
+	            FROM (
+	                SELECT * FROM TBL_COMMENT_REACT
+	                )R)REPO
+	      ON C.MEMBER_NO = REPO.MEMBER_NO
+	 WHERE RNUM BETWEEN #{start} AND #{end}
+	    ORDER BY REPO.REPORT DESC
 	</select>
-
+	
 	<!-- 관리자페이지 모든 댓글 갯수 조회 -->
-	<select id="selectAllCommentCount" resultType="_int">
-		SELECT COUNT(*)
-		FROM TBL_COMMENT
+	<select id="selectAllCommentCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_COMMENT
 	</select>
-
-	<select id="chkLikeByComment" parameterType="map"
-		resultType="commentReact">
-		SELECT
-		COMMENT_NO AS commentNo,
-		MEMBER_NO AS memberNo,
-		COMMENT_CHK AS commentChk,
-		REPORT AS report
-		FROM TBL_COMMENT_REACT
-		WHERE COMMENT_NO = #{comment} AND MEMBER_NO = #{member}
+	
+	<select id="chkLikeByComment"
+			parameterType="map"
+			resultType="commentReact">
+	SELECT
+    	COMMENT_NO AS commentNo,
+    	MEMBER_NO AS memberNo,
+    	COMMENT_CHK AS commentChk,
+    	REPORT AS report
+	FROM TBL_COMMENT_REACT
+	WHERE COMMENT_NO = #{comment} AND MEMBER_NO = #{member}
 	</select>
-
-	<update id="updReactByReact" parameterType="commentReact">
-		UPDATE
-		TBL_COMMENT_REACT
-		SET COMMENT_CHK = #{commentChk}
-		WHERE COMMENT_NO = #{commentNo}
-		AND MEMBER_NO = #{memberNo}
+	
+	<update id="updReactByReact"
+			parameterType="commentReact">
+	UPDATE
+	    TBL_COMMENT_REACT
+	    SET COMMENT_CHK = #{commentChk}
+	    WHERE COMMENT_NO = #{commentNo}
+	    AND MEMBER_NO = #{memberNo}
 	</update>
-
-	<update id="updateComLikeCnt" parameterType="moveStin">
-		UPDATE TBL_COMMENT_REACT
-		SET COMMENT_CHK = #{intData}
-		WHERE COMMENT_NO = #{stData}
+	
+	<update id="updateComLikeCnt"
+			parameterType="moveStin">
+	UPDATE TBL_COMMENT_REACT
+	SET COMMENT_CHK = #{intData}
+	WHERE COMMENT_NO = #{stData}
 	</update>
-
-	<update id="updateComLikeByReact" parameterType="commentReact">
-		UPDATE TBL_COMMENT_REACT
+	
+	<update id="updateComLikeByReact"
+			parameterType="commentReact">
+	UPDATE TBL_COMMENT_REACT
 		SET
-		COMMENT_CHK = #{commentChk}
+			COMMENT_CHK = #{commentChk}
 		WHERE
-		COMMENT_NO = #{commentNo}
+			COMMENT_NO = #{commentNo}
 		AND MEMBER_NO = #{memberNo}
 	</update>
-
-	<insert id="insertComLikeInfo" parameterType="commentReact">
-		INSERT INTO
+	
+	<insert id="insertComLikeInfo"
+			parameterType="commentReact">
+	INSERT INTO
 		TBL_COMMENT_REACT
 		(
-		COMMENT_NO,
-		MEMBER_NO,
-		COMMENT_CHK
+			COMMENT_NO,
+			MEMBER_NO,
+			COMMENT_CHK
 		)
 		VALUES
 		(
-		#{commentNo},
-		#{memberNo},
-		#{commentChk}
-		)
+			#{commentNo},
+			#{memberNo},
+			#{commentChk}
+		)		
 	</insert>
-
-	<update id="updateCommentLikeByComment" parameterType="map">
-		UPDATE TBL_COMMENT
-		<set>
-			<if test="like == 1">
-				COMMENT_LIKE = COMMENT_LIKE +
-				<choose>
-					<when test="newAction">1</when>
-					<otherwise>-1</otherwise>
-				</choose>
-			</if>
-			<if test="like == -1">
-				COMMENT_DISLIKE = COMMENT_DISLIKE +
-				<choose>
-					<when test="newAction">1</when>
-					<otherwise>-1</otherwise>
-				</choose>
-			</if>
-		</set>
-		WHERE COMMENT_NO = #{commentNo}
+	
+	<update id="updateCommentLikeByComment"
+			parameterType="map">
+    UPDATE TBL_COMMENT
+	    <set>
+	        <if test="like == 1">
+	            COMMENT_LIKE = COMMENT_LIKE + 
+	            <choose>
+	                <when test="newAction">1</when>
+	                <otherwise>-1</otherwise>
+	            </choose>
+	        </if>
+	        <if test="like == -1">
+	            COMMENT_DISLIKE = COMMENT_DISLIKE + 
+	            <choose>
+	                <when test="newAction">1</when>
+	                <otherwise>-1</otherwise>
+	            </choose>
+	        </if>
+	    </set>
+    WHERE COMMENT_NO = #{commentNo}
 	</update>
-
-	<select id="commentBycommentNo" parameterType="string"
-		resultType="boardComment">
-		SELECT
-		COMMENT_NO AS commentNo,
-		BOARD_NO AS boardNo,
-		MEMBER_NO AS memberNo,
-		(SELECT W.MEMBER_NICKNAME
-		FROM (
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
-		UNION ALL
-		SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
-		) W
-		WHERE W.MEMBER_NO = TBL_COMMENT.MEMBER_NO) AS commentWriter,
-		COMMENT_CONTENT AS commentContent,
-		COMMENT_DATE AS commentDate,
-		COMMENT_LIKE AS commentLike,
-		COMMENT_DISLIKE AS commentDislike
-		FROM
-		TBL_COMMENT
-		WHERE COMMENT_NO = #{string}
+	
+	<select id="commentBycommentNo"
+			parameterType="string"
+			resultType="boardComment">
+	SELECT
+	    COMMENT_NO AS commentNo,
+	    BOARD_NO AS boardNo,
+        MEMBER_NO AS memberNo,
+	    (SELECT W.MEMBER_NICKNAME
+	        FROM (
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME  FROM TBL_KAKAO_EXCO
+	        UNION ALL
+	        SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+	    	) W
+	    WHERE W.MEMBER_NO = TBL_COMMENT.MEMBER_NO) AS commentWriter,
+	    COMMENT_CONTENT AS commentContent,
+	    COMMENT_DATE AS commentDate,
+	    COMMENT_LIKE AS commentLike,
+	    COMMENT_DISLIKE AS commentDislike
+	FROM
+	    TBL_COMMENT
+	WHERE COMMENT_NO = #{string}
 	</select>
-
-	<select id="chkBoardLikeByBoard" parameterType="map"
-		resultType="boardReact">
-		SELECT
-		BOARD_NO AS boardNo,
-		MEMBER_NO AS memberNo,
-		BOARD_REACTION AS boardReaction,
-		REPORT AS report
-		FROM TBL_BOARD_REACT
-		WHERE BOARD_NO = #{boardNo} AND MEMBER_NO = #{memberNo}
+	
+	<select id="chkBoardLikeByBoard"
+			parameterType="map"
+			resultType="boardReact">
+	SELECT
+    	BOARD_NO AS boardNo,
+    	MEMBER_NO AS memberNo,
+    	BOARD_REACTION AS boardReaction,
+    	REPORT AS report
+	FROM TBL_BOARD_REACT
+	WHERE BOARD_NO = #{boardNo} AND MEMBER_NO = #{memberNo}
 	</select>
-
-	<insert id="insertBoardLikeInfo" parameterType="boardReact">
-		INSERT INTO
+	
+	<insert id="insertBoardLikeInfo"
+			parameterType="boardReact">
+	INSERT INTO
 		TBL_BOARD_REACT
 		(
-		BOARD_NO,
-		MEMBER_NO,
-		BOARD_REACTION
+			BOARD_NO,
+			MEMBER_NO,
+			BOARD_REACTION
 		)
 		VALUES
 		(
-		#{boardNo},
-		#{memberNo},
-		#{boardReaction}
-		)
+			#{boardNo},
+			#{memberNo},
+			#{boardReaction}
+		)		
 	</insert>
-
-	<update id="updateBoardLikeByBoard" parameterType="map">
-		UPDATE TBL_BOARD
-		<set>
-			<if test="like == 1">
-				BOARD_LIKE = BOARD_LIKE +
-				<choose>
-					<when test="newAction">1</when>
-					<otherwise>-1</otherwise>
-				</choose>
-			</if>
-			<if test="like == -1">
-				BOARD_DISLIKE = BOARD_DISLIKE +
-				<choose>
-					<when test="newAction">1</when>
-					<otherwise>-1</otherwise>
-				</choose>
-			</if>
-		</set>
-		WHERE BOARD_NO = #{boardNo}
+	
+	<update id="updateBoardLikeByBoard"
+			parameterType="map">
+    UPDATE TBL_BOARD
+    <set>
+        <if test="like == 1">
+            BOARD_LIKE = BOARD_LIKE + 
+            <choose>
+                <when test="newAction">1</when>
+                <otherwise>-1</otherwise>
+            </choose>
+        </if>
+        <if test="like == -1">
+            BOARD_DISLIKE = BOARD_DISLIKE + 
+            <choose>
+                <when test="newAction">1</when>
+                <otherwise>-1</otherwise>
+            </choose>
+        </if>
+    </set>
+    WHERE BOARD_NO = #{boardNo}
 	</update>
-
-	<update id="updBoardByReact" parameterType="boardReact">
-		UPDATE
-		TBL_BOARD_REACT
-		SET BOARD_REACTION = #{boardReaction}
-		WHERE BOARD_NO = #{boardNo}
-		AND MEMBER_NO = #{memberNo}
+	
+	<update id="updBoardByReact"
+			parameterType="boardReact">
+	UPDATE
+	    TBL_BOARD_REACT
+	    SET BOARD_REACTION = #{boardReaction}
+	    WHERE BOARD_NO = #{boardNo}
+	    AND MEMBER_NO = #{memberNo}
 	</update>
-
+	
 	<!-- 관리자페이지 - 댓글 번호로 댓글이 작성된 게시글 번호 조회 -->
 	<select id="searchBoardNoByCommentNo"
-		parameterType="boardComment" resultType="string">
-		SELECT BOARD_NO AS BOARDNO
-		FROM TBL_COMMENT
-		WHERE COMMENT_NO = #{commentNo}
+			parameterType = "boardComment"
+			resultType="string"	>
+	SELECT BOARD_NO AS BOARDNO
+	FROM TBL_COMMENT
+	WHERE COMMENT_NO = #{commentNo}
 	</select>
-
+	
 	<!-- 명현 -->
-
+	
 	<!-- 게시글 목록 가져오기 -->
-	<select id="selectBoardsByMemberNo" resultType="board">
-		SELECT
-		b.board_no AS boardNo,
-		b.board_title AS boardTitle,
-		b.board_content AS boardContent,
-		b.board_date AS boardDate,
-		b.board_type AS boardType,
-		b.board_like AS boardLike,
-		b.board_dislike AS boardDislike,
-		b.board_count AS boardCount,
-		e.member_no AS memberNo,
-		e.member_nickname AS memberNickname,
-		e.member_addr AS memberAddr
-		FROM tbl_board b
-		JOIN tbl_exco e ON b.member_no = e.member_no
-		WHERE b.member_no = #{memberNo}  <!-- 특정 memberNo에 해당하는 게시글 조회 -->
-		ORDER BY b.board_date DESC
-	</select>
+   <select id="selectBoardsByMemberNo" resultType="board">
+      SELECT
+	      b.board_no AS boardNo,
+	      b.board_title AS boardTitle,
+	      b.board_content AS boardContent,
+	      b.board_date AS boardDate,
+	      b.board_type AS boardType,
+	      b.board_like AS boardLike,
+	      b.board_dislike AS boardDislike,
+	      b.board_count AS boardCount,
+	      e.member_no AS memberNo,
+	      e.member_nickname AS memberNickname,
+	      e.member_addr AS memberAddr
+      FROM tbl_board b
+      JOIN tbl_exco e ON b.member_no = e.member_no
+      WHERE b.member_no = #{memberNo}  <!-- 특정 memberNo에 해당하는 게시글 조회 -->
+      ORDER BY b.board_date DESC
+   </select>
+    
+    <!-- 댓글을 가져오는 쿼리 -->
+   <select id="selectCommentsByBoardNo" resultType="boardComment">
+      SELECT
+	      c.comment_no AS commentNo,
+	      c.comment_content AS commentContent,
+	      c.comment_date AS commentDate,
+	      b.board_no AS boardNo,
+	      c.comment_like AS commentLike,
+	      c.comment_dislike AS commentDislike,
+	      e.member_no AS memberNo
+      FROM tbl_comment c
+      JOIN tbl_board b ON c.board_no = b.board_no
+      JOIN tbl_exco e ON b.member_no = e.member_no
+      WHERE c.board_no = #{boardNo}
+      ORDER BY c.comment_date DESC
+   </select>
 
-	<!-- 댓글을 가져오는 쿼리 -->
-	<select id="selectCommentsByBoardNo" resultType="boardComment">
-		SELECT
-		c.comment_no AS commentNo,
-		c.comment_content AS commentContent,
-		c.comment_date AS commentDate,
-		b.board_no AS boardNo,
-		c.comment_like AS commentLike,
-		c.comment_dislike AS commentDislike,
-		e.member_no AS memberNo
-		FROM tbl_comment c
-		JOIN tbl_board b ON c.board_no = b.board_no
-		JOIN tbl_exco e ON b.member_no = e.member_no
-		WHERE c.board_no = #{boardNo}
-		ORDER BY c.comment_date DESC
-	</select>
-	 
 	<!-- 내가쓴 댓글 조회 -->
-	<select id="selectCommentsByMemberNo" resultType="boardComment">
+   <select id="selectCommentsByMemberNo" resultType="boardComment">
     SELECT 
         c.comment_no AS commentNo,
         c.comment_content AS commentContent,
@@ -512,23 +543,23 @@
         c.comment_like AS commentLike,
         c.comment_dislike AS commentDislike,
         b.board_type AS boardType  <!-- board_type 추가 -->
-	    FROM tbl_comment c
-	    JOIN tbl_board b ON c.board_no = b.board_no  <!-- tbl_board와 조인 -->
-	    WHERE c.member_no = #{memberNo}
-	    ORDER BY c.comment_date DESC
-	</select>
+    FROM tbl_comment c
+    JOIN tbl_board b ON c.board_no = b.board_no  <!-- tbl_board와 조인 -->
+    WHERE c.member_no = #{memberNo}
+    ORDER BY c.comment_date DESC
+   </select>
 
-	<!-- 특정 회원의 전체 게시글 수를 가져오는 쿼리 -->
-	<select id="selectTotalBoardsByMemberNo" resultType="int">
-		SELECT COUNT(*)
-		FROM tbl_board
-		WHERE member_no = #{memberNo}
-	</select>
-
-	<!-- 게시물의 전체 댓글 수를 가져오는 쿼리 -->
-	<select id="selectCommentCount" resultType="int">
-		SELECT COUNT(*)
-		FROM tbl_comment
-		WHERE board_no = #{boardNo}
-	</select>
+    <!-- 특정 회원의 전체 게시글 수를 가져오는 쿼리 -->
+    <select id="selectTotalBoardsByMemberNo" resultType="int">
+        SELECT COUNT(*) 
+        FROM tbl_board
+        WHERE member_no = #{memberNo}
+    </select>
+    
+    <!-- 게시물의 전체 댓글 수를 가져오는 쿼리 -->
+    <select id="selectCommentCount" resultType="int">
+    SELECT COUNT(*) 
+    FROM tbl_board 
+    WHERE board_no = #{boardNo}
+</select>
 </mapper>

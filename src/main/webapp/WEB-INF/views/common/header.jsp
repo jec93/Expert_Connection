@@ -9,15 +9,16 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="/resources/js/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/dist/stomp.min.js"></script>
 
-
-<style>
+<!-- <style>
 @media screen and (max-width: 1300px) {
   .member-menu {
     display: none;
   }
 } 
-</style>
+</style> -->
 
    <header class="header">   
       <div class="fixedMenu">
@@ -59,7 +60,12 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
                           <a href="/chat/getRoomList.exco"><img id="icon_chat" src="/resources/images/icon_chat.png">채팅</a>
                       </li>
                        <li class="alarm_box">
-                          <a href=""><img id="icon_alarm" src="/resources/images/icon_alarm.png">알람</a>
+                          <img id="icon_alarm" src="/resources/images/icon_alarm.png">알림
+                          <div class="notification-count">
+                          	<span>0</span>
+                          </div>
+                          <div id="notification-list" class="notification-list">
+                          </div>
                        </li>
                        <li class="mypage_box">
                     	<c:if test="${sessionScope.loginMember.memberId ne 'admin'}">
@@ -87,4 +93,161 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
          icon : icon
       });
    }
+   
+	const eventSource = new EventSource("/emitter?memberNo=${loginMember.memberNo}");//controller 경로
+   
+   //server에서 메시지 올시 알람 count 증가 처리
+   eventSource.onmessage = (event) => { //데이터를 받아옴
+      if(Number($('.notification-count').children().html()) < 99){
+          if($('.notification-count').css('display') == "none"){
+             $('.notification-count').css('display', 'inline-block');
+             $('.notification-count').children().html( Number($('.notification-count').children().html()) + 1);
+          }else{
+             $('.notification-count').children().html( Number($('.notification-count').children().html()) + 1);
+          }
+      }
+   };
+	
+	// 로컬 스토리지에 알림 개수를 저장하는 함수
+   function saveNotificationCount(count) {
+       localStorage.setItem('notificationCount', count);
+   }
+
+   // 로컬 스토리지에 알림 목록을 저장하는 함수
+   function saveNotificationList(list) {
+       localStorage.setItem('notificationList', JSON.stringify(list));
+   }
+
+// SSE 이벤트를 처리하는 함수
+   function setupSse() {
+       const eventSource = new EventSource(`/emitter?memberNo=${loginMember.memberNo}`);
+       eventSource.onmessage = function(event) {
+           const data = JSON.parse(event.data);
+           const message = data.message;
+           const url = data.url;
+           
+           // 알림 UI를 업데이트하는 함수 호출 / 알림 목록에 새로운 알림 추가
+           updateNotification(message, url);
+       };
+   }
+
+   // 알림 UI를 업데이트하는 함수
+   function updateNotification(message, url) {
+       const notificationCount = $('.notification-count');
+       const currentCount = Number(notificationCount.children().html());
+
+       if (currentCount < 99) {
+           if (notificationCount.css('display') === "none") {
+               notificationCount.css('display', 'inline-block');
+           }
+           notificationCount.children().html(currentCount + 1);
+           saveNotificationCount(currentCount + 1);
+       }
+
+       // 알림 목록에 새로운 알림 추가
+       const notificationList = $('#notification-list');
+       const notifications = loadNotificationList();
+       notifications.push({ message, url });
+       saveNotificationList(notifications);
+
+       const newNotification = $('<div class="notification-item"></div>')
+           .text(message)
+           .data('url', url)
+           .on('click', function() {
+               const clickedUrl = $(this).data('url');
+               // 클릭한 알림만 삭제
+               const updatedNotifications = notifications.filter(notif => notif.url !== clickedUrl);
+               saveNotificationList(updatedNotifications);
+               window.location.href = clickedUrl;
+           });
+       notificationList.prepend(newNotification);
+   }
+
+   // 페이지가 로드될 때 알림 목록 및 알림 개수 로드
+   $(document).ready(function() {
+       const notificationCount = loadNotificationCount();
+       if (notificationCount > 0) {
+           $('.notification-count').css('display', 'inline-block');
+           $('.notification-count').children().html(notificationCount);
+       } else {
+           $('.notification-count').css('display', 'none');
+       }
+
+       setupSse();
+       loadNotifications();
+   });
+
+   // 로컬 스토리지에서 알림 개수를 불러오는 함수
+   function loadNotificationCount() {
+       return localStorage.getItem('notificationCount') || 0;
+   }
+
+   // 알람 클릭 시 알림 목록 표시 및 알림 목록 초기화
+   $('.alarm_box').on('click', function() {
+       const notificationList = $('#notification-list');
+       const notifications = loadNotificationList();
+       
+       $('#notification-list').toggle();
+       
+       if ($('#notification-list').css('display') !== 'none') {
+           if (notifications.length === 0) {
+               // 새로운 알림이 없을 때 메시지 표시
+               notificationList.html('<div class="notification-item">새로운 알림이 없습니다</div>');
+           } else {
+               // 알림 목록 표시
+               notificationList.empty(); // 알림 목록 초기화
+               notifications.forEach(notification => {
+                   const newNotification = $('<div class="notification-item"></div>')
+                       .text(notification.message)
+                       .data('url', notification.url)
+                       .on('click', function() {
+                           const clickedUrl = $(this).data('url');
+                           // 클릭한 알림만 삭제
+                           const updatedNotifications = notifications.filter(notif => notif.url !== clickedUrl);
+                           saveNotificationList(updatedNotifications);
+                           window.location.href = clickedUrl;
+                       });
+                   notificationList.append(newNotification);
+               });
+           }
+
+           // 알림 개수를 초기화
+           const notificationCount = $('.notification-count');
+           const currentCount = Number(notificationCount.children().html());
+
+           if (currentCount > 0) {
+               notificationCount.children().html(0);
+               notificationCount.css('display', 'none');
+               localStorage.setItem('notificationCount', 0);
+           }
+       }
+   });
+
+   // 로컬 스토리지에서 알림 목록을 불러오는 함수
+   function loadNotificationList() {
+       return JSON.parse(localStorage.getItem('notificationList')) || [];
+   }
+
+   // 알림 목록을 불러와 알림 목록을 초기화하는 함수
+   function loadNotifications() {
+       const notificationList = $('#notification-list');
+       const notifications = loadNotificationList();
+
+       notificationList.empty(); // 알림 목록 초기화
+       
+       notifications.forEach(notification => {
+           const newNotification = $('<div class="notification-item"></div>')
+               .text(notification.message)
+               .data('url', notification.url)
+               .on('click', function() {
+                   const clickedUrl = $(this).data('url');
+                   // 클릭한 알림만 삭제
+                   const updatedNotifications = notifications.filter(notif => notif.url !== clickedUrl);
+                   saveNotificationList(updatedNotifications);
+                   window.location.href = clickedUrl;
+               });
+           notificationList.prepend(newNotification);
+       });
+   }
+
    </script>

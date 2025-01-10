@@ -43,6 +43,13 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		
+		<!-- data Bind Core -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.11.0</version>
+		</dependency>		
+		
 		<!-- dbcp -->
 		<dependency>
 			<groupId>commons-dbcp</groupId>
@@ -124,6 +131,7 @@
 		    <artifactId>javax.mail</artifactId>
 		    <version>1.6.2</version>
 		</dependency>
+		
 		<!-- KOMORAN -->
 		<dependency>
 		    <groupId>com.github.shin285</groupId>

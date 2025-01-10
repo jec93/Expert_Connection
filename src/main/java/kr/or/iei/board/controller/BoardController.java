@@ -37,6 +37,9 @@ import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.board.model.vo.BoardPageData;
 import kr.or.iei.board.model.vo.BoardType;
 import kr.or.iei.board.model.vo.CommentPageData;
+import kr.or.iei.common.emitter.Emitter;
+import kr.or.iei.common.emitter.model.service.NoticeService;
+import kr.or.iei.common.emitter.model.vo.Notice;
 
 @Controller("boardController")
 @RequestMapping("/board/")
@@ -45,6 +48,13 @@ public class BoardController {
 	@Autowired
 	@Qualifier("boardService")
 	private BoardService boardservice;
+	
+	@Autowired
+	private Emitter emitter;
+	
+	@Autowired
+	@Qualifier("noticeService")
+	private NoticeService noticeService;
 
 	// 게시글 목록 조회
 	@GetMapping("list.exco")
@@ -86,8 +96,9 @@ public class BoardController {
 		return "board/boardWrite";
 	}
 
+	//
 	@PostMapping("write.exco")
-	public String insertBoard(HttpServletRequest request, MultipartFile[] files, Board board) {
+	public String insertBoard(HttpServletRequest request, MultipartFile[] files, Board board, Notice notice) {
 		if (board.getBoardWriter().trim().isEmpty()) {
 			throw new IllegalArgumentException("작성자 이름이 비었습니다.");
 		}
@@ -105,8 +116,28 @@ public class BoardController {
 			request.setAttribute("title", "성공");
 			request.setAttribute("msg", board.getBoardTypeNm() + "이 작성되었습니다.");
 			request.setAttribute("icon", "success");
-			request.setAttribute("loc",
-					"list.exco?reqPage=1&boardType=" + board.getBoardType() + "&boardTypeNm=" + board.getBoardType());
+			request.setAttribute("loc", "list.exco?reqPage=1&boardType=" + board.getBoardType() + "&boardTypeNm=" + board.getBoardType());
+			
+			//게시글 URL 생성
+			String url = "/board/viewBoardFrm.exco?boardNo=" + board.getBoardNo() + "&boardType"+ board.getBoardType();
+			
+			
+			// 알림 전송 및 저장
+	        String notificationMessage = board.getBoardTypeNm() +"에 새 게시글이 작성되었습니다.";
+	        emitter.sendBroadcastEvent(notificationMessage, url);
+	        
+	        // Notice 객체 생성 후 저장
+	        if (notificationMessage != null && !notificationMessage.trim().isEmpty()) {
+	            notice = new Notice();
+	            notice.setMemberNo(board.getMemberNo());
+	            notice.setMessage(notificationMessage);
+	            notice.setUrl(url);
+	            
+	            noticeService.saveNotification(notice);
+	            
+	        } else {
+	            throw new IllegalArgumentException("알림 메시지가 비어 있습니다.");
+	        }
 		}
 		return "common/msg";
 	}
@@ -258,7 +289,7 @@ public class BoardController {
 	}
 	
     @GetMapping("insertComment.exco")
-    public String isertComment(String boardNo, String memberNo, String commentContent, Model model) {
+    public String isertComment(String boardNo, String memberNo, String commentContent, Board board, Model model) {
     	if (commentContent == null || commentContent.trim().isEmpty()) {
 			// 이전 페이지(뷰) URL 가져오기
     		model.addAttribute("title", "오류");
@@ -279,6 +310,13 @@ public class BoardController {
     		model.addAttribute("msg", "댓글 등록 완료");
     		model.addAttribute("icon", "success");
     		model.addAttribute("loc", "viewBoardFrm.exco?boardNo="+boardNo+"&commentChk=1");
+    		
+    		/*
+    		// 알림 전송
+    		String notificationMessage = board.getBoardTitle() +"에 댓글이 등록 되었습니다.";
+    		emitter.sendBroadcastEvent(notificationMessage);
+    		*/
+    		
     	}else {
     		model.addAttribute("title", "오류");
     		model.addAttribute("msg", "댓글 등록 실패");
@@ -446,7 +484,7 @@ public class BoardController {
   	
   	//관리자페이지 - 커뮤니티 관리, 게시글 삭제
   	@GetMapping("adminDeleteBoard.exco")
-	public String adminDeleteBoardByBoardNo(String boardNo, int boardType, String searchName, HttpServletRequest request, Model model) {
+	public String adminDeleteBoardByBoardNo(String boardNo, int boardType, String searchName, Board board, HttpServletRequest request, Model model) {
 		ArrayList<BoardFile> fileList = boardservice.deleteBoardByBoardNo(boardNo);
 		
 		if (fileList != null && fileList.size() > 0) {
@@ -460,11 +498,14 @@ public class BoardController {
 				}
 			}
 		}
-		
 		model.addAttribute("title", "성공");
 		model.addAttribute("msg", "게시글 삭제가 완료되었습니다.");
 		model.addAttribute("icon", "success");
-		model.addAttribute("loc", "adminManageList.exco?reqPage=1&boardType="+boardType+"&searchName="+searchName);
+		model.addAttribute("loc", "adminManageCommunity.exco?reqPage=1&boardType="+boardType+"&searchName="+searchName);
+
+		// 알림 전송
+		String notificationMessage = board.getBoardTitle() +"가 관리자에 의해 삭제되었습니다.";
+		emitter.sendEvent(board.getMemberNo(), notificationMessage);	//게시글 작성자에게만 알림 전송
 		
 		return "common/msg";
 		//return "redirect:/board/adminManageList.exco?reqPage=1&boardType="+boardType+"&searchName=" + searchName;
@@ -472,13 +513,17 @@ public class BoardController {
   	
   	//관리자페이지 - 커뮤니티 관리, 댓글 삭제
   	@GetMapping("adminDeleteComment.exco")
-    public String adminDeleteComment(String commentNo, String boardNo, Model model) {
+    public String adminDeleteComment(String commentNo, String boardNo, Board board, Model model) {
     	int result = boardservice.deleteCommentByCommentNo(commentNo);
     	if(result > 0) {
     		model.addAttribute("title", "성공");
     		model.addAttribute("msg", "댓글 삭제를 완료했습니다.");
     		model.addAttribute("icon", "success");
     		model.addAttribute("loc", "adminManageComment.exco?reqPage=1&searchName=comment");
+    		
+    		// 알림 전송
+    		String notificationMessage = board.getBoardTypeNm() +"에 작성한 댓글이 관리자에 의해 삭제되었습니다.";
+    		emitter.sendEvent(board.getMemberNo(), notificationMessage); //댓글 작성자에게만 알림 전송
     	}else {
     		model.addAttribute("title", "오류");
     		model.addAttribute("msg", "댓글 삭제에 실패했습니다.");
