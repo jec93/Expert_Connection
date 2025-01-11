@@ -84,18 +84,20 @@
 		                  	<c:when test="${searchName eq 'expected'}">
 		                  	<table class="tbl manage_member">
 		                     <tr>
-		                        <th style="width:10%">신청 아이디</th>
+		                        <th style="width:8%">신청 아이디</th>
 		                        <th style="width:10%">신청인</th>
+		                        <th style="width:15%">이메일</th>
 		                        <th style="width:10%">서비스 분류</th>
 		                        <th style="width:10%">포트폴리오</th>
-		                        <th style="width:10%">반려</th>
-		                        <th style="width:10%">승인</th>
+		                        <th style="width:7%">반려</th>
+		                        <th style="width:7%">승인</th>
 		                     </tr>
 		                     
 		                     <c:forEach var="expert" items="${expertList}">
 		                     <tr>
 		                     	<td>${expert.memberId}</td>
 		                     	<td>${expert.memberNickname}</td>
+		                     	<td>${expert.memberEmail}</td>
 		                     	<td>${expert.thirdCategoryNm}</td>
 		                     	<td>${expert.expertFileName}</td>
 		                     	<td><button class="btn-tertiary" onclick="decline('${expert.receiveNo}')">반려</button></td>
@@ -138,15 +140,17 @@
 		                     <tr>
 		                        <th style="width:7%">승인번호</th>
 		                        <th style="width:10%">이름</th>
+		                        <th style="width:15%">이메일</th>
 		                        <th style="width:10%">서비스 분류</th>
 		                        <th style="width:7%">전문가 등급</th>
-		                        <th style="width:10%">포트폴리오</th>
+		                        <th style="width:20%">포트폴리오</th>
 		                     </tr>
 		                     
 		                     <c:forEach var="expert" items="${expertList}">
 		                     <tr>
 		                     	<td>${expert.receiveNo}</td>
 		                     	<td>${expert.memberNickname}</td>
+		                     	<td>${expert.memberEmail}</td>
 		                     	<td>${expert.thirdCategoryNm}</td>
 		                     	<c:if test="${expert.expertGrade eq '0'}"> <td>새싹전문가</td></c:if>
 		                     	<c:if test="${expert.expertGrade eq '1'}"> <td>능숙한 전문가</td></c:if>
@@ -163,18 +167,22 @@
 		                     <tr>
 		                        <th style="width:7%">승인번호</th>
 		                        <th style="width:10%">이름</th>
+		                        <th style="width:15%">이메일</th>
 		                        <th style="width:10%">서비스 분류</th>
 		                        <th style="width:7%">전문가 등급</th>
+		                        <th style="width:7%">재승인</th>
 		                     </tr>
 		                     
 		                     <c:forEach var="expert" items="${expertList}">
 		                     <tr>
 		                     	<td>${expert.receiveNo}</td>
 		                     	<td>${expert.memberNickname}</td>
-		                     	<td>${expert.thirdCategoryCd}</td>
+		                     	<td>${expert.memberEmail}</td>
+		                     	<td>${expert.thirdCategoryNm}</td>
 		                     	<c:if test="${expert.expertGrade eq '0'}"> <td>새싹전문가</td></c:if>
 		                     	<c:if test="${expert.expertGrade eq '1'}"> <td>능숙한 전문가</td></c:if>
 		                     	<c:if test="${expert.expertGrade eq '2'}"> <td>노련한 전문가</td></c:if>
+		                     	<td><button class="btn-primary" onclick="approval('${expert.receiveNo}')">승인</button></td>
 		                     </tr>
 		                     </c:forEach>
 		                    </table>
@@ -228,6 +236,59 @@ function decline(receiveNo) {
 	});
 }
 
+//전문가 승인 완료
+function approval(receiveNo) {
+	swal({
+		title : "승인 완료",
+		text : "해당 요청을 승인하시겠습니까?",
+		icon : "info",
+		buttons : {
+				cancel : {
+					text : "취소",
+					value : false,
+					visible : true,
+					closeModal : true
+				},
+				confirm : {
+					text : "확인",
+					value : true,
+					visible : true,
+					closeModal : true
+				}
+			}
+	}).then(function(isConfirm) {
+		if(isConfirm) {
+			location.href = '/admin/expertApproval.exco?receiveNo='+receiveNo;
+		}
+	});
+}
+
+//전문가 승인 정지
+function hold(receiveNo) {
+	swal({
+		title : "승인 정지",
+		text : "해당 서비스를 제공하는 전문가의 활동을 정지하시겠습니까? \n 신중하게 검토후 진행해주세요.",
+		icon : "warning",
+		buttons : {
+				cancel : {
+					text : "취소",
+					value : false,
+					visible : true,
+					closeModal : true
+				},
+				confirm : {
+					text : "확인",
+					value : true,
+					visible : true,
+					closeModal : true
+				}
+			}
+	}).then(function(isConfirm) {
+		if(isConfirm) {
+			location.href = '/admin/expertHold.exco?receiveNo='+receiveNo;
+		}
+	});
+}
 </script>
 </body>
 </html>

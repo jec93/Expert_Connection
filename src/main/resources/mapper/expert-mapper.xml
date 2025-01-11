@@ -531,9 +531,25 @@
 	
 	<!-- 관리자 페이지 전문가 승인 반려 -->
 	<update id="expertDecline"
-			parameterType="string">
+			   parameterType="string">
 	UPDATE TBL_EXPERT_MANAGEMENT
 			SET PERMISSION_STATE = 'D'
 	WHERE RECEIVE_NO = #{receiveNo}
+	</update>
+	
+	<!-- 관리자 페이지 전문가 승인 완료 -->
+	<update id="expertApproval"
+			   parameterType = "string">
+	UPDATE TBL_EXPERT_MANAGEMENT
+			SET PERMISSION_STATE = 'P'
+	WHERE RECEIVE_NO = #{receiveNo}		   
+	</update>
+	
+	<!-- 관리자 페이지 전문가 승인 정지 -->
+	<update id="expertHold"
+			   parameterType = "string">
+	UPDATE TBL_EXPERT_MANAGEMENT
+			SET PERMISSION_STATE = 'H'
+	WHERE RECEIVE_NO = #{receiveNo}		   
 	</update>
 </mapper>

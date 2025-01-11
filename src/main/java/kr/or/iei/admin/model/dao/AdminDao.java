@@ -157,5 +157,15 @@ public class AdminDao {
 	public int expertDecline(String receiveNo) {
 		return sqlSession.update("expertManagement.expertDecline", receiveNo);
 	}
+
+	//관리자페이지 - 전문가 승인 완료
+	public int expertApproval(String receiveNo) {
+		return sqlSession.update("expertManagement.expertApproval", receiveNo);
+	}
+
+	//관리자페이지 - 전문가 승인 정지
+	public int expertHold(String receiveNo) {
+		return sqlSession.update("expertManagement.expertHold", receiveNo);
+	}
 	
 }

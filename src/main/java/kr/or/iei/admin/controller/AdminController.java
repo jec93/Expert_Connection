@@ -56,7 +56,7 @@ public class AdminController {
 		model.addAttribute("pageNavi", pd.getPageNavi());
 		model.addAttribute("searchName", searchName);
 
-		System.out.println(pd.getList());
+		//System.out.println(pd.getList());
 
 		return "admin/memberManage";
 	}
@@ -385,7 +385,7 @@ public class AdminController {
 		} else if (searchName.equals("approval")) {
 			pd = adminService.selectApprovalExpertList(reqPage, searchName);
 		} else if (searchName.equals("decline")) {
-			pd = adminService.selectHoldExpertList(reqPage, searchName);
+			pd = adminService.selectDeclineExpertList(reqPage, searchName);
 		} else if (searchName.equals("hold")) {
 			pd = adminService.selectHoldExpertList(reqPage, searchName);
 		}
@@ -400,20 +400,58 @@ public class AdminController {
 	//관리자 페이지 -> 전문가 승인 반려
 	@GetMapping("expertDecline.exco")
 	public String expertDecline(String receiveNo, Model model) {
+		//System.out.println(receiveNo);
 		
 		int result = adminService.expertDecline(receiveNo);
 		
+		System.out.println("adminDao : " + result);
 		if(result > 0) {
 			model.addAttribute("icon","success");
 			model.addAttribute("title","전문가 승인 반려 완료");
 			model.addAttribute("text", "해당 승인 요청을 반려했습니다.");
-			model.addAttribute("loc","/admin/expertManagement.exco&reqPage=1&searchName=decline");
+
 		}else {
 			model.addAttribute("icon","error");
 			model.addAttribute("title","전문가 승인 반려 실패");
 			model.addAttribute("text", "해당 승인 요청을 처리하는 중 오류가 발생했습니다.");
-			model.addAttribute("loc","/admin/expertManagement.exco&reqPage=1&searchName=expected");
 		}
 		return "common/msg";
 	}
+	//관리자페이지 -> 전문가 승인 정지
+	@GetMapping("expertHold.exco")
+	public String expertHold(String receiveNo, Model model) {
+		int result = adminService.expertHold(receiveNo);
+		
+		System.out.println("adminDao : " + result);
+		if(result > 0) {
+			model.addAttribute("icon","success");
+			model.addAttribute("title","활동 정지");
+			model.addAttribute("text", "해당 전문가의 활동을 정지시켰습니다.");
+
+		}else {
+			model.addAttribute("icon","error");
+			model.addAttribute("title","활동 제한 실패");
+			model.addAttribute("text", "해당 요청을 처리하는 중 오류가 발생했습니다.");
+		}
+		return "common/msg";
+	}
+	
+	//관리자페이지 -> 전문가 승인 취소(활동 정지)
+		@GetMapping("expertApproval.exco")
+		public String expertApproval(String receiveNo, Model model) {
+			int result = adminService.expertApproval(receiveNo);
+			
+			System.out.println("adminDao : " + result);
+			if(result > 0) {
+				model.addAttribute("icon","success");
+				model.addAttribute("title","전문가 승인 완료");
+				model.addAttribute("text", "해당 승인 요청을 완료했습니다.");
+
+			}else {
+				model.addAttribute("icon","error");
+				model.addAttribute("title","전문가 승인 실패");
+				model.addAttribute("text", "해당 승인 요청을 처리하는 중 오류가 발생했습니다.");
+			}
+			return "common/msg";
+		}
 }

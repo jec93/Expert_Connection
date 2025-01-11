@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.iei.admin.model.dao.AdminDao;
 import kr.or.iei.admin.model.vo.AccessRestriction;
@@ -779,14 +780,23 @@ public class AdminService {
 	}
 
 	//관리자페이지 - 전문가 승인 반려
+	@Transactional
 	public int expertDecline(String receiveNo) {
-		
 		int result = adminDao.expertDecline(receiveNo);
 		
-		if (result > 0) {
-			//이메일 발송하게해야함
-		}
-		
+		System.out.println("adminservice : " + result);
+		return result;
+	}
+
+	//관리자 페이지 - 전문가 승인 완료
+	public int expertApproval(String receiveNo) {
+		int result = adminDao.expertApproval(receiveNo);
+		return result;
+	}
+
+	//관리자 페이지 - 전문가 승인 정지
+	public int expertHold(String receiveNo) {
+		int result = adminDao.expertHold(receiveNo);
 		return result;
 	}
 }
