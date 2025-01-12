@@ -35,6 +35,7 @@
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
 	WHERE M.THIRD_CATEGORY_CD = #{thirdCode}
+	ORDER BY I.EXPERT_LIKE
 	</select>
 	
 	<select id="viewExpertInfoByMemberNo"
@@ -73,6 +74,7 @@
 	LEFT JOIN TBL_CODE C
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
 	WHERE TRIM(E.MEMBER_NO) = #{thirdCode}
+	ORDER BY I.EXPERT_LIKE
 	</select>
 	
 	<select id="viewAllExpertList"
@@ -105,6 +107,7 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
+	ORDER BY I.EXPERT_LIKE
 	</select>
 	
 	<select id="srchExpertsByKeyList"
@@ -142,6 +145,7 @@
         <foreach collection="list" item="keywords" open="(" separator="," close=")">
             #{keywords}
         </foreach>
+    ORDER BY I.EXPERT_LIKE
 	</select>
 	
 
@@ -179,6 +183,7 @@
 	    LEFT JOIN TBL_CODE C
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
 	        WHERE C.THIRD_CATEGORY_NM = #{categoryNm} and E.MEMBER_ADDR LIKE '%' || #{addr} || '%'
+	    ORDER BY I.EXPERT_LIKE
     </select>
 
 	<select id="viewBestExpertList"

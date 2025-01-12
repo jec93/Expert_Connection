@@ -29,6 +29,21 @@ body {
     flex-direction: column;
 }
 
+.like-review-container{
+	display: flex;
+	justify-content: center;
+}
+
+.intro-react>img {
+	padding-top: 5px;
+}
+#intro-like {
+	width: 50%;
+}
+
+#intro-dislike {
+	width: 50%;
+}
 
 .profile-header {
     display: flex;
