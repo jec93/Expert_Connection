@@ -92,7 +92,6 @@ public class ChatService {
 
 	// 실시간 채팅 멤버 각 프로필 가져오기
 	public Member getMemberProfile(String memberNo) {
-		System.out.println("프로플 멤버 넘버 값 : " + memberNo);
 		return chatDao.getMemberProfile(memberNo);
 	}
 }

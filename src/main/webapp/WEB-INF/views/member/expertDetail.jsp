@@ -21,7 +21,7 @@ body {
 }
 
 .content {
-    max-width: 1200px;
+	width: 50% !important;
     margin: 20px auto;
     padding: 30px;
     border-radius: 10px;

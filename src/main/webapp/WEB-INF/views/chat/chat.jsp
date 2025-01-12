@@ -150,16 +150,15 @@ body {
 }
 
 .message-text {
-	display: inline-block; /* 글자 수에 따라 너비가 조정되도록 설정 */
-	font-size: 13px;
+	display: inline-block;
+    font-size: 13px;
     background-color: #82E3B6;
     padding: 10px 14px;
     border-radius: 10px;
-    margin: 0; /* 메시지 여백 제거 */
-    max-width: 70%; /* 메시지 최대 너비 설정 */
-    word-wrap: break-word; /* 긴 단어 자동 줄바꿈 */
-    white-space: pre-line; /* 줄바꿈 적용 */
-    text-align: left; /* 텍스트 왼쪽 정렬 */
+    max-width: 60%; /* 🔥 내용에 맞게 말풍선 크기 자동 조절 */
+    word-break: keep-all; /* ✅ 한국어 단어 단위 줄바꿈 유지 */
+    text-align: left;
+    line-height: 1.4;
 }
 
 /* 자신이 보낸 메시지 */
@@ -612,18 +611,16 @@ a.leaveRoom:hover {
                     
                     var currentTime = moment().format('YYYY-MM-DD HH:mm:ss'); 
 
-                    let fileLink = '';
+                    var fileLink = '';
                     if (msgData.filePath && msgData.fileName) {
-                    	if (msgData.fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
-                            fileLink = '<img src=/resources/upload/' + msgData.filePath + ' class="chat-image">';
+                        if (msgData.fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                            fileLink = '<img src="/resources/upload/' + msgData.filePath + '" alt="' + msgData.fileName + '" class="chat-image">';
                         } else {
-                            fileLink = '<a href="' + msgData.filePath + '" download="' + msgData.fileName + '" class="file-link">' +
-                                       msgData.fileName + '</a><br>';
+                            fileLink = '<a href="javascript:void(0)" onclick="fn.chatFileDown(\'' + msgData.fileName + '\', \'' + msgData.filePath + '\')">' + msgData.fileName + '</a>';
                         }
                     }
                     
-                    // 등급 아이콘 추가 여부 체크 
-                    let gradeIcon = "";
+                    var gradeIcon = "";
                     if (memberType == 4) {
                         gradeIcon = '<img src="/resources/images/expert_type_01.png" alt="등급 0" class="grade-icon">';
                     } else if (memberType == 5) {
@@ -632,44 +629,31 @@ a.leaveRoom:hover {
                         gradeIcon = '<img src="/resources/images/expert_type_03.png" alt="등급 2" class="grade-icon">';
                     }
                     
-                    // 내가 보낸 메시지인지 확인
-                    const isSelf = memberNo === '${sessionScope.loginMember.memberNo}';
-                    const messageClass = isSelf ? 'self' : '';
-                    
-                    var messageHtml = '<div class="message ' + messageClass + '">';
+                    var isSelf = memberNo == '${sessionScope.loginMember.memberNo}';
+                    var messageClass = isSelf ? 'self' : '';
 
-                    // 상대방이 보낸 메시지일 경우 프로필 이미지 추가
-                    if (!isSelf) {
-                        messageHtml += '<div class="profile-img">' +
-                                            '<img src="' + profileImage + '" alt="Profile Image">' +
-                                        '</div>';
-                    }
-
-                    messageHtml += '<div class="message-content">' +
-                                        '<div class="member-id">' + memberNickname + ' ' + gradeIcon + '</div>';
-
-                    // 파일이 있을 경우 추가
-                    if (fileLink) {
-                        messageHtml += '<div class="chat-image-container">' + fileLink + '</div>';
-                    }
-
-                    // 텍스트 메시지가 있을 경우 추가
-                    if (msg) {
-                        messageHtml += '<div class="message-text">' + msg + '</div>';
-                    }
-
-                    messageHtml += '<div class="chat-time">' + currentTime + '</div>' +
-                                   '</div>' +
-                                   '</div>'; // .message 닫기
+                    var messageHtml = '<div class="message ' + messageClass + '">' +
+                        '<div class="profile-img">' +
+                            '<img src="' + profileImage + '" alt="Profile Image">' +
+                        '</div>' +
+                        '<div>' +
+                            '<div class="member-id">' + memberNickname + ' ' + gradeIcon + '</div>' +
+                            '<div class="message-content">' +
+                                fileLink +
+                                (msg ? '<div class="message-text">' + msg + '</div>' : '') +
+                            '</div>' +
+                            '<div class="chat-time">' + currentTime + '</div>' +
+                        '</div>' +
+                    '</div>';
 
                     $("#msgArea").append(messageHtml);
                     $("#msgArea").scrollTop($("#msgArea")[0].scrollHeight);
                 };
-                
+
                 ws.onclose = function() {
                     console.log("연결종료");
                 };
-                
+
                 $("#msgArea").scrollTop($("#msgArea")[0].scrollHeight);
             },
             
@@ -682,7 +666,6 @@ a.leaveRoom:hover {
                     memberNo: memberNo, // 질문자 ID
                     msg: triggerWord, // 질문 내용
                     memberNickname: memberNickname, // 질문자 닉네임
-                    memberType: memberType
                 };
                 // WebSocket으로 메시지 전송
                 ws.send(JSON.stringify(questionData));
@@ -694,7 +677,6 @@ a.leaveRoom:hover {
                     memberNo: expertMemberNo, // 전문가 ID
                     msg: responseContent, // 답변 내용
                     memberNickname: expertNickname, // 전문가 닉네임
-                    memberType: memberType
                 };
                 ws.send(JSON.stringify(answerData));
             },

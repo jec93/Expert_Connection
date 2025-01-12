@@ -151,8 +151,6 @@ public class SocketHandler extends TextWebSocketHandler{
         String profileName = (profile != null) ? profile.getProfileName() : "";
         String memberType = profile.getMemberType();
         
-        System.out.println("memberType : " + memberType);
-
 	    int result = service.insertChat(chat);
 
 	    if (result > 0) {
