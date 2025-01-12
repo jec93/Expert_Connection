@@ -29,6 +29,8 @@
 		<typeAlias type="kr.or.iei.category.model.vo.Category" alias="category"/>
 		<typeAlias type="kr.or.iei.common.emitter.model.vo.Notice" alias="notice"/>
 		<typeAlias type="kr.or.iei.expert.model.vo.Review" alias="review" />
+		<typeAlias type="kr.or.iei.member.model.vo.Expert" alias="expert"/>
+		<typeAlias type="kr.or.iei.expert.model.vo.IntroduceReaction" alias="introduceReact"/>
 	</typeAliases>
 </configuration>
 

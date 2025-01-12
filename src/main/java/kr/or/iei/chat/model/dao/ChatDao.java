@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.or.iei.chat.model.vo.Chat;
 import kr.or.iei.chat.model.vo.Room;
+import kr.or.iei.member.model.vo.Member;
 
 @Repository("chatDao")
 public class ChatDao {
@@ -84,5 +85,9 @@ public class ChatDao {
 		params.put("memberNo", memberNo);
 		params.put("otherMemberNo", otherMemberNo);
 		return sqlSession.selectOne("chat.findRoomByMembers", params);
+	}
+
+	public Member getMemberProfile(String memberNo) {
+		return sqlSession.selectOne("chat.getMemberProfile", memberNo);
 	}
 }

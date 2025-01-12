@@ -132,11 +132,11 @@ button:hover {
 			<section class="section join-wrap">
 				<div class="page-title">회원가입</div>
 				<form action="/member/joinExpert.exco" method="post" autocomplete="off" enctype="multipart/form-data"
-					onsubmit="return joinValidate()">
+					onsubmit="return joinValidate()"> 
 					<div class="join-input-wrap">
 						<div class="join-input-title">
 							<label for="memberId">아이디</label>
-						</div>
+						</div>						 
 						<div class="join-input-item">
 							<input type="text" id="memberId" name="memberId"
 								placeholder="영어 , 숫자 포함 6~12글자" maxlength="12" class="join-component"/>
@@ -204,14 +204,6 @@ button:hover {
 					</div>
 					<div class="join-input-wrap">
 						<div class="join-input-title">
-							<label for="memberPhoneCerti">전화번호 인증</label>
-						</div>
-						<div class="join-input-item">
-							<input type="text" name="memberPhoneCerti" placeholder="전화번호 인증코드 입력" class="join-component"><br>
-						</div>
-					</div>
-					<div class="join-input-wrap">
-						<div class="join-input-title">
 							<label for="memberEmail">이메일</label>
 						</div>
 						<div class="join-input-item">
@@ -251,6 +243,29 @@ button:hover {
 					        <label for="portfolio" class="custom-file-button">파일 선택</label>
 					        <span id="file-name" class="file-name">선택된 파일 없음</span>
 						</div>
+					</div>
+					<div class="join-input-wrap">
+						<div class="join-input-title">
+							<label for="join-category">분류를 선택하세요</label>
+								<div>
+							        <label for="main_category">대분류</label>
+							        <select id="main_category">
+							            <option value="">선택하세요</option>
+							        </select>
+							    </div>
+							    <div>
+							        <label for="sub_category">중분류</label>
+							        <select id="sub_category" disabled>
+							            <option value="">선택하세요</option>
+							        </select>
+							    </div>
+							    <div>
+							        <label for="third_category">소분류</label>
+							        <select id="third_category" name="thirdCategoryCd" disabled>
+							            <option value="" >선택하세요</option>						     
+							        </select>
+							    </div>
+					    </div>
 					</div>
 					<div class="join-button-box">
 						<button type="submit" id="submitBtn" class="join-btn-primary lg" onclick="submitCom()">회원가입</button>
@@ -330,6 +345,7 @@ button:hover {
 		"memberNickname" : false,
 		"memberPhone" : false,		
 		"portfolio" : false,
+		"category" : false
 	}
 	
 	const memberId = $('#memberId'); 
@@ -527,17 +543,6 @@ button:hover {
 	    }
 	}
 
-
-	// submit 버튼 클릭 시 실행되는 이벤트
-	$('#submitBtn').click(function(event) {
-
-	    // 모든 항목이 true인지 확인
-	    if (isAllTrue()) {
-	    	    alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
-	    } else {
-	    }
-	});
-
 	// 정보를 수정할 때마다 호출되는 함수
 	function updateCheckObj(key, value) {
 	    checkObj[key] = value;
@@ -574,7 +579,356 @@ button:hover {
             icon : icon
         });     
     }
+    const categories = {
+    		"A0001": {
+    	        "name": "취미",
+    	        "categories": {
+    	            "001_a0001": {
+    	                "name": "악기",
+    	                "subcategories": {
+    	                    "A_001_a0001": "피아노",
+    	                    "A_001_a0002": "보컬",
+    	                    "A_001_a0003": "현악기",
+    	                    "A_001_a0004": "관악기"
+    	                }
+    	            },
+    	            "001_a0002": {
+    	                "name": "스포츠",
+    	                "subcategories": {
+    	                    "A_001_a0005": "수상",
+    	                    "A_001_a0006": "구기",
+    	                    "A_001_a0007": "격투",
+    	                    "A_001_a0008": "계절"
+    	                }
+    	            },
+    	            "001_a0003": {
+    	                "name": "연기",
+    	                "subcategories": {
+    	                    "A_001_a0009": "뮤지컬",
+    	                    "A_001_a0010": "연기",
+    	                    "A_001_a0011": "연출"
+    	                }
+    	            },
+    	            "001_a0004": {
+    	                "name": "미술",
+    	                "subcategories": {
+    	                    "A_001_a0012": "동양화",
+    	                    "A_001_a0013": "서양화",
+    	                    "A_001_a0014": "만화",
+    	                    "A_001_a0015": "조소",
+    	                    "A_001_a0016": "도예"
+    	                }
+    	            },
+    	            "001_a0005": {
+    	                "name": "생활",
+    	                "subcategories": {
+    	                    "A_001_a0017": "글쓰기",
+    	                    "A_001_a0018": "낚시",
+    	                    "A_001_a0019": "드론",
+    	                    "A_001_a0020": "요리"
+    	                }
+    	            },
+    	            "001_a0006": {
+    	                "name": "사진/영상",
+    	                "subcategories": {
+    	                    "A_001_a0021": "사진촬영",
+    	                    "A_001_a0022": "사진편집",
+    	                    "A_001_a0023": "영상촬영",
+    	                    "A_001_a0024": "영상편집"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0002": {
+    	        "name": "이사",
+    	        "categories": {
+    	            "002_b0001": {
+    	                "name": "입주/집청소",
+    	                "subcategories": {
+    	                    "A_002_a0001": "청소",
+    	                    "A_002_a0002": "이사",
+    	                    "A_002_a0003": "시공"
+    	                }
+    	            },
+    	            "002_b0002": {
+    	                "name": "입주/사업장청소",
+    	                "subcategories": {
+    	                    "A_002_a0004": "청소",
+    	                    "A_002_a0005": "이사",
+    	                    "A_002_a0006": "시공"
+    	                }
+    	            },
+    	            "002_b0003": {
+    	                "name": "철거/폐기",
+    	                "subcategories": {
+    	                    "A_002_a0007": "철거",
+    	                    "A_002_a0008": "폐기물처리"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0003": {
+    	        "name": "외주",
+    	        "categories": {
+    	            "003_c0001": {
+    	                "name": "디자인",
+    	                "subcategories": {
+    	                    "A_003_a0001": "3D모델링",
+    	                    "A_003_a0002": "애니메이션",
+    	                    "A_003_a0003": "상업"
+    	                }
+    	            },
+    	            "003_c0002": {
+    	                "name": "개발",
+    	                "subcategories": {
+    	                    "A_003_a0004": "게임",
+    	                    "A_003_a0005": "웹",
+    	                    "A_003_a0006": "앱",
+    	                    "A_003_a0007": "AI",
+    	                    "A_003_a0008": "커머스"
+    	                }
+    	            },
+    	            "003_c0003": {
+    	                "name": "통번역",
+    	                "subcategories": {
+    	                    "A_003_a0009": "영어",
+    	                    "A_003_a0010": "중국어",
+    	                    "A_003_a0011": "일본어",
+    	                    "A_003_a0012": "독일어",
+    	                    "A_003_a0013": "기타언어"
+    	                }
+    	            },
+    	            "003_c0004": {
+    	                "name": "컨설팅",
+    	                "subcategories": {
+    	                    "A_003_a0014": "경영",
+    	                    "A_003_a0015": "브랜딩",
+    	                    "A_003_a0016": "창업",
+    	                    "A_003_a0017": "크라우드펀딩"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0004": {
+    	        "name": "이벤트",
+    	        "categories": {
+    	            "004_d0001": {
+    	                "name": "웨딩",
+    	                "subcategories": {
+    	                    "A_004_a0001": "사회자",
+    	                    "A_004_a0002": "스드메",
+    	                    "A_004_a0003": "주례",
+    	                    "A_004_a0004": "축가",
+    	                    "A_004_a0005": "장식"
+    	                }
+    	            },
+    	            "004_d0002": {
+    	                "name": "행사",
+    	                "subcategories": {
+    	                    "A_004_a0006": "댄스공연",
+    	                    "A_004_a0007": "밴드공연",
+    	                    "A_004_a0008": "마술공연",
+    	                    "A_004_a0009": "MC",
+    	                    "A_004_a0010": "STAFF",
+    	                    "A_004_a0011": "경호"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0005": {
+    	        "name": "뷰티",
+    	        "categories": {
+    	            "005_e0001": {
+    	                "name": "뷰티",
+    	                "subcategories": {
+    	                    "A_005_a0001": "퍼스널컬러",
+    	                    "A_005_a0002": "네일",
+    	                    "A_005_a0003": "관리",
+    	                    "A_005_a0004": "헤어/메이크업"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0006": {
+    	        "name": "취업",
+    	        "categories": {
+    	            "006_f0001": {
+    	                "name": "취업준비",
+    	                "subcategories": {
+    	                    "A_006_a0001": "면접컨설팅",
+    	                    "A_006_a0002": "취업컨설팅",
+    	                    "A_006_a0003": "자소서컨설팅",
+    	                    "A_006_a0004": "포트폴리오컨설팅",
+    	                    "A_006_a0005": "해외취업컨설팅"
+    	                }
+    	            },
+    	            "006_f0002": {
+    	                "name": "시험/자격증",
+    	                "subcategories": {
+    	                    "A_006_a0006": "간호사",
+    	                    "A_006_a0007": "임용",
+    	                    "A_006_a0008": "공무원",
+    	                    "A_006_a0009": "사회복지사",
+    	                    "A_006_a0010": "회계"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0007": {
+    	        "name": "과외",
+    	        "categories": {
+    	            "007_g0001": {
+    	                "name": "과외",
+    	                "subcategories": {
+    	                    "A_007_a0001": "국어",
+    	                    "A_007_a0002": "수학",
+    	                    "A_007_a0003": "사회",
+    	                    "A_007_a0004": "과학",
+    	                    "A_007_a0005": "체대",
+    	                    "A_007_a0006": "음대",
+    	                    "A_007_a0007": "미대"
+    	                }
+    	            },
+    	            "007_g0002": {
+    	                "name": "유학",
+    	                "subcategories": {
+    	                    "A_007_a0008": "유학컨설팅",
+    	                    "A_007_a0009": "ACT",
+    	                    "A_007_a0010": "GMAT",
+    	                    "A_007_a0011": "GRE",
+    	                    "A_007_a0012": "LAST",
+    	                    "A_007_a0013": "EJU"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0008": {
+    	        "name": "차량",
+    	        "categories": {
+    	            "008_h0001": {
+    	                "name": "관리",
+    	                "subcategories": {
+    	                    "A_008_a0001": "세차",
+    	                    "A_008_a0002": "수리",
+    	                    "A_008_a0003": "오토바이",
+    	                    "A_008_a0004": "튜닝"
+    	                }
+    	            },
+    	            "008_h0002": {
+    	                "name": "매매",
+    	                "subcategories": {
+    	                    "A_008_a0005": "중고",
+    	                    "A_008_a0006": "신차",
+    	                    "A_008_a0007": "리스/렌트",
+    	                    "A_008_a0008": "캠핑카"
+    	                }
+    	            }
+    	        }
+    	    },
+    	    "A0009": {
+    	        "name": "금융/법률",
+    	        "categories": {
+    	            "009_i0001": {
+    	                "name": "금융",
+    	                "subcategories": {
+    	                    "A_009_a0001": "보험설계",
+    	                    "A_009_a0002": "암보험",
+    	                    "A_009_a0003": "운전자보험",
+    	                    "A_009_a0004": "자동차보험",
+    	                    "A_009_a0005": "화재보험"
+    	                }
+    	            },
+    	            "009_i0002": {
+    	                "name": "법률",
+    	                "subcategories": {
+    	                    "A_009_a0006": "민사",
+    	                    "A_009_a0007": "형사",
+    	                    "A_009_a0008": "교통사고",
+    	                    "A_009_a0009": "노동",
+    	                    "A_009_a0010": "특허",
+    	                    "A_009_a0011": "회생/파산"
+    	                }
+    	            },
+    	            "009_i0003": {
+    	                "name": "부동산",
+    	                "subcategories": {
+    	                    "A_009_a0012": "감정평가",
+    	                    "A_009_a0013": "임대",
+    	                    "A_009_a0014": "집사기",
+    	                    "A_009_a0015": "집팔기",
+    	                    "A_009_a0016": "전월세구하기",
+    	                    "A_009_a0017": "전월세 내놓기"
+    	                }
+    	            }
+    	        }
+    	    }
+    	};
+    document.addEventListener('DOMContentLoaded', () => {
+        const mainCategorySelect = document.getElementById('main_category');
+        const subCategorySelect = document.getElementById('sub_category');
+        const thirdCategorySelect = document.getElementById('third_category');
+
+        // 대분류 추가
+        for (const mainKey in categories) {
+            const mainOption = document.createElement('option');
+            mainOption.value = mainKey;
+            mainOption.textContent = categories[mainKey].name;
+            mainCategorySelect.appendChild(mainOption);
+        }
+
+        // 중분류 처리
+        mainCategorySelect.addEventListener('change', () => {
+            const selectedMainKey = mainCategorySelect.value;
+            subCategorySelect.innerHTML = '<option value="">선택하세요</option>';
+            thirdCategorySelect.innerHTML = '<option value="">선택하세요</option>';
+            thirdCategorySelect.disabled = true;
+
+            if (selectedMainKey) {
+                const subCategories = categories[selectedMainKey].categories;
+                for (const subKey in subCategories) {
+                    const subOption = document.createElement('option');
+                    subOption.value = subKey;
+                    subOption.textContent = subCategories[subKey].name;
+                    subCategorySelect.appendChild(subOption);
+                }
+                subCategorySelect.disabled = false;
+            } else {
+                subCategorySelect.disabled = true;
+            }
+        });
+
+        // 소분류 처리
+        subCategorySelect.addEventListener('change', () => {
+            const selectedMainKey = mainCategorySelect.value;
+            const selectedSubKey = subCategorySelect.value;
+            thirdCategorySelect.innerHTML = '<option value="">선택하세요</option>';
+
+            if (selectedSubKey) {
+                const thirdCategories = categories[selectedMainKey].categories[selectedSubKey].subcategories;
+                for (const thirdKey in thirdCategories) {
+                    const thirdOption = document.createElement('option');
+                    thirdOption.value = thirdKey;
+                    thirdOption.textContent = thirdCategories[thirdKey];
+                    thirdCategorySelect.appendChild(thirdOption);
+                }
+                thirdCategorySelect.disabled = false;
+                checkObj.category = true;
+            } else {
+                thirdCategorySelect.disabled = true;
+            }
+        });
+    });
     
+ 	// submit 버튼 클릭 시 실행되는 이벤트
+	$('#submitBtn').click(function(event) {
+
+	    // 모든 항목이 true인지 확인
+	    if (isAllTrue()) {
+	    	    alert('회원가입이 완료되었습니다.');
+	    } else {
+	    }
+	});
+
     
 	</script>
 	 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

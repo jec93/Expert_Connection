@@ -129,7 +129,14 @@
 						<div class="chat-item" data-room-id="${room.roomId}"
 							onclick="location.href='/chat/getChatList.exco?roomId=${room.roomId}'">
 							<div class="chat-img">
-								<img src="${room.profilePath}${room.profileName}" alt="chat-img">
+								<c:choose>
+						           <c:when test="${not empty room.profilePath && not empty room.profileName}">
+						               <img src="${room.profilePath}${room.profileName}" class="chat-img">
+						           </c:when>
+						           <c:otherwise>
+						               <img src="/resources/logo/expert_connection_favicon.png" class="chat-img">
+						           </c:otherwise>
+						       </c:choose>
 							</div>
 							<div class="chat-details">
 								<div class="chat-name">${room.displayName}</div>
@@ -148,7 +155,8 @@
 
 	<script>
 	//웹소켓 연결
-	const socket = new WebSocket("ws://192.168.10.52/chat/doChat.exco") // IP 변경
+	const socket = new WebSocket("ws://localhost/chat/doChat.exco") // IP 변경
+	//const socket = new WebSocket("ws://192.168.10.52/chat/doChat.exco") // IP 변경
 	
 	socket.onmessage = function(event) {
 	    const data = JSON.parse(event.data);

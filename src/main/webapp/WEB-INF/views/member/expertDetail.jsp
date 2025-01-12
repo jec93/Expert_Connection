@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%
+Object loginChk = session.getAttribute("loginMember");
+boolean isLogin = loginChk != null;
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,13 +16,12 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
 .content {
-    max-width: 1200px;
+	width: 50% !important;
     margin: 20px auto;
     padding: 30px;
     border-radius: 10px;
@@ -26,6 +29,21 @@ body {
     flex-direction: column;
 }
 
+.like-review-container{
+	display: flex;
+	justify-content: center;
+}
+
+.intro-react>img {
+	padding-top: 5px;
+}
+#intro-like {
+	width: 50%;
+}
+
+#intro-dislike {
+	width: 50%;
+}
 
 .profile-header {
     display: flex;
@@ -231,8 +249,15 @@ body {
 
 		<div class="content">
 			<div class="profile-header">
-		    <img class="profile-img" src="/resources/logo/expert_connection_favicon.png" alt="프로필 사진">
-		    <div class="profile-info">
+				<c:choose>
+					<c:when test="${not empty expertDetail.profilePath && not empty expertDetail.profileName}">
+						<img src="${expertDetail.profilePath}${expertDetail.profileName}" class="profile-img">
+					</c:when>
+					<c:otherwise>
+						<img src="/resources/logo/expert_connection_favicon.png" class="profile-img">
+					</c:otherwise>
+				</c:choose>
+				<div class="profile-info">
 		        <h1 class="profile-header-title">
 		            ${expertDetail.expertNickname}
 		            <c:choose>
@@ -259,13 +284,27 @@ body {
 		        </div>
 		    </div>
 		</div>
-
 			
-			<div class="like-review">
-				<div class="like">
-					❤️ 좋아요 수: <span>${expertDetail.expertLike}</span>
-				</div>
+		<div class="like-review-container">
+			<div>
+				<span id="like-button" class="intro-react">
+			        <a href='javascript:void(0)' id="introlike" onclick="introLike(this,'${expertDetail.introNo}','${expertDetail.memberNo}',1);">
+			            <img src="/resources/images/board_like.png" id="intro-like">
+			        </a>
+			    </span>
+			    <div id="introlikeCnt">${expertDetail.expertLike}</div>
+			    <div>좋아요</div>
 			</div>
+			<div>
+			    <span id="dislike-button" class="intro-react">
+			        <a href='javascript:void(0)' id="introDislike" onclick="introLike(this, '${expertDetail.introNo}','${expertDetail.memberNo}',-1);">
+			            <img src="/resources/images/board_dislike.png" id="intro-dislike">
+			        </a>
+			    </span>
+			    <div id="introDislikeCnt">${expertDetail.expertDislike}</div>
+			    <div>아쉬워요</div>
+			</div>
+		</div>
 			
 			<div class="tabs">
 				<button class="active" data-tab="info-tab" onclick="showTab('info-tab')">정보</button>
@@ -344,12 +383,12 @@ body {
 							<input type="hidden" name="introNo" value="${expertDetail.introNo }"><%-- 현재 소개 번호 --%>
 							<input type="hidden" name="writer" value="${loginMember.memberNo}"><%-- 현재 댓글 작성자(로그인한 회원) --%>
 							<input type="hidden" name="memberNo" value="${expertDetail.memberNo }"><%-- 전문가 번호 --%>
-							<input type="radio" name="reviewScore" value="1">★<br>
-							<input type="radio" name="reviewScore" value="2">★★<br>
-							<input type="radio" name="reviewScore" value="3">★★★<br>
-							<input type="radio" name="reviewScore" value="4">★★★★<br>
-							<input type="radio" name="reviewScore" value="5">★★★★★<br>
 						    <c:if test="${not empty loginMember }">
+								<input type="radio" name="reviewScore" value="1">★<br>
+								<input type="radio" name="reviewScore" value="2">★★<br>
+								<input type="radio" name="reviewScore" value="3">★★★<br>
+								<input type="radio" name="reviewScore" value="4">★★★★<br>
+								<input type="radio" name="reviewScore" value="5">★★★★★<br>
 								<ul class="review-write">
 									<li>
 										<div class="input-item">
@@ -373,11 +412,9 @@ body {
 								</div>
 								<c:if test="${not empty loginMember}">
 									<div class="updreview">
-										<c:if test="${loginMember.memberNo eq review.memberNo}">
-										<a href='javascript:void(0)' onclick="delreview('${review.reviewNo}');">삭제</a>
-										<a href='javascript:void(0)' onclick="mdfreview(this,'${review.reviewNo}');">수정</a>
+										<c:if test="${loginMember.memberNo eq review.writer}">
+										<a href='javascript:void(0)' onclick="delReview('${review.reviewNo}');">삭제</a>
 										</c:if>
-										<a href='javascript:void(0)' onclick="reportBoard('${review.reviewNo}','1');">신고</a>
 									</div>
 								</c:if>
 							</div>
@@ -396,6 +433,116 @@ body {
 	</div>
 
 	<script>
+	$(document).ready(function() {
+        $.ajax({
+            url: "/expert/getIntroStatus.exco",
+            type: "GET",
+            data: {
+                "introNo": "${expertDetail.introNo}",
+                "memberNo": "${loginMember.memberNo}"
+            },
+            dataType: "json",
+            success: function(response) {
+            	console.log(response);
+            	updateintroReaction(response.introReact); // 상태를 업데이트
+            },
+            error: function() {
+                console.error(response.message);
+            }
+        });
+    });
+	
+	function updateintroReaction(introReact) {
+		if (introReact === "1") {
+	        // 좋아요 활성화
+	        $("#intro-like").attr("src", "/resources/images/board_like_chk.png");
+	        $("#intro-dislike").attr("src", "/resources/images/board_dislike.png");
+	    } else if (introReact === "-1") {
+	        // 싫어요 활성화
+	        $("#intro-like").attr("src", "/resources/images/board_like.png");
+	        $("#intro-dislike").attr("src", "/resources/images/board_dislike_chk.png");
+	    } else {
+	        // 기본 상태
+	        $("#intro-like").attr("src", "/resources/images/board_like.png");
+	        $("#intro-dislike").attr("src", "/resources/images/board_dislike.png");
+	    }
+	}
+	
+	var chkLogin = <%= isLogin %>;
+	
+	//반응 반영,취소
+	function introLike (obj, introNo,expertNo, like) {
+		if(chkLogin){
+		   $.ajax({
+		      url : "/expert/updIntroLike.exco",
+		      type : "GET",
+		      data : {
+		         "introNo" : introNo,
+		         "memberNo" : "${loginMember.memberNo}",
+		         "expertNo" : expertNo,
+		         "like" : like
+		         },
+			  dataType: "json", 
+		      success : function(response) {
+			    if(response.reviewReact){
+			    	updateintroReaction(response.introReact);				    	
+			    }
+		        if(response.message != "0"){
+				  swal({
+				      title : "알림",
+				      text : response.message,
+				      icon : "success"
+				   }).then(function(){
+					  	location.href = "/expert/viewExpertInfoByMemberNo.exco?memberNo=${expertDetail.memberNo}";
+				   });
+				}
+		        else{
+		           swal({
+		              title : "알림",
+		              text : "호감도 반영 중 오류가 발생하였습니다.",
+		              icon : "error"
+		           });
+		        }
+		     },
+		    error : function() {
+		       console.log("ajax 에러 발생");
+		    }
+		});
+	  }else{
+		  swal({
+	            title: "로그인 필요",
+	            text: "좋아요/아쉬워요를 반영하려면 로그인하세요.",
+	            icon: "warning"
+	        });
+	  }
+	}
+	
+	function delReview(reviewNo){
+		swal({
+			title : "삭제",
+			text : "리뷰를 삭제하시겠습니까? (주의, 당신의 리뷰가 모두에게 도움이 될 수 있습니다)",
+			icon : "warning",
+			buttons: {
+				cancel : {
+					text: "취소",
+					value:false,
+					visible: true,
+					closeModal : true
+				},
+				confirm:{
+					text:"삭제",
+					value:true,
+					visible:true,
+					closeModal:true
+				}
+			}
+		}).then(function(isConfirm){
+			if(isConfirm){
+				location.href = '/expert/deleteReview.exco?&reviewNo='+reviewNo;
+			}
+		});
+	}
+	
 	//채팅 버튼 눌렀을 때 해당 전문가랑 채팅방 생성
 	function createOneRoom(sellerNo, sellerName) { // 전문가 상세페이지의 전문가 번호
 	    // 1. 채팅방 존재 여부 확인

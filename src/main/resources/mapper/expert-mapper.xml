@@ -35,6 +35,7 @@
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
 	WHERE M.THIRD_CATEGORY_CD = #{thirdCode}
+	ORDER BY I.EXPERT_LIKE
 	</select>
 	
 	<select id="viewExpertInfoByMemberNo"
@@ -73,6 +74,7 @@
 	LEFT JOIN TBL_CODE C
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
 	WHERE TRIM(E.MEMBER_NO) = #{thirdCode}
+	ORDER BY I.EXPERT_LIKE
 	</select>
 	
 	<select id="viewAllExpertList"
@@ -105,6 +107,7 @@
 	ON E.MEMBER_NO = W.MEMBER_NO
 	LEFT JOIN TBL_EXPERT_INTRODUCE I
 	ON I.MEMBER_NO = E.MEMBER_NO
+	ORDER BY I.EXPERT_LIKE
 	</select>
 	
 	<select id="srchExpertsByKeyList"
@@ -142,6 +145,7 @@
         <foreach collection="list" item="keywords" open="(" separator="," close=")">
             #{keywords}
         </foreach>
+    ORDER BY I.EXPERT_LIKE
 	</select>
 	
 
@@ -179,6 +183,7 @@
 	    LEFT JOIN TBL_CODE C
 	    ON M.THIRD_CATEGORY_CD = C.THIRD_CATEGORY_CD
 	        WHERE C.THIRD_CATEGORY_NM = #{categoryNm} and E.MEMBER_ADDR LIKE '%' || #{addr} || '%'
+	    ORDER BY I.EXPERT_LIKE
     </select>
 
 	<select id="viewBestExpertList"
@@ -281,6 +286,7 @@
 	    R.INTRO_NO = #{string}
 	</select>
 	
+	<!-- 리뷰 등록 -->
 	<insert id="insertReview"
 	parameterType="review">
 	INSERT INTO
@@ -303,4 +309,326 @@
 			#{reviewScore}
 		)
 	</insert>
+	
+	<!-- 관리자페이지 승인예정 전문가 조회 -->
+	<select id="allExpectedExpertList"
+			parameterType = "hashmap"
+			resultType = "expert">
+	SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'E'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+	</select>
+	
+	<!-- 관리자 페이지 승인예정 전문가 총 인원수 -->
+	<select id="allExpectedExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'E'
+	</select>
+	
+	<!-- 관리자페이지 승인완료 전문가 조회 -->
+	<select id="allApprovalExpertList"
+        parameterType = "hashmap"
+        resultType = "expert">
+    SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'P'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+    </select>
+
+	
+	<!-- 관리자 페이지 승인완료 전문가 총 인원수 -->
+	<select id="allApprovalExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'P'
+	</select>
+	
+	<!-- 관리자페이지 승인거절 전문가 조회 -->
+	<select id="allDeclineExpertList"
+			parameterType = "hashmap"
+			resultType = "expert">
+	SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'D'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+	</select>
+	
+	<!-- 관리자 페이지 승인거절 전문가 총 인원수 -->
+	<select id="allDeclineExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'D'
+	</select>
+	
+	<!-- 관리자페이지 승인정지 전문가 조회 -->
+	<select id="allHoldExpertList"
+			parameterType = "hashmap"
+			resultType = "expert">
+	SELECT
+        W.MEMBER_NO AS MEMBERNO,
+        R.MEMBER_ID AS MEMBERID,
+        R.MEMBER_NICKNAME AS MEMBERNICKNAME,
+       	R.MEMBER_EMAIL AS MEMBEREMAIL,
+       	W.MEMBER_TYPE AS MEMBERTYPE,
+       	P.RECEIVE_NO AS RECEIVENO,
+       	P.EXPERT_GRADE AS EXPERTGRADE,
+       	P.EXPERT_FILE_NAME AS EXPERTFILENAME,
+       	P.EXPERT_FILE_PATH AS EXPERTFILEPATH,
+       	P.THIRD_CATEGORY_CD AS THIRDCATEGORYCD,
+       	D.THIRD_CATEGORY_NM AS THIRDCATEGORYNM,
+       	P.PERMISSION_STATE AS PERMISSIONSTATE
+    FROM (
+    		SELECT ROWNUM RNUM, R.*
+    		FROM
+    			(
+    				SELECT E.*
+    				FROM TBL_EXCO E
+    				LEFT JOIN TBL_EXPERT_MANAGEMENT M
+    					   ON E.MEMBER_NO = M.MEMBER_NO
+    				WHERE PERMISSION_STATE = 'H'	
+    			) R
+    	  ) R
+    	  LEFT JOIN (
+    	  				SELECT MEMBER_NO, MEMBER_TYPE
+    	  				FROM TBL_WHOLE_MEMBER
+    	  				WHERE MEMBER_TYPE IN (4,5,6)
+    	  			) W
+    	  		ON R.MEMBER_NO = W.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT RECEIVE_NO, MEMBER_NO, EXPERT_GRADE, THIRD_CATEGORY_CD, EXPERT_FILE_NAME, EXPERT_FILE_PATH, PERMISSION_STATE
+    	  				FROM TBL_EXPERT_MANAGEMENT P
+    	  			) P
+    	  		ON R.MEMBER_NO = P.MEMBER_NO
+    	  LEFT JOIN (
+    	  				SELECT THIRD_CATEGORY_CD, THIRD_CATEGORY_NM
+    	  				FROM TBL_CODE
+    	  			) D
+    	  		 ON P.THIRD_CATEGORY_CD = D.THIRD_CATEGORY_CD
+     WHERE RNUM BETWEEN #{start} and #{end}
+     ORDER BY RECEIVENO
+	</select>
+	
+	<!-- 관리자 페이지 승인정지 전문가 총 인원수 -->
+	<select id="allHoldExpertCount"
+			resultType="_int">
+	SELECT COUNT(*)
+	FROM TBL_EXPERT_MANAGEMENT
+	WHERE PERMISSION_STATE = 'H'
+	</select>
+	
+	<!-- 관리자 페이지 전문가 승인 반려 -->
+	<update id="expertDecline"
+			   parameterType="string">
+	UPDATE TBL_EXPERT_MANAGEMENT
+			SET PERMISSION_STATE = 'D'
+	WHERE RECEIVE_NO = #{receiveNo}
+	</update>
+	
+	<!-- 관리자 페이지 전문가 승인 완료 -->
+	<update id="expertApproval"
+			   parameterType = "string">
+	UPDATE TBL_EXPERT_MANAGEMENT
+			SET PERMISSION_STATE = 'P'
+	WHERE RECEIVE_NO = #{receiveNo}		   
+	</update>
+	
+	<!-- 관리자 페이지 전문가 승인 정지 -->
+	<update id="expertHold"
+			   parameterType = "string">
+	UPDATE TBL_EXPERT_MANAGEMENT
+			SET PERMISSION_STATE = 'H'
+	WHERE RECEIVE_NO = #{receiveNo}		   
+	</update>
+	
+	<!-- 리뷰 삭제 -->
+	<delete id="deleteReview"
+	parameterType="string">
+	DELETE
+		TBL_REVIEW
+	WHERE
+		REVIEW_NO = #{string}
+	</delete>
+	
+	<!-- 정보페이지 반응 가져오기 -->
+	<select id="getReviewReaction"
+		parameterType="map"
+		resultType="introduceReact">
+	SELECT
+		INTRO_NO AS introNo,
+		EXPERT_NO AS expertNo,
+		MEMBER_NO AS memberNo,
+		INTRO_REACT AS introReact,
+		REPORT AS report
+	FROM TBL_INTRODUCE_REACT
+	WHERE INTRO_NO = #{introNo} AND MEMBER_NO = #{memberNo}
+	</select>
+	
+	<insert id="insertReviewLikeInfo"
+			parameterType="introduceReact">
+	INSERT INTO
+		TBL_INTRODUCE_REACT
+		(
+			INTRO_NO,
+			EXPERT_NO,
+			MEMBER_NO,
+			INTRO_REACT
+		)
+		VALUES
+		(
+			#{introNo},
+			#{expertNo},
+			#{memberNo},
+			#{introReact}
+		)
+	</insert>
+	
+	<update id="updateIntroLikeByIntro"
+			parameterType="map">
+	UPDATE TBL_EXPERT_INTRODUCE
+	<set>
+		<if test="like == 1">
+			EXPERT_LIKE = EXPERT_LIKE +
+			<choose>
+				<when test="newAction">1</when>
+				<otherwise>-1</otherwise>
+			</choose>
+		</if>
+		<if test="like == -1">
+			EXPERT_DISLIKE = EXPERT_DISLIKE+
+			<choose>
+				<when test="newAction">1</when>
+				<otherwise>-1</otherwise>
+			</choose>
+		</if>
+	</set>
+	WHERE INTRO_NO = #{introNo}
+	</update>
+	
+	<update id="updIntroByReact"
+			parameterType="introduceReact">
+	UPDATE
+		TBL_INTRODUCE_REACT
+		SET INTRO_REACT = #{introReact}
+		WHERE INTRO_NO = #{introNo}
+		AND MEMBER_NO = #{memberNo}
+	</update>
 </mapper>

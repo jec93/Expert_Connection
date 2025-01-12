@@ -5,26 +5,26 @@ import java.util.ArrayList;
 import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
-public class MemberPageData {
+public class ExpertPageData {
 	
-	private ArrayList<Member> list;
+	private ArrayList<Expert> list;
 	private String pageNavi;
 	
-	public MemberPageData() {
+	public ExpertPageData() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
-	public MemberPageData(ArrayList<Member> list, String pageNavi) {
+	public ExpertPageData(ArrayList<Expert> list, String pageNavi) {
 		super();
 		this.list = list;
 		this.pageNavi = pageNavi;
 	}
 	
-	public ArrayList<Member> getList() {
+	public ArrayList<Expert> getList() {
 		return list;
 	}
-	public void setList(ArrayList<Member> list) {
+	public void setList(ArrayList<Expert> list) {
 		this.list = list;
 	}
 	public String getPageNavi() {
@@ -36,7 +36,7 @@ public class MemberPageData {
 	
 	@Override
 	public String toString() {
-		return "MemberPageData [list=" + list + ", pageNavi=" + pageNavi + "]";
+		return "ExpertPageData [list=" + list + ", pageNavi=" + pageNavi + "]";
 	}
 		
 }

@@ -31,6 +31,9 @@ public class MemberService {
 	public Member memberLogin(Member member) {
 		return memberDao.memberLogin(member);
 	}
+	public Member expertLogin(Member member) {
+	    return memberDao.expertLogin(member);
+	}
     
 	//회원가입 - 일반회원
 	@Transactional
@@ -77,8 +80,8 @@ public class MemberService {
 		return result;
 	}
 	//회원가입 - 전문가 파일
-	public void saveExpertFile(String memberNo, String filePath) {
-		memberDao.insertExpertFile(memberNo, filePath);
+	public void saveExpertFile(String memberNo, String filePath, String fileName, String thirdCategoryCd) {
+		memberDao.insertExpertFile(memberNo, filePath, fileName, thirdCategoryCd);
 	}
 	//아이디 중복체크
 	public int idDuplChk(String memberId) {
@@ -199,9 +202,20 @@ public class MemberService {
         return memberDao.updateIntroduce(parameterMap);
     }
 
-	public boolean savePortfolio(String memberNo, List<MultipartFile> portfolioFiles, String uploadPath) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean savePortfolioFile(String memberNo, String filePath, String fileName) {
+		HashMap<String, String> parameterMap = new HashMap<String, String>();
+		parameterMap.put("memberNo", memberNo);
+		parameterMap.put("filePath", filePath);
+		parameterMap.put("fileName", fileName);
+		
+		boolean isUpdated = memberDao.updatePortfolioFile(parameterMap);
+		
+		//데이터가 없다면 insert 쿼리 실행
+	    if (!isUpdated) {
+	        return memberDao.insertPortfolioFile(parameterMap);
+	    }
+	    
+	    return memberDao.updatePortfolioFile(parameterMap);
 	}
 	
 }
