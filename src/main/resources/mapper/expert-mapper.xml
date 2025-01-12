@@ -281,6 +281,7 @@
 	    R.INTRO_NO = #{string}
 	</select>
 	
+	<!-- 리뷰 등록 -->
 	<insert id="insertReview"
 	parameterType="review">
 	INSERT INTO
@@ -551,5 +552,78 @@
 	UPDATE TBL_EXPERT_MANAGEMENT
 			SET PERMISSION_STATE = 'H'
 	WHERE RECEIVE_NO = #{receiveNo}		   
+	</update>
+	
+	<!-- 리뷰 삭제 -->
+	<delete id="deleteReview"
+	parameterType="string">
+	DELETE
+		TBL_REVIEW
+	WHERE
+		REVIEW_NO = #{string}
+	</delete>
+	
+	<!-- 정보페이지 반응 가져오기 -->
+	<select id="getReviewReaction"
+		parameterType="map"
+		resultType="introduceReact">
+	SELECT
+		INTRO_NO AS introNo,
+		EXPERT_NO AS expertNo,
+		MEMBER_NO AS memberNo,
+		INTRO_REACT AS introReact,
+		REPORT AS report
+	FROM TBL_INTRODUCE_REACT
+	WHERE INTRO_NO = #{introNo} AND MEMBER_NO = #{memberNo}
+	</select>
+	
+	<insert id="insertReviewLikeInfo"
+			parameterType="introduceReact">
+	INSERT INTO
+		TBL_INTRODUCE_REACT
+		(
+			INTRO_NO,
+			EXPERT_NO,
+			MEMBER_NO,
+			INTRO_REACT
+		)
+		VALUES
+		(
+			#{introNo},
+			#{expertNo},
+			#{memberNo},
+			#{introReact}
+		)
+	</insert>
+	
+	<update id="updateIntroLikeByIntro"
+			parameterType="map">
+	UPDATE TBL_EXPERT_INTRODUCE
+	<set>
+		<if test="like == 1">
+			EXPERT_LIKE = EXPERT_LIKE +
+			<choose>
+				<when test="newAction">1</when>
+				<otherwise>-1</otherwise>
+			</choose>
+		</if>
+		<if test="like == -1">
+			EXPERT_DISLIKE = EXPERT_DISLIKE+
+			<choose>
+				<when test="newAction">1</when>
+				<otherwise>-1</otherwise>
+			</choose>
+		</if>
+	</set>
+	WHERE INTRO_NO = #{introNo}
+	</update>
+	
+	<update id="updIntroByReact"
+			parameterType="introduceReact">
+	UPDATE
+		TBL_INTRODUCE_REACT
+		SET INTRO_REACT = #{introReact}
+		WHERE INTRO_NO = #{introNo}
+		AND MEMBER_NO = #{memberNo}
 	</update>
 </mapper>

@@ -197,8 +197,7 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 									<form name="insertComment" action="/board/insertComment.exco">
 										<input type="hidden" name="boardNo" value="${board.boardNo}">
 										<%-- 현재 게시글 번호 --%>
-										<input type="hidden" name="memberNo"
-											value="${loginMember.memberNo}">
+										<input type="hidden" name="memberNo" value="${loginMember.memberNo}">
 										<%-- 현재 댓글 작성자(로그인한 회원) --%>
 										<ul class="comment-write">
 											<li>

@@ -161,9 +161,67 @@ public class ExpertController {
 	    return response;
 	}
 	@GetMapping("/insertReview")
-	public String insertReview(Review review) {
+	public String insertReview(Review review, Model model) {
 		System.out.println(review);
 		int result = expertService.insertReview(review);
-		return "";
+		if(result>0) {
+			model.addAttribute("title","리뷰작성!");
+			model.addAttribute("text","당신의 소중한 리뷰 감사합니다.");
+			model.addAttribute("icon","success");
+		}else {
+			model.addAttribute("title","작성 실패");
+			model.addAttribute("text","리뷰작성 실패");
+			model.addAttribute("icon","error");
+		}
+		return "common/msg";
 	}
+	
+	@GetMapping("/deleteReview.exco")
+	public String deleteReview(String reviewNo, Model model) {
+		int result = expertService.deleteReview(reviewNo);
+		if(result>0) {
+			model.addAttribute("title","삭제성공");
+			model.addAttribute("text","요청하신 리뷰가 삭제되었습니다.");
+			model.addAttribute("icon","success");
+		}else {
+			model.addAttribute("title","삭제실패");
+			model.addAttribute("text","리뷰 삭제중 에러");
+			model.addAttribute("icon","error");
+		}
+		return "common/msg";
+	}
+	
+	@GetMapping("/getIntroStatus.exco")
+	@ResponseBody
+	public Map<String, Object> getIntroStatus(String introNo, String memberNo) {
+		//전문가 좋아요 상태를 가져오는 서비스 호출
+		String introReact = expertService.getReviewReaction(introNo, memberNo);
+		System.out.println("리뷰 상태 넘어온 값" + introReact);
+		Map<String, Object> response = new HashMap<String, Object>();
+		if(introReact != null) {
+			response.put("introReact", introReact);
+			response.put("status", "success");
+		}else {
+			response.put("introReact", "0");
+			response.put("status", "error");
+			response.put("message", "좋아요 상태를 가져오는데 실패했습니다.");
+		}
+		return response;
+	}
+	
+	@GetMapping(value="updIntroLike.exco", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public Map<String, String> updIntroLike(String introNo, String memberNo,String expertNo, int like) {
+        String[] result = expertService.updReviewLike(introNo, memberNo, expertNo, like);
+        Map<String, String> response = new HashMap<String, String>();
+        
+        if (Integer.parseInt(result[0]) > 0) {
+            response.put("introReact", result[2]);
+            response.put("message", result[1]);
+        } else {
+            response.put("introReact", "0");
+            response.put("message", "0");
+        }
+        return response;
+    }
 }

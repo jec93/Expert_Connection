@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.expert.model.vo.ExpertManagement;
 import kr.or.iei.expert.model.vo.Review;
+import kr.or.iei.expert.model.vo.IntroduceReaction;
 
 
 @Repository("expertDao")
@@ -56,4 +57,28 @@ public class ExpertDao {
 		return sqlSession.insert("expertManagement.insertReview",review);
 	}
 
+	public int deleteReview(String reviewNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("expertManagement.deleteReview",reviewNo);
+	}
+
+	public IntroduceReaction getReviewReaction(HashMap<String, String> infoNumMap) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("expertManagement.getReviewReaction",infoNumMap);
+	}
+
+	public int insertReviewLikeInfo(IntroduceReaction introInfo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("expertManagement.insertReviewLikeInfo",introInfo);
+	}
+
+	public void updateIntroLikeByIntro(HashMap<String, Object> introParamMap) {
+		// TODO Auto-generated method stub
+		sqlSession.update("expertManagement.updateIntroLikeByIntro", introParamMap);
+	}
+
+	public int updIntroByReact(IntroduceReaction introduceReact) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("expertManagement.updIntroByReact", introduceReact);
+	}
 }
