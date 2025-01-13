@@ -203,7 +203,7 @@ public class AdminController {
 		Board board = adminService.viewBoard(boardNo, commentChk);
 		
 		if (board == null) {
-			return "redirect:/admin/memberManage";
+			return "redirect:admin/memberManage";
 		}
 		model.addAttribute("board", board);
 		return "admin/checkBoard";

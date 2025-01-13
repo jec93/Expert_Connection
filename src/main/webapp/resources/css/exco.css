@@ -1407,29 +1407,28 @@ section.section {
 
 /* 알림 알람 */
 .notification-count {
-	display: none;
-    /* background-color: #FF1A1A; */
-    /* border-radius: 50%; */
-    /* margin-left: 20px; */
-    /* padding: 2px 8px; */
-    width: 50px;
-    height: fit-content;
+	background-color: #FF1A1A;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
     position: absolute;
-    top: 0;
-    right: 0;
-    font-size: 10px;
+    /* top: -3px;  조정 가능한 위치
+    right: -18px;  조정 가능한 위치 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--gray8); /* 글자 색을 흰색으로 설정 */
 }
 .notification-count > span {
-	color: white;
-	font-size : 15px;
-	margin-left: 50px;
-    margin-bottom: 10px;
-    background-color: red;
-    font-size: 15px;
-    /* position: inherit; */
-    border-radius: 50%;
-    padding: 5px;
-
+   font-size: 15px;
+    line-height: 15px; /* 숫자의 세로 정렬을 맞추기 위한 라인 높이 설정 */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray8);
+    position: relative;
+    top: 2px; /* 숫자의 위치를 조금 더 내리기 위한 값 추가 */
 }
 .notification-list {
 	display: none;
@@ -1438,7 +1437,7 @@ section.section {
 	/* right: 0; */ 
 	background-color: white;
 	border: 1px solid #ccc;
-	width: 300px;
+	width: 320px;
 	max-height: 300px;
 	overflow-y: auto;
 	z-index: 1000;
@@ -1446,8 +1445,27 @@ section.section {
 .notification-item {
 	padding: 10px;
 	border-bottom: 1px solid #eee;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+
 .alarm_box {
 	position : relative;
 	font-size : 15px;	
+}
+.alarm-hide-btn {
+	background: transparent;
+	border: none;
+	font-size: 14px;
+	color: #999;
+	cursor: pointer;
+	align-self: flex-start;
+	margin-right: -10px;
+	margin-top: -10px;
+}
+
+.alarm-hide-btn:hover {
+    color: #cc3b3b;
 }
