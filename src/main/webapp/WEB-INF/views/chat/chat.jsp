@@ -5,7 +5,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Expert Connection</title>
+<link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
+<link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
