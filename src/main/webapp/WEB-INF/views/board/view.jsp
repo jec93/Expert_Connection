@@ -350,7 +350,7 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 	                    		let noticesList = noticeCategories.filter(item=> item.THIRDCATEGORYCD === selectedValue && item.SECONDCATEGORYCD === selectedSecondValue);
 	                    		let noticeNM = noticesList[0].THIRDCATEGORYNM
 	                    		console.log(noticeNM);
-	                    		location.href = "/board/boardNotice.exco?memberNo=10220&noticeNm="+noticeNM;
+	                    		location.href = "/board/boardNotice.exco?memberNo=${board.memberNo}&noticeNm="+noticeNM;
 	                    	}
 	                    });
 	                	break;
