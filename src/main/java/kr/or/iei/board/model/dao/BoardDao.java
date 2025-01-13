@@ -15,6 +15,7 @@ import kr.or.iei.board.model.vo.BoardFile;
 import kr.or.iei.board.model.vo.BoardReact;
 import kr.or.iei.board.model.vo.CommentReact;
 import kr.or.iei.board.model.vo.MoveStin;
+import kr.or.iei.member.model.vo.Member;
 
 @Repository("boardDao")
 public class BoardDao {
@@ -201,5 +202,15 @@ public class BoardDao {
 	// 내가쓴 댓글 불러오기
 	public List<BoardComment> getCommentsByMemberNo(String memberNo) {
 		return sqlSession.selectList("board.selectCommentsByMemberNo", memberNo);
+	}
+	
+	//특정 게시글 작성자에게만 알림보내기 위한 정보조회
+	public Board selectBoard(String boardNo) {
+		return sqlSession.selectOne("board.selectBoard", boardNo);
+	}
+
+	//특정 댓글 작성자에게만 알림보내기 위한 정보 조회
+	public Board selectCommentWriter(String commentNo) {
+		return sqlSession.selectOne("board.selectCommentWriter", commentNo);
 	}
 }

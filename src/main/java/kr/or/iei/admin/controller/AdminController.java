@@ -18,8 +18,10 @@ import kr.or.iei.admin.model.vo.ExpertPageData;
 import kr.or.iei.admin.model.vo.MemberPageData;
 import kr.or.iei.admin.model.vo.Report;
 import kr.or.iei.admin.model.vo.ReportPageData;
+import kr.or.iei.board.model.service.BoardService;
 import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardType;
+import kr.or.iei.common.emitter.Emitter;
 import kr.or.iei.member.model.service.MemberService;
 import kr.or.iei.member.model.vo.Member;
 
@@ -30,6 +32,13 @@ public class AdminController {
 	@Autowired
 	@Qualifier("adminService")
 	private AdminService adminService;
+	
+	@Autowired
+	@Qualifier("boardService")
+	private BoardService boardservice;
+	
+	@Autowired
+	private Emitter emitter;
 
 	// private MemberService memberService;
 
@@ -75,6 +84,36 @@ public class AdminController {
 		model.addAttribute("msg", "사용자님의 신고로 Expert Connection의 규정을 어기고 이용환경을 해치는 사용자를 적발하는데 많은 도움이 되었습니다. 보내주신 신고내용은 검토 후 회신드리겠습니다. (허위신고 등은 신고자 본인에게 제재가 가해질 수 있습니다.) 앞으로도 규정을 어기는 사용자가 있다면 신고기능을 적극 이용해주시길 부탁드립니다. 감사합니다. 🍀");
 		model.addAttribute("icon","info");
 		model.addAttribute("loc","/board/list.exco?reqPage=1&boardType=" + boardType + "&boardTypeNm=" + boardType);
+		
+		String adminId = "admin"; // 관리자 ID 지정
+	    String writer = null;
+	    String notificationMessage = null;
+	        
+	    // reportType에 따라 작성자 정보를 조회
+	    if ("0".equals(reportType)) {
+	        Board boardInfo = boardservice.getBoardWithMemberInfo(targetNo); // 게시글 작성자 정보 조회
+	        writer = boardInfo.getMemberNo();
+	        notificationMessage = "귀하의 게시글이 신고되었습니다. 부당한 신고 혹은 이의신청 등은 관리자에게 문의 바랍니다.";
+	    } else if ("1".equals(reportType)) {
+	        Board commentInfo = boardservice.getCommentWriter(targetNo); // 댓글 작성자 정보 조회
+	        writer = commentInfo.getMemberNo();
+	        notificationMessage = "귀하의 댓글이 신고되었습니다. 부당한 신고 혹은 이의신청 등은 관리자에게 문의 바랍니다.";
+	    }
+
+	    // 관리자에게 알림 전송
+	    String adminNotification = "새로운 신고가 접수되었습니다.";
+	    String url = "/admin/memberReportManage.exco?reqPage=1&searchName=report";
+	    emitter.sendEvent(adminId, adminNotification, url);
+	    System.out.println("관리자 알림이 전송되었습니다.");
+	    
+	    // 게시글 또는 댓글 작성자에게 알림 전송
+	    if (writer != null && !writer.equals(reporter)) {
+	        // 1:1 문의 URL 생성
+	        String writerUrl = "/board/writeFrm.exco?boardType=6&boardTypeNm=1:1문의";
+	        emitter.sendEvent(writer, notificationMessage, writerUrl);
+	        System.out.println("작성자 알림이 전송되었습니다.");
+	    }
+
 		return "common/msg";
 	}
 	
@@ -104,7 +143,7 @@ public class AdminController {
 		
 		String boardNo = targetNo;
 		
-		System.out.println(boardNo);
+		//System.out.println(boardNo);
 		
 		Board board = adminService.viewBoard(boardNo, commentChk);
 		
@@ -437,21 +476,21 @@ public class AdminController {
 	}
 	
 	//관리자페이지 -> 전문가 승인 취소(활동 정지)
-		@GetMapping("expertApproval.exco")
-		public String expertApproval(String receiveNo, Model model) {
-			int result = adminService.expertApproval(receiveNo);
-			
-			System.out.println("adminDao : " + result);
-			if(result > 0) {
-				model.addAttribute("icon","success");
-				model.addAttribute("title","전문가 승인 완료");
-				model.addAttribute("text", "해당 승인 요청을 완료했습니다.");
+	@GetMapping("expertApproval.exco")
+	public String expertApproval(String receiveNo, Model model) {
+		int result = adminService.expertApproval(receiveNo);
+		
+		System.out.println("adminDao : " + result);
+		if(result > 0) {
+			model.addAttribute("icon","success");
+			model.addAttribute("title","전문가 승인 완료");
+			model.addAttribute("text", "해당 승인 요청을 완료했습니다.");
 
-			}else {
-				model.addAttribute("icon","error");
-				model.addAttribute("title","전문가 승인 실패");
-				model.addAttribute("text", "해당 승인 요청을 처리하는 중 오류가 발생했습니다.");
-			}
-			return "common/msg";
+		}else {
+			model.addAttribute("icon","error");
+			model.addAttribute("title","전문가 승인 실패");
+			model.addAttribute("text", "해당 승인 요청을 처리하는 중 오류가 발생했습니다.");
 		}
+		return "common/msg";
+	}
 }

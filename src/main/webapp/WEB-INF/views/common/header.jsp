@@ -118,7 +118,7 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
        localStorage.setItem('notificationList', JSON.stringify(list));
    }
 
-// SSE 이벤트를 처리하는 함수
+	// SSE 이벤트를 처리하는 함수
    function setupSse() {
        const eventSource = new EventSource(`/emitter?memberNo=${loginMember.memberNo}`);
        eventSource.onmessage = function(event) {
@@ -152,14 +152,18 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
 
        const newNotification = $('<div class="notification-item"></div>')
            .text(message)
-           .data('url', url)
-           .on('click', function() {
-               const clickedUrl = $(this).data('url');
-               // 클릭한 알림만 삭제
-               const updatedNotifications = notifications.filter(notif => notif.url !== clickedUrl);
-               saveNotificationList(updatedNotifications);
-               window.location.href = clickedUrl;
-           });
+           
+        // URL이 있는 경우 클릭 이벤트를 추가
+	    if (url) {
+	        newNotification.data('url', url).on('click', function() {
+	            const clickedUrl = $(this).data('url');
+	            // 클릭한 알림만 삭제
+	            const updatedNotifications = notifications.filter(notif => notif.url !== clickedUrl);
+	            saveNotificationList(updatedNotifications);
+	            window.location.href = clickedUrl;
+	        });
+	    }
+
        notificationList.prepend(newNotification);
    }
 

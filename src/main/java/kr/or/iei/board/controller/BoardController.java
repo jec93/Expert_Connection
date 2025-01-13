@@ -18,6 +18,7 @@ import java.util.Random;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -99,48 +100,51 @@ public class BoardController {
 	//
 	@PostMapping("write.exco")
 	public String insertBoard(HttpServletRequest request, MultipartFile[] files, Board board, Notice notice) {
-		if (board.getBoardWriter().trim().isEmpty()) {
-			throw new IllegalArgumentException("작성자 이름이 비었습니다.");
-		}
-		if (board.getBoardTitle().trim().isEmpty()) {
-			throw new IllegalArgumentException("게시판 제목이 비었습니다.");
-		}
-		if (board.getBoardContent().trim().isEmpty()) {
-			throw new IllegalArgumentException("게시판 내용이 비었습니다.");
-		}
+	    if (board.getBoardWriter().trim().isEmpty()) {
+	        throw new IllegalArgumentException("작성자 이름이 비었습니다.");
+	    }
+	    if (board.getBoardTitle().trim().isEmpty()) {
+	        throw new IllegalArgumentException("게시판 제목이 비었습니다.");
+	    }
+	    if (board.getBoardContent().trim().isEmpty()) {
+	        throw new IllegalArgumentException("게시판 내용이 비었습니다.");
+	    }
 
-		// 서비스 호출
-		int result = boardservice.insertBoard(board, files, request);
+	    // 서비스 호출
+	    int result = boardservice.insertBoard(board, files, request);
 
-		if (result > 0) {
-			request.setAttribute("title", "성공");
-			request.setAttribute("msg", board.getBoardTypeNm() + "이 작성되었습니다.");
-			request.setAttribute("icon", "success");
-			request.setAttribute("loc", "list.exco?reqPage=1&boardType=" + board.getBoardType() + "&boardTypeNm=" + board.getBoardType());
-			
-			//게시글 URL 생성
-			String url = "/board/viewBoardFrm.exco?boardNo=" + board.getBoardNo() + "&boardType"+ board.getBoardType();
-			
-			
-			// 알림 전송 및 저장
-	        String notificationMessage = board.getBoardTypeNm() +"에 새 게시글이 작성되었습니다.";
-	        emitter.sendBroadcastEvent(notificationMessage, url);
-	        
-	        // Notice 객체 생성 후 저장
-	        if (notificationMessage != null && !notificationMessage.trim().isEmpty()) {
-	            notice = new Notice();
-	            notice.setMemberNo(board.getMemberNo());
-	            notice.setMessage(notificationMessage);
-	            notice.setUrl(url);
-	            
-	            noticeService.saveNotification(notice);
-	            
+	    if (result > 0) {
+	        request.setAttribute("title", "성공");
+	        request.setAttribute("msg", board.getBoardTypeNm() + "이 작성되었습니다.");
+	        request.setAttribute("icon", "success");
+	        request.setAttribute("loc", "list.exco?reqPage=1&boardType=" + board.getBoardType() + "&boardTypeNm=" + board.getBoardType());
+
+	        // 게시글 URL 생성
+	        String url = "/board/viewBoardFrm.exco?boardNo=" + board.getBoardNo() + "&boardType=" + board.getBoardType();
+
+	        // 1:1 문의가 아닌 경우 해당 알림을 보내도록 조건 추가
+	        if (!"1:1문의".equals(board.getBoardTypeNm())) {
+	            String notificationMessage = board.getBoardTypeNm() + "에 새 게시글이 작성되었습니다.";
+	            emitter.sendBroadcastEvent(notificationMessage, url);
+	                
+	            // Notice 객체 생성 후 저장
+	            if (notificationMessage != null && !notificationMessage.trim().isEmpty()) {
+	                notice = new Notice();
+	                notice.setMemberNo(board.getMemberNo());
+	                notice.setMessage(notificationMessage);
+	                notice.setUrl(url);
+	                
+	                noticeService.saveNotification(notice);
+	            } else {
+	                throw new IllegalArgumentException("알림 메시지가 비어 있습니다.");
+	            }
 	        } else {
-	            throw new IllegalArgumentException("알림 메시지가 비어 있습니다.");
+	            System.out.println("1:1문의의 경우 알림을 전송하지 않습니다.");
 	        }
-		}
-		return "common/msg";
+	    }
+	    return "common/msg";
 	}
+
 
 	@GetMapping("viewBoardFrm.exco")
 	public String viewFrm(String boardNo, String commentChk, Model model) { // 댓글 작성 후 돌아오는 화면에서 조회수를 늘리지 않기 위한
@@ -484,7 +488,9 @@ public class BoardController {
   	
   	//관리자페이지 - 커뮤니티 관리, 게시글 삭제
   	@GetMapping("adminDeleteBoard.exco")
-	public String adminDeleteBoardByBoardNo(String boardNo, int boardType, String searchName, Board board, HttpServletRequest request, Model model) {
+	public String adminDeleteBoardByBoardNo(String boardNo, int boardType, String searchName, Board board, HttpSession session, HttpServletRequest request, Model model) {
+  		board = boardservice.getBoardWithMemberInfo(boardNo); // 게시글 정보를 조회해 작성자 정보 설정
+  		
 		ArrayList<BoardFile> fileList = boardservice.deleteBoardByBoardNo(boardNo);
 		
 		if (fileList != null && fileList.size() > 0) {
@@ -503,9 +509,18 @@ public class BoardController {
 		model.addAttribute("icon", "success");
 		model.addAttribute("loc", "adminManageCommunity.exco?reqPage=1&boardType="+boardType+"&searchName="+searchName);
 
-		// 알림 전송
-		String notificationMessage = board.getBoardTitle() +"가 관리자에 의해 삭제되었습니다.";
-		emitter.sendEvent(board.getMemberNo(), notificationMessage);	//게시글 작성자에게만 알림 전송
+		// 관리자와 작성자의 memberNo를 비교하여 관리자에게 알림이 가지 않도록 방지 실제 세션에 저장된 관리자 정보를 비교
+        if (!session.getAttribute("loginMember").equals(board.getMemberNo())) {
+        	//1:1문의 URL 생성
+            String url = "/board/writeFrm.exco?boardType=6&boardTypeNm=1:1문의";
+            
+            //알림전송
+            String notificationMessage = "작성한 게시글이 관리자에 의해 삭제되었습니다. 궁금하신 사항은 1:1문의를 통해 질문부탁드립니다.";
+            emitter.sendEvent(board.getMemberNo(), notificationMessage, url); // 댓글 작성자에게만 알림 전송
+        } else { 
+        	// 메시지가 전송되지 않도록 로깅 또는 디버깅 메시지를 출력
+        	System.out.println("관리자에게는 알림을 보내지 않습니다.");
+        }
 		
 		return "common/msg";
 		//return "redirect:/board/adminManageList.exco?reqPage=1&boardType="+boardType+"&searchName=" + searchName;
@@ -513,24 +528,35 @@ public class BoardController {
   	
   	//관리자페이지 - 커뮤니티 관리, 댓글 삭제
   	@GetMapping("adminDeleteComment.exco")
-    public String adminDeleteComment(String commentNo, String boardNo, Board board, Model model) {
-    	int result = boardservice.deleteCommentByCommentNo(commentNo);
-    	if(result > 0) {
-    		model.addAttribute("title", "성공");
-    		model.addAttribute("msg", "댓글 삭제를 완료했습니다.");
-    		model.addAttribute("icon", "success");
-    		model.addAttribute("loc", "adminManageComment.exco?reqPage=1&searchName=comment");
-    		
-    		// 알림 전송
-    		String notificationMessage = board.getBoardTypeNm() +"에 작성한 댓글이 관리자에 의해 삭제되었습니다.";
-    		emitter.sendEvent(board.getMemberNo(), notificationMessage); //댓글 작성자에게만 알림 전송
-    	}else {
-    		model.addAttribute("title", "오류");
-    		model.addAttribute("msg", "댓글 삭제에 실패했습니다.");
-    		model.addAttribute("icon", "error");
-    		model.addAttribute("loc", "adminManageComment.exco?reqPage=1&searchName=comment");    		
-    	}
-		return "common/msg";
-    }
+  	public String adminDeleteComment(String commentNo, String boardNo, HttpSession session, Model model) {
+  	    Board board = boardservice.getCommentWriter(commentNo); // 댓글 작성자 정보 설정
+  	    int result = boardservice.deleteCommentByCommentNo(commentNo);
+
+  	    if (result > 0) {
+  	        model.addAttribute("title", "성공");
+  	        model.addAttribute("msg", "댓글 삭제를 완료했습니다.");
+  	        model.addAttribute("icon", "success");
+  	        model.addAttribute("loc", "adminManageComment.exco?reqPage=1&searchName=comment");
+
+  	        // 1:1 문의 URL 생성
+  	        String url = "/board/writeFrm.exco?boardType=6&boardTypeNm=1:1문의";
+
+  	        // 관리자와 댓글 작성자의 memberNo를 비교하여 관리자에게 알림이 가지 않도록
+  	        if (!session.getAttribute("loginMember").equals(board.getMemberNo())) {
+  	            String notificationMessage = "작성한 댓글이 관리자에 의해 삭제되었습니다. 궁금하신 사항은 1:1문의를 통해 질문부탁드립니다.";
+  	            emitter.sendEvent(board.getMemberNo(), notificationMessage, url); // 댓글 작성자에게만 알림 전송
+  	        } else {
+  	            System.out.println("관리자에게는 알림을 보내지 않습니다.");
+  	        }
+  	    } else {
+  	        model.addAttribute("title", "오류");
+  	        model.addAttribute("msg", "댓글 삭제에 실패했습니다.");
+  	        model.addAttribute("icon", "error");
+  	        model.addAttribute("loc", "adminManageComment.exco?reqPage=1&searchName=comment");
+  	    }
+
+  	    return "common/msg";
+  	}
+
   	
 }
