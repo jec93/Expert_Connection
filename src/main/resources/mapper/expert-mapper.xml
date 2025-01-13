@@ -633,4 +633,33 @@
 		WHERE INTRO_NO = #{introNo}
 		AND MEMBER_NO = #{memberNo}
 	</update>
+	
+	<!-- 모든리뷰 조회 -->
+	<select id="readReviewList" parameterType="string" resultType="review">
+    SELECT
+        R.REVIEW_NO AS reviewNo,
+        R.INTRO_NO AS introNo,
+        R.MEMBER_NO AS memberNo,
+        R.WRITER AS writer,
+        NICK.MEMBER_NICKNAME AS nickname,
+        R.REVIEW_CONTENT AS reviewContent,
+        R.REVIEW_DATE AS reviewDate,
+        R.REVIEW_SCORE AS reviewScore
+    FROM
+        TBL_REVIEW R
+    LEFT JOIN
+        (
+            SELECT MEMBER_NO, MEMBER_NICKNAME
+            FROM (
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_KAKAO_EXCO
+                UNION ALL
+                SELECT MEMBER_NO, MEMBER_NICKNAME FROM TBL_NAVER_EXCO
+            ) W
+        ) NICK
+    ON NICK.MEMBER_NO = R.WRITER
+    WHERE
+        R.MEMBER_NO = #{memberNo}
+</select>
 </mapper>

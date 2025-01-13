@@ -5,28 +5,80 @@
 
   <!-- 로그인 회원 -->
   <select id="selectOneMember" parameterType="member" resultType="member">
-  	     SELECT 
-         exco.member_no AS memberNo,
-         exco.member_id AS memberId,
-         exco.member_pw AS memberPw,
-         exco.member_nickname AS memberNickname,
-         exco.member_phone AS memberPhone,
-         exco.member_addr AS memberAddr,
-         exco.member_gender AS memberGender,
-         exco.member_email AS memberEmail,
-         exco.enroll_date AS enrollDate,
-         exco.profile_path AS profilePath,
-         exco.profile_name AS profileName,
-         whole.member_type AS memberType
-		 FROM tbl_exco exco
-		 JOIN tbl_whole_member whole
-		   ON exco.member_no = whole.member_no
-		WHERE exco.member_id = #{memberId}
-		  AND exco.member_pw = #{memberPw}
-  </select>
+    <![CDATA[
+		select c.member_no AS memberNo,
+		       c.member_id AS memberId,
+		       c.member_pw AS memberPw,
+		       c.member_nickname AS memberNickname,
+		       c.member_phone AS memberPhone,
+		       c.member_addr AS memberAddr,
+		       c.member_gender AS memberGender,
+		       c.member_email AS memberEmail,
+		       c.enroll_date AS enrollDate,
+		       c.profile_path AS profilePath,
+		       c.profile_name AS profileName,
+		       (select member_type from tbl_whole_member z where z.member_no = c.member_no ) AS memberType,
+		       case when reporter_yn > 0 OR suspect_yn > 0 then 'N'
+		            else 'Y'
+		        end loginChkYn
+		  from (
+		select a.member_no,
+		       count(reporter_yn) reporter_yn,
+		       count(suspect_yn) suspect_yn
+		  from (
+		select a.member_no,
+		       case when van_cnt > 0 and van_cnt < 3 then NVL((select 'N' 
+		                                                     from tbl_access_restriction z 
+		                                                    where z.report_no in (select report_no from tbl_report w where w.reporter = a.member_no and w.report_result = 'D') 
+		                                                      and sysdate between z.rest_start_date and z.rest_end_date)
+		                                                      , 'Y')
+		            when van_cnt >= 3 then 'N' 
+		            else 'Y'
+		            end reporter_yn,
+		            '' suspect_yn
+		  from (
+		select a.member_no,
+		       count(reporter) van_cnt
+		  from tbl_exco a,
+		       tbl_report c
+		where a.member_id = #{memberId}
+		   and a.member_pw = #{memberPw}
+		   and a.member_no = c.reporter(+)
+		   and c.report_result (+)= 'D'
+		group by a.member_no
+		) a
+		union 
+		select a.member_no,
+		       '' reporter_yn,
+		       case when van_cnt > 0 and van_cnt < 3 then NVL((select 'N' 
+		                                                     from tbl_access_restriction z 
+		                                                    where z.report_no in (select report_no from tbl_report w where w.suspect= a.member_no and w.report_result = 'Y') 
+		                                                      and sysdate between z.rest_start_date and z.rest_end_date)
+		                                                      , 'Y')
+		            when van_cnt >= 3 then 'N'
+		            else 'Y'
+		            end suspect_yn
+		  from (
+		select a.member_no,
+		       count(suspect) van_cnt
+		  from tbl_exco a,
+		       tbl_report c
+		where a.member_id = #{memberId}
+		   and a.member_pw = #{memberPw}
+		   and a.member_no = c.suspect(+)
+		   and c.report_result (+)= 'Y'
+		group by a.member_no
+		) a
+		) a
+		group by a.member_no
+		) a,
+		tbl_exco c
+		where a.member_no = c.member_no
+		    ]]>
+		</select>
   
   <!-- 로그인 전문가 -->
-  <select id="selectOneExpert" parameterType="member" resultType="member">
+  <select id="selectOneExpert" parameterType="expert" resultType="expert">
    SELECT 
       exco.member_no AS memberNo,
       exco.member_id AS memberId,
@@ -40,16 +92,20 @@
       exco.profile_path AS profilePath,
       exco.profile_name AS profileName,
       whole.member_type AS memberType,
-      expert.permission_state AS permissionState
-   FROM tbl_exco exco
-   JOIN tbl_whole_member whole
-     ON exco.member_no = whole.member_no
-   LEFT JOIN tbl_expert_management expert
-     ON exco.member_no = expert.member_no
-   WHERE exco.member_id = #{memberId}
+      expert.permission_state AS permissionState,
+      expert.receive_no AS receiveNo,
+      expert.expert_file_name AS expertFileName,
+      expert.expert_file_path AS expertFilePath,
+      expert.expert_grade AS expertGrade, 
+      expert.third_category_cd AS thirdCategoryCd 
+   FROM tbl_exco exco, 
+        tbl_whole_member whole,
+   		tbl_expert_management expert
+   WHERE exco.member_no = whole.member_no
+     AND exco.member_no = expert.member_no
+     AND exco.member_id = #{memberId}
      AND exco.member_pw = #{memberPw}
-     AND expert.permission_state = 'p'  <!-- PERMISSION_STATE가 'p'인 경우만 확인 -->
-	</select>
+</select>
 
   <!-- 회원가입 - 일반회원 -->  
   <insert id="insertMember" parameterType="member">

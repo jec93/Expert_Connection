@@ -17,6 +17,10 @@ public class Member {
 	private String profilePath;
 	private String profileName;
 	
+	
+	
+	private String loginChkYn;        //로그인 가능 여부
+    
 	private ArrayList<Member> memberList;
 
 	public Member() {
@@ -26,7 +30,7 @@ public class Member {
 
 	public Member(String memberNo, String memberId, String memberPw, String memberNickname, String memberPhone,
 			String memberAddr, String memberGender, String memberEmail, String memberType, String enrollDate,
-			String profilePath, String profileName, ArrayList<Member> memberList) {
+			String profilePath, String profileName, String loginChkYn, ArrayList<Member> memberList) {
 		super();
 		this.memberNo = memberNo;
 		this.memberId = memberId;
@@ -40,6 +44,7 @@ public class Member {
 		this.enrollDate = enrollDate;
 		this.profilePath = profilePath;
 		this.profileName = profileName;
+		this.loginChkYn = loginChkYn;
 		this.memberList = memberList;
 	}
 
@@ -139,6 +144,14 @@ public class Member {
 		this.profileName = profileName;
 	}
 
+	public String getLoginChkYn() {
+		return loginChkYn;
+	}
+
+	public void setLoginChkYn(String loginChkYn) {
+		this.loginChkYn = loginChkYn;
+	}
+
 	public ArrayList<Member> getMemberList() {
 		return memberList;
 	}
@@ -153,7 +166,8 @@ public class Member {
 				+ ", memberNickname=" + memberNickname + ", memberPhone=" + memberPhone + ", memberAddr=" + memberAddr
 				+ ", memberGender=" + memberGender + ", memberEmail=" + memberEmail + ", memberType=" + memberType
 				+ ", enrollDate=" + enrollDate + ", profilePath=" + profilePath + ", profileName=" + profileName
-				+ ", memberList=" + memberList + "]";
+				+ ", loginChkYn=" + loginChkYn + ", memberList=" + memberList + "]";
 	}
+	
 	
 }

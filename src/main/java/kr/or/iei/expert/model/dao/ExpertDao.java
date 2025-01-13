@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.expert.model.vo.ExpertManagement;
 import kr.or.iei.expert.model.vo.Review;
+import kr.or.iei.member.model.vo.Member;
 import kr.or.iei.expert.model.vo.IntroduceReaction;
 
 
@@ -80,5 +81,10 @@ public class ExpertDao {
 	public int updIntroByReact(IntroduceReaction introduceReact) {
 		// TODO Auto-generated method stub
 		return sqlSession.update("expertManagement.updIntroByReact", introduceReact);
+	}
+
+	//모든 리뷰 조회
+	public List<Review> readReviewList(String memberNo) {
+	     return sqlSession.selectList("expert.readReviewList", memberNo);
 	}
 }
