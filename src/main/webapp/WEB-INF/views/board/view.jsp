@@ -304,6 +304,10 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 	});
 	
 	document.addEventListener('keydown', function(event) {
+		let board = {
+		        memberNo: "${board.memberNo}", // JSTL 변수를 JavaScript로 전달
+		        boardWriter: "${board.boardWriter}" // JSTL 변수를 JavaScript로 전달
+		    };
 	    if (event.ctrlKey && event.key === 'p' && loginId == 'admin') { // Ctrl + P
 	        event.preventDefault(); // 기본 동작 프린트를 막음
 	        Swal.fire({
@@ -346,23 +350,7 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 	                    		let noticesList = noticeCategories.filter(item=> item.THIRDCATEGORYCD === selectedValue && item.SECONDCATEGORYCD === selectedSecondValue);
 	                    		let noticeNM = noticesList[0].THIRDCATEGORYNM
 	                    		console.log(noticeNM);
-	                    		$.ajax({
-	                                url: "/board/boardNotice.exco",
-	                                type: "GET",
-	                                data: {
-	                                    "memberNo": "${board.memberNo}",
-	                                    "memberNickname" : "${board.boardWriter}",
-	                                    "noticeNm": noticeNM
-	                                },
-	                                dataType: "json",
-	                                success: function(response) {
-	                                	console.log(response);
-	                                	updateBoardReaction(response.boardReact); // 상태를 업데이트
-	                                },
-	                                error: function() {
-	                                    console.error("알림을 보내는데 실패");
-	                                }
-	                            });
+	                    		location.href = "/board/boardNotice.exco?memberNo=10220&noticeNm="+noticeNM;
 	                    	}
 	                    });
 	                	break;

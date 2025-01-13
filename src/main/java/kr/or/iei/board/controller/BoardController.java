@@ -22,6 +22,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -559,9 +561,12 @@ public class BoardController {
   	}
 
   	@GetMapping("boardNotice.exco")
-  	public void boardNotice(String memberNo, String memberNickname, String noticeNm) {
-  		// 알림 전송
-  		String sendMsg = memberNickname + "님에게 온\'" + noticeNm + "\' 알림";
-		emitter.sendEvent(memberNo, sendMsg);	//게시글 작성자에게만 알림 전송
+  	public String boardNotice(String memberNo,String noticeNm, Model model) {
+  	//알림전송
+  		model.addAttribute("title","알림을 보냈습니다!");
+  		model.addAttribute("icon","success");
+        emitter.sendEvent(memberNo, noticeNm); // 댓글 작성자에게만 알림 전송
+        return"common/msg";
   	}
+
 }
