@@ -204,14 +204,6 @@ button:hover {
 					</div>
 					<div class="join-input-wrap">
 						<div class="join-input-title">
-							<label for="memberPhoneCerti">전화번호 인증</label>
-						</div>
-						<div class="join-input-item">
-							<input type="text" name="memberPhoneCerti" placeholder="전화번호 인증코드 입력" class="join-component"><br>
-						</div>
-					</div>
-					<div class="join-input-wrap">
-						<div class="join-input-title">
 							<label for="memberEmail">이메일</label>
 						</div>
 						<div class="join-input-item">
