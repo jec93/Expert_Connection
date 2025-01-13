@@ -58,6 +58,7 @@
 	width: 150px;
 	height: 150px;
 	border: 1px solid;
+	overflow: hidden;
 }
 .info-container{
 	width: 280px;
