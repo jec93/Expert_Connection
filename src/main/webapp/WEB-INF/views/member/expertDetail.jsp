@@ -205,7 +205,7 @@ body {
 /* 입력 상자 클릭 시 포커스 스타일 */
 #info-title-edit:focus, #info-content-edit:focus,
 #portfolio-edit:focus, #portfolio-path-edit:focus {
-    border-color: #007bff;
+    border-color: #34805C;
     background-color: #fff;
     outline: none;
 }

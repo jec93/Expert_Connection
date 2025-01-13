@@ -88,6 +88,7 @@
 		WHERE
 		    TRIM(TBL_CHAT_MEMBERS.room_id) = #{roomId} -- 해당 채팅방
 		    AND TBL_WHOLE_MEMBER.member_type IN (4, 5, 6) -- 전문가
+		    AND TBL_AUTO_RESPONSE.is_active = 'Y'
 		ORDER BY TBL_AUTO_RESPONSE.response_date DESC
     </select>
 </mapper>

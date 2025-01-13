@@ -146,7 +146,6 @@ body {
     border-radius: 10px;
     line-height: 1.4;
     color: #000000;
-   
 }
 
 .message-text {
