@@ -8,7 +8,7 @@
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
-<link rel="stylesheet" href="/resources/css/test.css" />
+<link rel="stylesheet" href="/resources/css/exco.css" />
 <style>
 .posting-comment {
 	margin : 10px;

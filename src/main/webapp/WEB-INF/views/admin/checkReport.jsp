@@ -8,7 +8,7 @@
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
-<link rel="stylesheet" href="/resources/css/test.css" />
+<link rel="stylesheet" href="/resources/css/exco.css" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="/resources/js/sweetalert.min.js"></script>
 </head>
@@ -92,7 +92,7 @@ function checkTargetComment(targetNo) {
 function trueReport(reportNo, suspect, reportType, targetNo) {
 	swal({
 		title : "신고수리",
-		text : "해당 신고를 수리하시겠습니까? \n 신고받은 회원은 로그인제한이 적용되며, 신고대상은 삭제처리 됩니다.",
+		text : "해당 신고를 수리하시겠습니까? \n 신고받은 회원은 로그인제한이 적용되며, \n신고대상은 삭제처리 됩니다.",
 		icon : "warning",
 		buttons : {
 			cancel : {
