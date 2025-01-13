@@ -562,4 +562,27 @@
 		FROM tbl_comment
 		WHERE board_no = #{boardNo}
 	</select>
+	
+	<!-- 특정 사용자에게만 알림보내기 위한 게시글조회 -->
+	<select id="selectBoard"
+			  parameterType="string"
+			  resultType="board">
+	SELECT
+				 BOARD_NO AS BOARDNO,
+				 MEMBER_NO AS MEMBERNO
+	FROM TBL_BOARD
+	WHERE BOARD_NO = #{boardNo}
+	</select>
+	
+	<!-- 특정 사용자에게만 알림보내기 위한 댓글조회 -->
+	<select id="selectCommentWriter"
+			  parameterType="string"
+			  resultType="board">
+	SELECT
+				 MEMBER_NO AS MEMBERNO,
+				 BOARD_NO AS BOARDNO,
+				 COMMENT_NO AS COMMENTNO
+	FROM TBL_COMMENT
+	WHERE COMMENT_NO = #{commentNo}
+	</select>
 </mapper>
