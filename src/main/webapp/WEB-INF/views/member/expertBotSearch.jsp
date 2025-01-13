@@ -3,7 +3,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>전문가 검색 챗봇</title>
+<title>Expert Connection</title>
+<link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
+<link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 body {

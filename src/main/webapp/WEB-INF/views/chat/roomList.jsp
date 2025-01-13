@@ -6,7 +6,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Expert Connection</title>
+<link rel="icon" href="/resources/logo/expert_connection_favicon.png"/>
+<link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png"/>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 /* 전체 채팅 목록 컨테이너 스타일 */
