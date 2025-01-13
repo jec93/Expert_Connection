@@ -499,12 +499,9 @@ public class AdminController {
 	//관리자페이지 - 신고확정 : 신고받은 회원 로그인제한+신고대상 삭제
 	@GetMapping("immediatelyReport.exco")
 	public String immediatelyReport(String suspect,String boardNo, Model model) {
-		//신고대상 삭제
-		//게시글에만 적용했으므로 게시글No사용
-		int board = adminService.deleteBoardByBoardNo(boardNo);
-		
 		Report reportData = new Report();
 		String reportNo = adminService.createReportNo();
+		System.out.println(reportNo);
 		reportData.setReportNo(reportNo);
 		reportData.setTargetNo(boardNo);
 		reportData.setReporter("1");
@@ -514,10 +511,14 @@ public class AdminController {
 		adminService.insertReportByInfo(reportData);
 		
 		//신고테이블에서 신고처리결과 D->Y로 변경
-		adminService.updateReportResultbyReportNo(reportData.getReportNo());
-		System.out.println(reportData.getReportResult());
+		adminService.updateReportResultbyReportNo(reportNo);
+		System.out.println(reportNo);
+		
+		//신고대상 삭제
+		//게시글에만 적용했으므로 게시글No사용
+		int board = adminService.deleteBoardByBoardNo(boardNo);
 		//접근제한 테이블에 넣어주기 100년
-		int acres = adminService.thirdAccessRestriction(reportData.getReportNo(), suspect);
+		int acres = adminService.thirdAccessRestriction(reportNo, suspect);
 		
 		if(acres > 0) {
 			model.addAttribute("title","신고수리 완료");
