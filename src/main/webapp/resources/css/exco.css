@@ -691,11 +691,22 @@ section.section {
 .siteIntro-txt > h3 {
 	padding-bottom : 10px;
 }
+
 .siteIntro-img {
 	width : 300px;
 	height : 300px;
-	border : 1px solid var(--main2)
+	border : none;
 }
+
+.siteIntro-img #chatBot-img {
+	width: 100%;
+    height: 110%;
+}
+
+.siteIntro-img #chat-img {
+    height: 90%;
+}
+
 .siteIntro-link {
 	align-content : end; 
 }
@@ -766,8 +777,6 @@ section.section {
 	display : block;
 	padding : 8px;
 }
-
-
 
 /* .section {
 	margin-bottom: 20px;

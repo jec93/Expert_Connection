@@ -45,11 +45,11 @@
 										<h4>챗봇을 통해 원하는 전문가를 추천받아보세요</h4>
 										<p>몇가지 필요한 정보만 알려주세요</p>
 								</div>
-									<div class="siteIntro-img">챗봇 화면 이미지 띄울 예정</div>
+									<div class="siteIntro-img"><img id="chatBot-img" src="/resources/images/chatBotSample.png"></div>
 								</div>
 								<div class="siteIntro-txt">
 										<h4>카테고리 검색을 통해 전문가들의 정보를 직접 확인할 수도 있어요.</h4>
-								</div>							
+								</div>							 
 								<div class="siteIntro-body">
 									<div class="siteIntro-category">
 										<div class="firstCategory">
@@ -110,7 +110,7 @@
 								</div>
 								<div class="siteIntro-body">
 									<div class="siteIntro-img">
-										채팅 이미지 띄울 예정
+										<img id="chat-img" src="/resources/images/chatSample.png">
 									</div>
 									<div class="introduce-txt">
 										<h3>내게 맞는 전문가님을 선택하고 채팅을 요청하세요.</h3>

@@ -119,7 +119,7 @@ body {
 	padding: 10px 20px;
 	background-color: #34805C;
 	color: white;
-	border: 2px solid #34805C;
+	border: 1px solid #34805C;
 	border-radius: 10px;
 	font-size: 14px;
 	font-weight: bold;
@@ -128,7 +128,7 @@ body {
 }
 
 .addList button:hover {
-	background-color: #223B24;
+	background-color: #276e4b;
 	color: white;
 }
 
@@ -182,8 +182,12 @@ body {
 	background-color: #ff4d4d;
 }
 
-.modal-content button:hover {
+.modal-content #save-response-btn:hover {
 	background-color: #276e4b;
+}
+
+.modal-content .close:hover {
+	background-color: #fc3535;
 }
 
 .delete-response-btn {
@@ -233,7 +237,9 @@ body {
 				<!-- 모달 -->
 				<div class="modal" id="response-modal">
 					<div class="modal-content">
+						<p>질문</p>
 						<textarea id="modal-question" placeholder="질문을 입력해주세요."></textarea>
+						<p>답변</p>
 						<textarea id="modal-answer" placeholder="답변을 입력해주세요."></textarea>
 						<button id="save-response-btn" class="save">저장</button>
 						<button class="close">닫기</button>
