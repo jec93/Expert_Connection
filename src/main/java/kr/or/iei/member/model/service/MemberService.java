@@ -36,8 +36,8 @@ public class MemberService {
 	public Member memberLogin(Member member) {
 		return memberDao.memberLogin(member);
 	}
-	public Expert expertLogin(Expert expert) {
-	    return memberDao.expertLogin(expert);
+	public Member expertLogin(Member member) {
+	    return memberDao.expertLogin(member);
 	}
     
 	//회원가입 - 일반회원
@@ -167,7 +167,6 @@ public class MemberService {
 	public List<Board> getBoardsByMemberNo(String memberNo, int reqPage) {
         return boardService.getBoardsByMemberNo(memberNo, reqPage);
     }
-
     // 게시글에 대한 댓글 가져오기
     public List<BoardComment> getCommentsByBoardNo(String boardNo, String memberNo) {
         return boardService.getCommentsByBoardNo(boardNo, memberNo);
@@ -181,6 +180,7 @@ public class MemberService {
   	public List<BoardComment> getCommentsByMemberNo(String memberNo) {
   		return boardService.getCommentsByMemberNo(memberNo);
   	}
+  	
     //전체 댓글 수 가져오기
 	public int getCommentCount(String boardNo) {
 		return boardService.getCommentCount(boardNo);

@@ -15,38 +15,11 @@ public class Member {
 	private String memberType;
 	private String enrollDate;
 	private String profilePath;
-	private String profileName;
-	
-	
-	
-	private String loginChkYn;        //로그인 가능 여부
+	private String profileName;	
+	private String permissionState;
+	private String loginChkYn;    //로그인 가능 여부
     
 	private ArrayList<Member> memberList;
-
-	public Member() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public Member(String memberNo, String memberId, String memberPw, String memberNickname, String memberPhone,
-			String memberAddr, String memberGender, String memberEmail, String memberType, String enrollDate,
-			String profilePath, String profileName, String loginChkYn, ArrayList<Member> memberList) {
-		super();
-		this.memberNo = memberNo;
-		this.memberId = memberId;
-		this.memberPw = memberPw;
-		this.memberNickname = memberNickname;
-		this.memberPhone = memberPhone;
-		this.memberAddr = memberAddr;
-		this.memberGender = memberGender;
-		this.memberEmail = memberEmail;
-		this.memberType = memberType;
-		this.enrollDate = enrollDate;
-		this.profilePath = profilePath;
-		this.profileName = profileName;
-		this.loginChkYn = loginChkYn;
-		this.memberList = memberList;
-	}
 
 	public String getMemberNo() {
 		return memberNo;
@@ -144,6 +117,14 @@ public class Member {
 		this.profileName = profileName;
 	}
 
+	public String getPermissionState() {
+		return permissionState;
+	}
+
+	public void setPermissionState(String permissionState) {
+		this.permissionState = permissionState;
+	}
+
 	public String getLoginChkYn() {
 		return loginChkYn;
 	}
@@ -160,14 +141,41 @@ public class Member {
 		this.memberList = memberList;
 	}
 
+	public Member() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Member(String memberNo, String memberId, String memberPw, String memberNickname, String memberPhone,
+			String memberAddr, String memberGender, String memberEmail, String memberType, String enrollDate,
+			String profilePath, String profileName, String permissionState, String loginChkYn,
+			ArrayList<Member> memberList) {
+		super();
+		this.memberNo = memberNo;
+		this.memberId = memberId;
+		this.memberPw = memberPw;
+		this.memberNickname = memberNickname;
+		this.memberPhone = memberPhone;
+		this.memberAddr = memberAddr;
+		this.memberGender = memberGender;
+		this.memberEmail = memberEmail;
+		this.memberType = memberType;
+		this.enrollDate = enrollDate;
+		this.profilePath = profilePath;
+		this.profileName = profileName;
+		this.permissionState = permissionState;
+		this.loginChkYn = loginChkYn;
+		this.memberList = memberList;
+	}
+
 	@Override
 	public String toString() {
 		return "Member [memberNo=" + memberNo + ", memberId=" + memberId + ", memberPw=" + memberPw
 				+ ", memberNickname=" + memberNickname + ", memberPhone=" + memberPhone + ", memberAddr=" + memberAddr
 				+ ", memberGender=" + memberGender + ", memberEmail=" + memberEmail + ", memberType=" + memberType
 				+ ", enrollDate=" + enrollDate + ", profilePath=" + profilePath + ", profileName=" + profileName
-				+ ", loginChkYn=" + loginChkYn + ", memberList=" + memberList + "]";
+				+ ", permissionState=" + permissionState + ", loginChkYn=" + loginChkYn + ", memberList=" + memberList
+				+ "]";
 	}
-	
 	
 }

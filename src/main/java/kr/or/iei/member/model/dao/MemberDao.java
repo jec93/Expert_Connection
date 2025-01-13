@@ -22,8 +22,8 @@ public class MemberDao {
 	public Member memberLogin(Member member) {
 		return sqlSession.selectOne("member.selectOneMember", member);
 	}
-	public Expert expertLogin(Expert expert) {
-		return sqlSession.selectOne("member.selectOneExpert", expert);
+	public Member expertLogin(Member member) {
+		return sqlSession.selectOne("member.selectOneExpert", member);
 	}
 	//회원가입 - 일반회원
 	public int join(Member member) {

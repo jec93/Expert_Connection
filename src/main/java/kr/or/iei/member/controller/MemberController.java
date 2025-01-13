@@ -45,9 +45,9 @@ public class MemberController {
 	
 	//로그인
 	@PostMapping("login.exco")
-	public ModelAndView memberLogin(Member member, Expert expert, AccessRestriction accessRestriction, HttpSession session) {
+	public ModelAndView memberLogin(Member member, AccessRestriction accessRestriction, HttpSession session) {
 	    // 전문가 로그인 시도
-	    Expert expertMember = memberService.expertLogin(expert);
+	    Member expertMember = memberService.expertLogin(member);
 	    
 	    // expertMember가 null이 아닐 경우 permissionState 값 출력
 	    if (expertMember != null) {
@@ -200,21 +200,16 @@ public class MemberController {
 	}
 	//마이페이지로 이동
 	@GetMapping("mypageFrm.exco")
-    public String mypageFrm(Model model, HttpSession session) {
-		Object loginMember = session.getAttribute("loginMember");
-		
-		String introduceContent = "";
-		
-		if(loginMember instanceof Expert) {
-			Expert member = (Expert) loginMember;
-			
-			introduceContent = memberService.getIntroduceContent(member.getMemberNo());
-		}else if (loginMember instanceof Member) {
-			Member member = (Member) loginMember;
-			
-			introduceContent = memberService.getIntroduceContent(member.getMemberNo());
-		}
-			
+	 public String mypageFrm(Model model, HttpSession session) {
+		Member loginMember = (Member) session.getAttribute("loginMember");
+		String memberNo = loginMember.getMemberNo();
+      
+        // memberNo를 통해 데이터베이스에서 introduceContent를 가져오는 서비스 호출
+        String introduceContent = memberService.getIntroduceContent(memberNo);
+        
+        // 모델에 introduceContent를 추가
+        model.addAttribute("introduceContent", introduceContent);
+
         // 뷰 반환 (mypage.jsp)
         return "member/mypage";
     }
@@ -426,7 +421,7 @@ public class MemberController {
 	}
 	
 	@GetMapping("writtenBoardFrm.exco")
-    public String writtenBoardFrm(HttpSession session, Model model, @RequestParam(value = "reqPage", defaultValue = "1") int reqPage) {
+	public String writtenBoardFrm(HttpSession session, Model model, @RequestParam(value = "reqPage", defaultValue = "1") int reqPage) {
         // 세션에서 로그인된 사용자 정보 가져오기
         Member loginMember = (Member) session.getAttribute("loginMember");
        
@@ -592,13 +587,39 @@ public class MemberController {
 	}
 	
 	 // 리뷰 목록을 가져오는 메서드
-    @RequestMapping("writtenReviewFrm.exco")
-    public String getReviewList(@RequestParam("memberNo") String memberNo, Model model, HttpSession session) {
+   /* @RequestMapping("writtenReviewFrm.exco")
+    public String getReviewList(@RequestParam("memberNo") String memberNo, Model model, HttpSession session, @RequestParam(value = "reqPage", defaultValue = "1") int reqPage) {
     	Member loginMember = (Member) session.getAttribute("loginMember");
-        List<Review> reviewList = memberService.getReadReviewList(loginMember.getMemberNo());
-        model.addAttribute("reviewList", reviewList);
+    	
+    	if (loginMember != null) {
+	        // 한 페이지에 표시할 리뷰 수
+	        int reviewPerPage = 5;
+
+	        // 전체 리뷰 가져오기
+	        List<Review> reviewList = memberService.getReadReviewList(loginMember.getMemberNo());
+
+	        // 시작과 끝 인덱스 계산
+	        int start = (reqPage - 1) * reviewPerPage;
+	        int end = Math.min(start + reviewPerPage, reviewList.size());
+
+	        // 해당 페이지에 표시할 리뷰만 추출
+	        List<Review> paginatedReview = reviewList.subList(start, end);
+
+	        // 전체 페이지 수 계산
+	        int totalPages = (int) Math.ceil((double) reviewList.size() / reviewPerPage);
+
+	        // 모델에 데이터 추가
+	        model.addAttribute("reviews", paginatedReview);
+	        model.addAttribute("reqPage", reqPage);
+	        model.addAttribute("totalPages", totalPages);
+
+	    } else {
+	        // 로그인되지 않은 경우 처리 (예: 로그인 페이지로 리다이렉트)
+	        return "redirect:/login";
+	    }
+        
         return "member/writtenReview"; 
-    }
+    }*/
 }
 	
 
