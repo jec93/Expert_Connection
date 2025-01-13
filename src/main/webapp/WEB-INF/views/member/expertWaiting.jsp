@@ -62,6 +62,7 @@
     line-height: 1.6;
     color: #333;
     margin-bottom: 10px;
+    list-style-type: none;
 }
 
 .wait-content-body ul li::before {
@@ -105,12 +106,11 @@
 </head>
 <body>
 <div class="wrap">
-    <jsp:include page="/WEB-INF/views/common/header.jsp" />
     <main class="content">
         <section class="section wait-list-wrap">
             <div class="list-body">
                 <div class="list-content">
-                    <div class="page-title">전문가 가입 안내사항</div>
+                    <div class="page-title"></div>
                     <div class="wait-content-header">
                         <img id="wait-siteIntro-header" src="/resources/logo/expert_connection_logo_h_01.png">
                         <h5>Expert Connection을 이용하는 전문가 회원님들을 위한 안내사항입니다.</h5>
@@ -130,7 +130,6 @@
             </div>
         </section>
     </main>
-    <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 </div>
 
 </html>

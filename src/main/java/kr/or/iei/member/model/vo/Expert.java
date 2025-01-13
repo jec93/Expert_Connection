@@ -4,6 +4,7 @@ public class Expert {
 	
 	private String memberNo;			//회원번호
 	private String memberId;			//회원아이디
+	private String memberPw;
 	private String memberNickname;		//회원 닉네임
 	private String memberPhone;			//회원 전화번호
 	private String memberAddr;			//회원 주소 
@@ -28,13 +29,14 @@ public class Expert {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Expert(String memberNo, String memberId, String memberNickname, String memberPhone, String memberAddr,
+	public Expert(String memberNo, String memberId, String memberPw, String memberNickname, String memberPhone, String memberAddr,
 			String memberGender, String memberEmail, String memberType, String enrollDate, String receiveNo,
 			String profilePath, String profileName, String expertFileName, String expertFilePath,
 			String permissionState, String expertGrade, String thirdCategoryCd, String thirdCategoryNm) {
 		super();
 		this.memberNo = memberNo;
 		this.memberId = memberId;
+		this.memberPw = memberPw;
 		this.memberNickname = memberNickname;
 		this.memberPhone = memberPhone;
 		this.memberAddr = memberAddr;
@@ -67,6 +69,13 @@ public class Expert {
 
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
+	}
+	public String getMemberPw() {
+		return memberPw;
+	}
+
+	public void setMemberPw(String memberPw) {
+		this.memberPw = memberPw;
 	}
 
 	public String getMemberNickname() {

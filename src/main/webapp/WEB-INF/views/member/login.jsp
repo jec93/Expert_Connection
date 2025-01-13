@@ -151,7 +151,7 @@ input[type="text"] {
 <div class="login-img1"><a href="/"><img class="login-img" src="/resources/logo/expert_connection_logo_h_01.png" alt="logo image"></a></div>
 	<main class="content login-container">
 		<section class="section login-wrap">
-				<form action="login.exco" method="post" autocomplete="off"">
+				<form action="login.exco" method="post" autocomplete="off">
 					<div class="login-input-title">
 							<label for="loginId">아이디</label>
 					</div>

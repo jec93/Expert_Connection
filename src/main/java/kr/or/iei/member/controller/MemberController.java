@@ -2,15 +2,12 @@ package kr.or.iei.member.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +15,21 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import kr.or.iei.board.model.service.BoardService;
+import kr.or.iei.admin.model.vo.AccessRestriction;
 import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardComment;
+import kr.or.iei.expert.model.vo.Review;
 import kr.or.iei.member.model.service.EmailService;
 import kr.or.iei.member.model.service.MemberService;
+import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 @Controller
@@ -48,18 +45,50 @@ public class MemberController {
 	
 	//로그인
 	@PostMapping("login.exco")
-	public ModelAndView memberLogin(Member member, HttpSession session) {
-		Member loginMember = memberService.memberLogin(member);
-
-		if(loginMember != null) {
-			 session.setAttribute("loginMember", loginMember);
-		     return new ModelAndView("redirect:/"); 
-		}else {
-			ModelAndView mav = new ModelAndView("member/login"); // 실패 시 로그인 페이지 반환
-	        mav.addObject("loginFailMessage", "로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.");
-	        return mav;
-		}
-
+	public ModelAndView memberLogin(Member member, Expert expert, AccessRestriction accessRestriction, HttpSession session) {
+	    // 전문가 로그인 시도
+	    Expert expertMember = memberService.expertLogin(expert);
+	    
+	    // expertMember가 null이 아닐 경우 permissionState 값 출력
+	    if (expertMember != null) {
+	        
+	        // 전문가 로그인 성공 후 상태 확인
+	        if ("P".equals(expertMember.getPermissionState())) {
+	            // 승인된 전문가 로그인 처리
+	            session.setAttribute("loginMember", expertMember); // 로그인 정보 저장	 
+	            return new ModelAndView("redirect:/"); // 전문가 대시보드로 리디렉션
+	        } else {
+	            // 승인되지 않은 전문가 처리
+	            ModelAndView mav = new ModelAndView("member/expertWaiting"); // 승인 대기 페이지로 리디렉션
+	            mav.addObject("loginFailMessage", "승인되지 않은 계정입니다. 관리자의 승인을 기다려주세요.");
+	            return mav;
+	        }
+	        
+	    }else {
+	    	
+	    	// 전문가 로그인 실패 시, 일반 회원 로그인 시도
+	    	Member loginMember = memberService.memberLogin(member);
+	    	
+	    	if (loginMember != null) {
+	    		
+	    		// 제한 기간 내에 있을 경우 로그인 불가능
+	    		if (loginMember.getLoginChkYn().equals("Y")) {
+	    			ModelAndView mav = new ModelAndView("member/login");
+	    			mav.addObject("loginFailMessage", "신고로 인한 제재기간입니다.");
+	    			return mav;
+	    		}
+	    		
+	    		// 정상 로그인 처리
+	    		session.setAttribute("loginMember", loginMember);
+	    		return new ModelAndView("redirect:/"); // 메인 페이지로 리디렉션
+	    	} else {
+	    		// 로그인 실패 시
+	    		ModelAndView mav = new ModelAndView("member/login");
+	    		mav.addObject("loginFailMessage", "로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.");
+	    		return mav;
+	    	}
+	    }
+	    
 	}
 	
 	//로그아웃
@@ -172,15 +201,20 @@ public class MemberController {
 	//마이페이지로 이동
 	@GetMapping("mypageFrm.exco")
     public String mypageFrm(Model model, HttpSession session) {
-		Member loginMember = (Member) session.getAttribute("loginMember");
-		String memberNo = loginMember.getMemberNo();
-      
-        // memberNo를 통해 데이터베이스에서 introduceContent를 가져오는 서비스 호출
-        String introduceContent = memberService.getIntroduceContent(memberNo);
-        
-        // 모델에 introduceContent를 추가
-        model.addAttribute("introduceContent", introduceContent);
-
+		Object loginMember = session.getAttribute("loginMember");
+		
+		String introduceContent = "";
+		
+		if(loginMember instanceof Expert) {
+			Expert member = (Expert) loginMember;
+			
+			introduceContent = memberService.getIntroduceContent(member.getMemberNo());
+		}else if (loginMember instanceof Member) {
+			Member member = (Member) loginMember;
+			
+			introduceContent = memberService.getIntroduceContent(member.getMemberNo());
+		}
+			
         // 뷰 반환 (mypage.jsp)
         return "member/mypage";
     }
@@ -497,7 +531,7 @@ public class MemberController {
         return "errorPage1"; // 실패 시, 예시 에러 페이지
     }
 	//전문가 마이페이지 포트폴리오 업로드
-	@PostMapping("/savePortfolio.exco")
+	@PostMapping("savePortfolio.exco")
 	public String savePortfolio(@RequestParam("memberNo") String memberNo,
 	                            @RequestParam("portfolioFiles") List<MultipartFile> portfolioFiles,
 	                            HttpServletRequest request,
@@ -556,6 +590,15 @@ public class MemberController {
 	public String expertWaitingFrm() {
 		return "member/expertWaiting";
 	}
+	
+	 // 리뷰 목록을 가져오는 메서드
+    @RequestMapping("writtenReviewFrm.exco")
+    public String getReviewList(@RequestParam("memberNo") String memberNo, Model model, HttpSession session) {
+    	Member loginMember = (Member) session.getAttribute("loginMember");
+        List<Review> reviewList = memberService.getReadReviewList(loginMember.getMemberNo());
+        model.addAttribute("reviewList", reviewList);
+        return "member/writtenReview"; 
+    }
 }
 	
 

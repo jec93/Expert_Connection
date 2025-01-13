@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.iei.board.model.service.BoardService;
 import kr.or.iei.board.model.vo.Board;
 import kr.or.iei.board.model.vo.BoardComment;
+import kr.or.iei.expert.model.service.ExpertService;
+import kr.or.iei.expert.model.vo.Review;
 import kr.or.iei.member.model.dao.MemberDao;
+import kr.or.iei.member.model.vo.Expert;
 import kr.or.iei.member.model.vo.Member;
 
 @Service("service")
@@ -27,12 +29,15 @@ public class MemberService {
 	
 	@Autowired                                
 	private BoardService boardService;
+	
+	@Autowired
+    private ExpertService expertService;
 	//로그인
 	public Member memberLogin(Member member) {
 		return memberDao.memberLogin(member);
 	}
-	public Member expertLogin(Member member) {
-	    return memberDao.expertLogin(member);
+	public Expert expertLogin(Expert expert) {
+	    return memberDao.expertLogin(expert);
 	}
     
 	//회원가입 - 일반회원
@@ -217,5 +222,9 @@ public class MemberService {
 	    
 	    return memberDao.updatePortfolioFile(parameterMap);
 	}
+	//작성한 리뷰 
+	public List<Review> getReadReviewList(String memberNo) {
+        return expertService.readReviewList(memberNo);
+    }
 	
 }

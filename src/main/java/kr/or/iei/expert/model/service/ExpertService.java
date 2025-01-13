@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import kr.or.iei.expert.model.dao.ExpertDao;
 import kr.or.iei.expert.model.vo.ExpertIntroduce;
 import kr.or.iei.expert.model.vo.Review;
+import kr.or.iei.member.model.vo.Member;
 import kr.or.iei.expert.model.vo.IntroduceReaction;
 
 @Service("expertService")
@@ -139,5 +140,9 @@ public class ExpertService {
 		}
 		return likeChkData;
 	}
+	//작성한 리뷰
+	public List<Review> readReviewList(String memberNo) {
+        return expertDao.readReviewList(memberNo);
+    }
 
 }
