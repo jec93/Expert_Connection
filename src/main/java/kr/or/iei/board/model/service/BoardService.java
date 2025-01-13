@@ -28,6 +28,8 @@ import kr.or.iei.board.model.vo.BoardReact;
 import kr.or.iei.board.model.vo.CommentPageData;
 import kr.or.iei.board.model.vo.CommentReact;
 import kr.or.iei.board.model.vo.MoveStin;
+import kr.or.iei.member.model.dao.MemberDao;
+import kr.or.iei.member.model.vo.Member;
 
 @Service("boardService")
 public class BoardService {
@@ -36,6 +38,9 @@ public class BoardService {
 	@Qualifier("boardDao")
 	private BoardDao boardDao;
 	
+	@Autowired
+	@Qualifier("dao")
+	private MemberDao memberDao;
 	
 	//게시판 목록 조회
 	public BoardPageData selectBoardList(int boardType, int reqPage, String boardTypeNm) {
@@ -699,4 +704,18 @@ public class BoardService {
 	public List<BoardComment> getCommentsByMemberNo(String memberNo) {
 		return boardDao.getCommentsByMemberNo(memberNo);
 	}
+
+	//특정 게시글 작성자에게만 알림보내기 위한 정보조회
+	public Board getBoardWithMemberInfo(String boardNo) {
+	    // 데이터베이스 조회
+	    Board board = boardDao.selectBoard(boardNo);
+	    return board;
+	}
+
+	//특정 댓글 작성자에게만 알림보내기 위한 정보 조회
+	public Board getCommentWriter(String commentNo) {
+	    // 실제 등록된 댓글의 작성자를 반환.
+	    return boardDao.selectCommentWriter(commentNo);
+	}
+
 }
