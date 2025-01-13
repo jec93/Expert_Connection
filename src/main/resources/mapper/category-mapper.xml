@@ -23,6 +23,14 @@
     	from tbl_code
     	where first_category_cd like 'A%'
 	</select>
+	
+	<!-- 대분류 조회 -->
+    <select id="getAllFirstCategories" resultType="map">
+	    select distinct 
+        	first_category_cd AS firstCategoryCd,
+            first_category_nm AS firstCategoryNm
+    	from tbl_code
+	</select>
 
     <!-- 중분류 및 소분류 조회 -->
     <select id="getAllSubCategories" resultType="map">

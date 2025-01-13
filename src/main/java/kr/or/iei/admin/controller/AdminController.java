@@ -74,6 +74,8 @@ public class AdminController {
 	@GetMapping("reportBoard.exco")
 	public String insertReportByInfo(String targetNo, String boardType, String reporter, String reportType, String reportCd, String reportNm, Model model) {
 		Report reportData = new Report();
+		String reportNo = adminService.createReportNo();
+		reportData.setReportNo(reportNo);
 		reportData.setTargetNo(targetNo);
 		reportData.setReporter(reporter);
 		reportData.setReportType(Integer.parseInt(reportType));
@@ -491,6 +493,42 @@ public class AdminController {
 			model.addAttribute("title","전문가 승인 실패");
 			model.addAttribute("text", "해당 승인 요청을 처리하는 중 오류가 발생했습니다.");
 		}
+		return "common/msg";
+	}
+	
+	//관리자페이지 - 신고확정 : 신고받은 회원 로그인제한+신고대상 삭제
+	@GetMapping("immediatelyReport.exco")
+	public String immediatelyReport(String suspect,String boardNo, Model model) {
+		//신고대상 삭제
+		//게시글에만 적용했으므로 게시글No사용
+		int board = adminService.deleteBoardByBoardNo(boardNo);
+		
+		Report reportData = new Report();
+		String reportNo = adminService.createReportNo();
+		reportData.setReportNo(reportNo);
+		reportData.setTargetNo(boardNo);
+		reportData.setReporter("1");
+		reportData.setReportType(0);
+		reportData.setThirdCategoryCd("A_301_a0002");
+		reportData.setThirdCategoryNM("영구 밴");
+		adminService.insertReportByInfo(reportData);
+		
+		//신고테이블에서 신고처리결과 D->Y로 변경
+		adminService.updateReportResultbyReportNo(reportData.getReportNo());
+		System.out.println(reportData.getReportResult());
+		//접근제한 테이블에 넣어주기 100년
+		int acres = adminService.thirdAccessRestriction(reportData.getReportNo(), suspect);
+		
+		if(acres > 0) {
+			model.addAttribute("title","신고수리 완료");
+			model.addAttribute("msg", "신고대상을 삭제하고, 신고대상을 작성한 사용자의 로그인을 영구제한합니다.");
+			model.addAttribute("icon","success");
+		}else {
+			model.addAttribute("title","신고수리 실패");
+			model.addAttribute("msg", "처리중 오륲");
+			model.addAttribute("icon","error");
+		}
+		
 		return "common/msg";
 	}
 }

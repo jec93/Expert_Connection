@@ -167,5 +167,10 @@ public class AdminDao {
 	public int expertHold(String receiveNo) {
 		return sqlSession.update("expertManagement.expertHold", receiveNo);
 	}
+
+	public String createReportNo() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("report.createReportNo");
+	}
 	
 }

@@ -558,5 +558,10 @@ public class BoardController {
   	    return "common/msg";
   	}
 
-  	
+  	@GetMapping("boardNotice.exco")
+  	public void boardNotice(String memberNo, String memberNickname, String noticeNm) {
+  		// 알림 전송
+  		String sendMsg = memberNickname + "님에게 온\'" + noticeNm + "\' 알림";
+		emitter.sendEvent(memberNo, sendMsg);	//게시글 작성자에게만 알림 전송
+  	}
 }

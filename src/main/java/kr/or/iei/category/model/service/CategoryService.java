@@ -39,7 +39,7 @@ public class CategoryService {
 	*/
 
 	public Map<String, Object> getAllCategories() {
-        // 대분류 가져오기
+        // 전문가 카테고리 대분류 가져오기
         List<Map<String, Object>> firstCategories = categoryDao.getFirstCategories();
 
         // 중분류 및 소분류 가져오기
@@ -51,12 +51,16 @@ public class CategoryService {
         //알림 항목 분류 가져오기
         List<Map<String, Object>> noticeCategories = categoryDao.getNoticeCategories();
         
+        //모든 대분류 가져오기
+        List<Map<String, Object>> allFirstCategories = categoryDao.getAllFirstCategories();
+        
         // 데이터를 Map으로 구성
         Map<String, Object> allCategories = new HashMap<>();
         allCategories.put("firstCategories", firstCategories);
         allCategories.put("subCategories", subCategories);
         allCategories.put("reportCategories", reportCategories);
         allCategories.put("noticeCategories", noticeCategories);
+        allCategories.put("allFirstCategories", allFirstCategories);
         
         return allCategories;
     }

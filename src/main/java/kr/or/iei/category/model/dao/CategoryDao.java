@@ -110,4 +110,9 @@ public class CategoryDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList("category.noticeCategories");
 	}
+
+	public List<Map<String, Object>> getAllFirstCategories() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("category.getAllFirstCategories");
+	}
 }

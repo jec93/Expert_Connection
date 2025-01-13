@@ -1,3 +1,4 @@
+<%@page import="java.util.Objects"%>
 <%@page import="java.util.Map"%>
 <%@page import="kr.or.iei.member.model.vo.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -5,6 +6,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
 Object loginChk = session.getAttribute("loginMember");
+Member loginData = null;
+String loginId = "";
+if(!Objects.isNull(loginChk)){
+	loginData = (Member)loginChk;
+	loginId = loginData.getMemberId();
+}
 boolean isLogin = loginChk != null;
 Map<String, Object> categories = (Map<String, Object>) application.getAttribute("categories");
 %>
@@ -15,8 +22,8 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 <title>Expert Connection</title>
 <link rel="icon" href="/resources/logo/expert_connection_favicon.png" />
 <link rel="apple-touch-icon" href="/resources/logo/expert_connection_favicon.png" />
-<!-- <script src="/resources/js/sweetalert2.all.min.js"></script>
-<link rel="stylesheet" href="/resources/css/sweetalert2.min.css"> -->
+<script src="/resources/js/sweetalert2.all.min.js"></script>
+<link rel="stylesheet" href="/resources/css/sweetalert2.min.css">
 <style>
 .boardContent {
 	min-height: 200px;
@@ -281,6 +288,90 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 	</div>
 
 	<script>
+	const categories = <%= new com.google.gson.Gson().toJson(categories) %>;
+	console.log(categories);
+	var chkLogin = <%=isLogin%>;
+	var loginId = '<%=loginId%>';
+	let allFirstCategories = categories.allFirstCategories;
+	let noticeCategories = categories.noticeCategories;
+	let FirstHtml = '';
+	allFirstCategories.forEach(item => {
+		FirstHtml += '<label><input type="radio" class="category-list" name="firstCd" value="'+item.FIRSTCATEGORYCD+'">'+item.FIRSTCATEGORYNM +'</label><br>';
+	});
+	let noticeHtml = '';
+	noticeCategories.forEach(item => {
+		noticeHtml += '<label><input type="radio" class="category-list" name="thirdCd" value="'+item.THIRDCATEGORYCD+'" data-value="'+item.SECONDCATEGORYCD+'">'+item.THIRDCATEGORYNM +'</label><br>';
+	});
+	
+	document.addEventListener('keydown', function(event) {
+	    if (event.ctrlKey && event.key === 'p' && loginId == 'admin') { // Ctrl + P
+	        event.preventDefault(); // 기본 동작 프린트를 막음
+	        Swal.fire({
+	        	title:"관리 모드",
+	        	html: FirstHtml,
+	        	showCancelButton: true, // 취소 버튼 표시
+	            confirmButtonText: '확인', // 확인 버튼 텍스트
+	            cancelButtonText: '취소' // 취소 버튼 텍스트
+	        }).then((result) => {
+	            if (result.isConfirmed) {
+	                // 선택된 라디오 버튼의 값을 가져옴
+	                const selectedValue = document.querySelector('input[name="firstCd"]:checked')?.value;
+					
+	                switch(selectedValue){
+	                case 'D0001':
+	                	Swal.fire({
+	                        imageUrl: '/resources/images/punishment.jpg', // 표시할 이미지 URL
+	                        imageAlt: 'Custom Image', // 이미지 대체 텍스트
+	                        title: '처단!!', // 타이틀
+	                        text: '해당 유저를 처단합니다', // 텍스트
+	                        confirmButtonText: '확인' // 버튼 텍스트
+	                    }).then((result)=>{
+	                    	if(result.isConfirmed){
+	                    		location.href = "/admin/immediatelyReport.exco?suspect=${board.memberNo}&boardNo=${board.boardNo}";
+	                    	}
+	                    });
+	                	break;
+	                case 'B0001':
+	                	Swal.fire({
+	                		title:"유저에게 알림 보내기",
+	        	        	html: noticeHtml,
+	        	        	showCancelButton: true, // 취소 버튼 표시
+	        	            confirmButtonText: '확인', // 확인 버튼 텍스트
+	        	            cancelButtonText: '취소' // 취소 버튼 텍스트
+	                    }).then((result) =>{
+	                    	if(result.isConfirmed){
+	                    		const selectedValue = document.querySelector('input[name="thirdCd"]:checked')?.value;
+	                    		const selectedSecondValue = document.querySelector('input[name="thirdCd"]:checked')?.dataset.value;
+	                    		console.log(selectedValue);
+	                    		let noticesList = noticeCategories.filter(item=> item.THIRDCATEGORYCD === selectedValue && item.SECONDCATEGORYCD === selectedSecondValue);
+	                    		let noticeNM = noticesList[0].THIRDCATEGORYNM
+	                    		console.log(noticeNM);
+	                    		$.ajax({
+	                                url: "/board/boardNotice.exco",
+	                                type: "GET",
+	                                data: {
+	                                    "memberNo": "${board.memberNo}",
+	                                    "memberNickname" : "${board.boardWriter}",
+	                                    "noticeNm": noticeNM
+	                                },
+	                                dataType: "json",
+	                                success: function(response) {
+	                                	console.log(response);
+	                                	updateBoardReaction(response.boardReact); // 상태를 업데이트
+	                                },
+	                                error: function() {
+	                                    console.error("알림을 보내는데 실패");
+	                                }
+	                            });
+	                    	}
+	                    });
+	                	break;
+	                }
+	            }
+	        });
+	    }
+	});
+	
 		function fileDown(fileName, filePath){
 			fileName = encodeURIComponent(fileName);
 			filePath = encodeURIComponent(filePath);
@@ -314,7 +405,7 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 			});
 		}
 		
-		const categories = <%= new com.google.gson.Gson().toJson(categories) %>;
+		
 		let reportCategories = categories.reportCategories
 		.filter(item=> item.SECONDCATEGORYCD === '301_a0001');
 		
@@ -497,8 +588,6 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 		        $("#thumb-dislike").attr("src", "/resources/images/thumb_down_line.png");
 		    }
 		}
-		
-		var chkLogin = <%= isLogin %>;
 		
 		//댓글 좋아요, 좋아요 취소
 		function commentLike (obj, commentNo, like) {
