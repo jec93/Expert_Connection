@@ -144,7 +144,7 @@ input[name="tab-item"] {
 							<ul class="mypage_link_box">
 								<li><a id="mypage_link" href="#">사용내역💰</a></li>
 								<li><a id="mypage_link" href="#">찜한 전문가</a></li>
-								<li><a id="mypage_link" href="#">리뷰</a></li>
+								<li><a id="mypage_link" href="/member/writtenReviewFrm.exco">리뷰</a></li>
 							</ul>
 			    </div>     
 	            <div class="mypage-group">

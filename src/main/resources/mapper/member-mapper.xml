@@ -78,7 +78,7 @@
 		</select>
   
   <!-- 로그인 전문가 -->
-  <select id="selectOneExpert" parameterType="expert" resultType="expert">
+  <select id="selectOneExpert" parameterType="member" resultType="member">
    SELECT 
       exco.member_no AS memberNo,
       exco.member_id AS memberId,
