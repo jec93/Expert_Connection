@@ -206,7 +206,7 @@
     )
     VALUES
     (
-        TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_REPORT.NEXTVAL, 4,'0'),
+        #{reportNo},
         #{reportType},
         #{reporter},
         #{suspect},
@@ -332,5 +332,10 @@
            )
 	WHERE MEMBERNO = #{memberNo}
 	AND SYSDATE BETWEEN RESTSTARTDATE AND RESTENDDATE
+	</select>
+	
+	<select id="createReportNo"
+	resultType="string">
+	SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI') || LPAD(SEQ_REPORT.NEXTVAL, 4, '0') FROM DUAL
 	</select>
 </mapper>

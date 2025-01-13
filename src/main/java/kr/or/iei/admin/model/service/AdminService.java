@@ -799,4 +799,11 @@ public class AdminService {
 		int result = adminDao.expertHold(receiveNo);
 		return result;
 	}
+
+	
+	public String createReportNo() {
+		// TODO Auto-generated method stub
+		return adminDao.createReportNo();
+	}
+	
 }

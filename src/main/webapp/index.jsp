@@ -182,6 +182,7 @@
 		width: 150px;
 		height: 150px;
 		border: 1px solid;
+		overflow: hidden;
 	}
     
     .firstCategory-container {
@@ -384,6 +385,7 @@
 					let expertHtml = '';
 					expRank.forEach(item=>{
 						let chkImg = item.profileName;
+						console.log(item);
                         if(!chkImg){
                         	item.profileName = 'default.png';
                         	item.profilePath = '/resources/profile/';

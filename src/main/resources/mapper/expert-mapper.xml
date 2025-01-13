@@ -206,7 +206,9 @@
 	    INTRODUCE_TITLE AS introduceTitle,
 	    INTRODUCE_CONTENT AS introduceContent,
 	    EXPERT_LIKE AS expertLike,
-	    EXPERT_DISLIKE AS expertDislike
+	    EXPERT_DISLIKE AS expertDislike,
+	    PROFILE_PATH AS profilePath,
+	    PROFILE_NAME AS profileName
 	FROM
 	    (SELECT
 	        E.MEMBER_NO,
