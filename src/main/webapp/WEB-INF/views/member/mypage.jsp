@@ -31,16 +31,16 @@
    transition: background-color 0.3s ease;
    margin: 10px;
    border : 1px solid black;
-   margin-left : 220px;
+   margin-left : 120px;
    margin-top : -90px;
 }
 .memberNickname{
-   margin-left : 380px;
+   margin-left : 260px;
    margin-top : -100px;
    
 }
 .memberEmail{
-   margin-left : 380px;
+   margin-left : 260px;
 }
 
 .profile-img {
@@ -52,11 +52,11 @@
     left: 0;
 }
 .update-container{
- padding-left: 200px;
+ padding-left: 100px;
 
 }
 .update{
- padding-left: 650px;
+ padding-left: 530px;
  margin-bottom : 100px;
  display : flex;
  margin-top: -55px;
