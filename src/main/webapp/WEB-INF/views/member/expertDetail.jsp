@@ -239,6 +239,11 @@ body {
 .review-content{
 	border-bottom: 1px solid;
 }
+
+#info-content {
+    white-space: pre-line;
+}
+
 </style>
 
 </head>
