@@ -135,8 +135,8 @@
 	<update id="updateHiddenStatus" parameterType="map">
 	update tbl_chat_members
 	   set is_hidden = #{isHidden}
-	 where TRIM(room_id) = #{roomId}
-	   and member_no = #{memberNo}
+	 where TRIM(room_id) = TRIM(#{roomId})
+	   and TRIM(member_no) = TRIM(#{memberNo})
 	</update>
 	
 	<!-- 특정 채팅방에 참여중인 사용자 조회 -->
