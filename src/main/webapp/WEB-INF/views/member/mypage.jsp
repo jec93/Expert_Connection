@@ -34,6 +34,26 @@
    margin-left : 120px;
    margin-top : -90px;
 }
+ #myProfile{
+   width: 120px;
+   height: 120px;
+   overflow : hidden;
+   position : relative;
+   border-radius: 50%;
+   color: #fff;
+   font-size: 12px;
+   font-weight: bold;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   text-decoration: none;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+   margin: 10px;
+   border : 1px solid black;
+}
 .memberNickname{
    margin-left : 260px;
    margin-top : -100px;
@@ -274,7 +294,9 @@ input[name="tab-item"] {
 				<input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
 				<div class="mypage-adminProfile">
 					<div class="memberInfo-brife">
-						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile"><span>프로필 사진</span></a>
+						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile">
+							<img alt="관리자 프로필" src="/resources/profile/admin.png" class="profile-img">
+						</a>
 						<div class="mypage-memberInfo">
 							<div id="mypage-myNickname">
 								<h3>${loginMember.memberNickname}님</h3>
