@@ -98,7 +98,7 @@
    
 	.info-expert-container{
 		width : 300px;
-		height: 500px;
+		height: 400px;
 		box-shadow: 0 4px 8px var(--main3);
 		margin : 15px;
 		background-color: var(--main5);
@@ -106,6 +106,7 @@
 		min-width: 250px; /* 각 전문가 박스 고정 크기 */
     	flex-shrink: 0; /* 크기 축소 방지 */
     	cursor: pointer;
+    	overflow: hidden;
 	}
 	.info-srch-container{
 		width : 100px;
