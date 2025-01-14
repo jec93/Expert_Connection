@@ -14,11 +14,12 @@
 		const icon = '${icon}'; //alert 아이콘 종류(success,error, warning, info)
 		const loc = '${loc}'; //이동할 서블릿의 url
 		const callback = '${callback}'; //메세지를 띄워주고, 실행할 함수
+		const isPopup = '${isPopup}';
 		
 		swal({
 			title : title,
 			text : msg,
-			icon : icon
+			icon : icon,
 		}).then(function(){
 			//alert의 확인 버튼을 누른 이후 동작
 			
@@ -33,6 +34,10 @@
 	            // loc 값이 없으면 이전 페이지로 이동하면서 새로고침
 	            window.location.href = document.referrer; // 이전 페이지로 이동
 	        }
+			
+			if (isPopup) {
+			    window.close(); // 새창이면 닫기
+			}
 		});
 	</script>
 </body>
