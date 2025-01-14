@@ -10,7 +10,9 @@
 <style>
 /* 기본 스타일 */
 
-
+.waiting {
+	margin : 40px 40px;
+}
 .wait-content-header {
     text-align: center;
     margin-bottom: 30px;
@@ -64,7 +66,18 @@
     margin-bottom: 10px;
     list-style-type: none;
 }
-
+#wtn {
+	width : 280px;
+	background-color:#34805C;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	text-decoration : none;
+}
 .wait-content-body ul li::before {
     content: "•";
     color: #4CAF50;
@@ -101,7 +114,9 @@
         font-size: 14px;
     }
 }
-
+.atag{
+	text-align:center;
+}
 </style>
 </head>
 <body>
@@ -110,7 +125,8 @@
         <section class="section wait-list-wrap">
             <div class="list-body">
                 <div class="list-content">
-                    <div class="page-title"></div>
+                    <div class="waiting">
+                    	<div class="page-title"></div>
                     <div class="wait-content-header">
                         <img id="wait-siteIntro-header" src="/resources/logo/expert_connection_logo_h_01.png">
                         <h5>Expert Connection을 이용하는 전문가 회원님들을 위한 안내사항입니다.</h5>
@@ -126,6 +142,10 @@
                             <li>자격증</li>
                         </ul>
                     </div>
+                    </div>
+                </div>
+                <div class="atag">
+                        <a id="wtn" href="/">EXPERT CONNECTION 메인페이지로 이동</a>
                 </div>
             </div>
         </section>
