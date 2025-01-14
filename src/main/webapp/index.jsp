@@ -98,6 +98,7 @@
    
 	.info-expert-container{
 		width : 300px;
+		height: 500px;
 		box-shadow: 0 4px 8px var(--main3);
 		margin : 15px;
 		background-color: var(--main5);
@@ -394,8 +395,8 @@
 						expertHtml +='<div class="content-title">'+item.introduceTitle+'</div>';
 						expertHtml +='<div>닉네임 : '+item.expertNickname+'</div>';
 						expertHtml +='<div>주소 : '+item.expertAddr+'</div>';
-						expertHtml +='<div>'+item.introduceContent+'</div>';
-						expertHtml +='<div>좋아요 : '+item.expertLike+'</div></div>';
+						expertHtml +='<div>좋아요 : '+item.expertLike+'</div>';
+						expertHtml +='<div>'+item.introduceContent+'</div></div>';
 					});
 					$('#show-expert').html(expertHtml);
 					
