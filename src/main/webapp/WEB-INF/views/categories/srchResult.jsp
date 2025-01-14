@@ -67,6 +67,8 @@
 	margin : 15px;
 	background-color: var(--main5);
 	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .info-container:hover{
 	cursor: pointer;

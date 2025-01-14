@@ -443,7 +443,8 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
                             '&reportCd=' + selectedValue.value+
                             '&reportNm=' + additionalInput;
 		                } else {
-		                	additionalInput = selectedValue.dataset.categoryName.value;
+		                	additionalInput = selectedValue.dataset.categoryName;
+		                	console.log(additionalInput);
 		                	
 		                	 location.href = '/admin/reportBoard.exco?reportType=' + reportType +
                             '&targetNo=' + boardNo +

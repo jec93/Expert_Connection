@@ -31,16 +31,36 @@
    transition: background-color 0.3s ease;
    margin: 10px;
    border : 1px solid black;
-   margin-left : 220px;
+   margin-left : 120px;
    margin-top : -90px;
 }
+ #myProfile{
+   width: 120px;
+   height: 120px;
+   overflow : hidden;
+   position : relative;
+   border-radius: 50%;
+   color: #fff;
+   font-size: 12px;
+   font-weight: bold;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   text-decoration: none;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+   margin: 10px;
+   border : 1px solid black;
+}
 .memberNickname{
-   margin-left : 380px;
+   margin-left : 260px;
    margin-top : -100px;
    
 }
 .memberEmail{
-   margin-left : 380px;
+   margin-left : 260px;
 }
 
 .profile-img {
@@ -52,11 +72,11 @@
     left: 0;
 }
 .update-container{
- padding-left: 200px;
+ padding-left: 100px;
 
 }
 .update{
- padding-left: 650px;
+ padding-left: 530px;
  margin-bottom : 100px;
  display : flex;
  margin-top: -55px;
@@ -157,7 +177,7 @@ input[name="tab-item"] {
 	            <div class="mypage-group">
 				  <h3 class="mypage-group-title">채팅</h3>
 					 <ul class="mypage_link_box">
-						<li><a id="mypage_link" href="#">채팅 내역</a></li>
+						<li><a id="mypage_link" href="/chat/getRoomList.exco">채팅 내역</a></li>
 					 </ul>
 			    </div>
 	            <div class="mypage-last-group">
@@ -274,7 +294,9 @@ input[name="tab-item"] {
 				<input type="hidden" id="memberNo" name="memberNo" value="${loginMember.memberNo}">
 				<div class="mypage-adminProfile">
 					<div class="memberInfo-brife">
-						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile"><span>프로필 사진</span></a>
+						<a href="javascript:void(0)" onclick="showProfilePopup()" id="myProfile">
+							<img alt="관리자 프로필" src="/resources/profile/admin.png" class="profile-img">
+						</a>
 						<div class="mypage-memberInfo">
 							<div id="mypage-myNickname">
 								<h3>${loginMember.memberNickname}님</h3>
