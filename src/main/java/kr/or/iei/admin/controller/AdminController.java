@@ -287,8 +287,8 @@ public class AdminController {
 				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
 			}
 		}
-		
-		return "admin/memberManage";
+		model.addAttribute("isPopup",true);
+		return "common/msg";
 	}
 	
 	//관리자페이지 - 허위신고 : 신고한 회원 로그인제한
@@ -315,7 +315,6 @@ public class AdminController {
 				model.addAttribute("title","허위신고 처리 완료");
 				model.addAttribute("msg", "허위신고자의 로그인을 7일간 제한합니다.");
 				model.addAttribute("icon","success");
-				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
 			}
 		} else if (chkAccess == 1) {
 			//접근제한 테이블에 넣어주기 15일
@@ -325,7 +324,6 @@ public class AdminController {
 				model.addAttribute("title","허위신고 처리 완료");
 				model.addAttribute("msg", "신고대상을 삭제하고, 신고대상의 로그인을 15일 간 제한합니다.");
 				model.addAttribute("icon","success");
-				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
 			}
 		} else if (chkAccess == 2) {
 			//접근제한 테이블에 넣어주기 100년
@@ -335,12 +333,12 @@ public class AdminController {
 				model.addAttribute("title","허위신고 처리 완료");
 				model.addAttribute("msg", "신고대상을 삭제하고, 신고대상의 로그인을 영구제한합니다.");
 				model.addAttribute("icon","success");
-				model.addAttribute("loc","memberReportManage.exco?reqPage=1&searchName=report");
 			}
 		}
 		
-	}
-		return "admin/memberManage";
+		}
+		model.addAttribute("isPopup",true);
+		return "common/msg";
 	}
 	
 	//관리자페이지 -> 신고처리내역 목록 불러오기
