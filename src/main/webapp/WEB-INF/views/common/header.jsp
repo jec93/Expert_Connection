@@ -68,10 +68,10 @@ Boolean isNull = (Boolean) application.getAttribute("isNull");
                           </div>
                        </li>
                        <li class="mypage_box">
-                    	<c:if test="${sessionScope.loginMember.memberId ne 'admin'}">
+                    	<c:if test="${sessionScope.loginMember.memberId ne 'excoadmin1'}">
                        	<a href="/member/mypageFrm.exco"><img id="icon_mypage" src="/resources/images/icon_mypage.png">마이페이지</a>
                        	</c:if>
-                       	<c:if test="${sessionScope.loginMember.memberId eq 'admin'}">
+                       	<c:if test="${sessionScope.loginMember.memberId eq 'excoadmin1'}">
                        	<a href="/board/adminPage.exco?reqPage=1&boardType=6&boardTypeNm=6"><img id="icon_mypage" src="/resources/images/icon_mypage.png">관리자페이지</a>
                        	</c:if>
                       </li>

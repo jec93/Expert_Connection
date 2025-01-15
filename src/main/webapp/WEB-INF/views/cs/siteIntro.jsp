@@ -1,5 +1,11 @@
+<%@page import="java.util.List"%>
+<%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	Map<String, Object> categories = (Map<String, Object>) application.getAttribute("categories");
+List<Map<String, Object>> firstCategories = (List<Map<String, Object>>) categories.get("firstCategories");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -59,60 +65,86 @@
 								</div>
 								<div class="siteIntro-body"> 							
 								<div class="siteIntro-category">
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_hobby.png"><br>
-											취미
-										</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_move.png"><br>
-											이사
-										</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_outsourcing.png"><br>
-											외주
-										</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">											
-											<img id="category_icon" src="/resources/images/img_event.png"><br>
-											이벤트
-										</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_beuaty.png"><br>
-											뷰티
-											</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_job.png"><br>
-											취업
-										</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_lesson.png"><br>
-											과외
-										</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_vehicle.png"><br>
-											차량
-										</a>
-									</div>
-									<div class="firstCategory">
-										<a class="info-firstCategory" href="">
-											<img id="category_icon" src="/resources/images/img_finance_law.png"><br>
-											금융/법률
-										</a>
-									</div>
+									<%
+			             			for (Map<String, Object> category : firstCategories) {
+				             			switch ((String) category.get("FIRSTCATEGORYCD")) {
+				             		    case "A0001":
+				             		    	%>
+				             		    	<div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+												<img id="category_icon" src="/resources/images/img_hobby.png"><br>
+												취미
+											</div>
+											<%
+				             		        break;
+				             		    case "A0002":
+				             		    	 %>
+				             		    	 <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+					             		    	 	<img id="category_icon" src="/resources/images/img_move.png"><br>
+													이사
+				             		    	 </div>
+				             		        <%
+				             		        break;
+				             		   case "A0003":
+				             			    %>
+				             			    <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+					             		    	 	<img id="category_icon" src="/resources/images/img_outsourcing.png"><br>
+													외주
+				             		    	</div>
+				             			    <%
+				             		    	break;
+				             		   case "A0004":
+				             			   %>
+				             			   <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+					             		    	 	<img id="category_icon" src="/resources/images/img_event.png"><br>
+													이벤트
+				             		    	</div>
+				             			   <%
+				             		    	break;
+				             		   case "A0005":
+				             			  %>
+				             			   <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+					             		    	 	<img id="category_icon" src="/resources/images/img_beuaty.png"><br>
+													뷰티
+				             		    	</div>
+				             			   <%
+				             		    	break;
+				             		   case "A0006":
+			             			  %>
+			             			   <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+				             		    	 	<img id="category_icon" src="/resources/images/img_job.png"><br>
+												취업
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0007":
+			             			  %>
+			             			   <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+				             		    	 	<img id="category_icon" src="/resources/images/img_lesson.png"><br>
+												과외
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0008":
+			             			  %>
+			             			   <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+				             		    	 	<img id="category_icon" src="/resources/images/img_vehicle.png"><br>
+												차량
+			             		    	</div>
+			             			   <%
+			             		    	break;
+			             		   case "A0009":
+			             			  %>
+			             			   <div class="info-firstCategory" onclick="srchThirdCategories('<%= category.get("FIRSTCATEGORYCD") %>','<%= category.get("FIRSTCATEGORYNM") %>')">
+
+				             		    	 	<img id="category_icon" src="/resources/images/img_finance_law.png"><br>
+												금융/법률
+			             			   		
+			             		    	</div>
+			             			   <%
+			             			   break;
+			             			}
+		             		}
+				          %>
 								</div>
 								</div>
 				            </div>
@@ -191,5 +223,18 @@
 			</main>
 		<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 	</div>
+	<script>
+	const categories = <%= new com.google.gson.Gson().toJson(categories) %>;
+	const suggestData = categories.subCategories;
+    const sampleSuggestions = suggestData.map(item => item.THIRDCATEGORYNM);
+    
+    function srchThirdCategories(FIRSTCATEGORYCD,FIRSTCATEGORYNM) {
+    	// 주어진 FIRSTCATEGORYCD 값과 같은 데이터를 필터링하고 THIRDCATEGORYCD 값만 추출
+        const thirdCategoryCDList = suggestData
+            .filter(item => item.FIRSTCATEGORYCD === FIRSTCATEGORYCD) // 조건에 맞는 항목 필터링
+            .map(item => item.THIRDCATEGORYCD); // THIRDCATEGORYCD 값만 추출
+        location.href = '/categories/searchSubCategoriesList.exco?&thirdCategoryCDList='+thirdCategoryCDList+'&firstCategoryNm='+FIRSTCATEGORYNM;   	
+    }
+	</script>
 </body>
 </html>

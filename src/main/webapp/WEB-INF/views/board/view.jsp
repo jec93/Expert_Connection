@@ -308,7 +308,7 @@ Map<String, Object> categories = (Map<String, Object>) application.getAttribute(
 		        memberNo: "${board.memberNo}", // JSTL 변수를 JavaScript로 전달
 		        boardWriter: "${board.boardWriter}" // JSTL 변수를 JavaScript로 전달
 		    };
-	    if (event.ctrlKey && event.key === 'p' && loginId == 'admin') { // Ctrl + P
+	    if (event.ctrlKey && event.key === 'p' && loginId == 'excoadmin1') { // Ctrl + P
 	        event.preventDefault(); // 기본 동작 프린트를 막음
 	        Swal.fire({
 	        	title:"관리 모드",
