@@ -571,7 +571,7 @@ public class BoardService {
 	    infoNumMap.put("member", memberNo);
 		CommentReact commentReact = boardDao.chkLikeByComment(infoNumMap);
 		if(Objects.isNull(commentReact)) {
-			return null;
+			return "";
 		}
 		return String.valueOf(commentReact.getCommentChk());
 	}
@@ -666,7 +666,7 @@ public class BoardService {
 	    infoNumMap.put("memberNo", memberNo);
 		BoardReact boardReact = boardDao.chkBoardLikeByBoard(infoNumMap);
 		if(Objects.isNull(boardReact)) {
-			return null;
+			return "";
 		}
 		return String.valueOf(boardReact.getBoardReaction());
 	}
